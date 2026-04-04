@@ -58,8 +58,16 @@
                     <td class="p-2">{{ $p->lokasi }}</td>
 
                     <td class="flex gap-1 py-3">
-                        <button class="text-blue-500"><x-heroicon-o-pencil-square class="w-5 h-5" /></button>
-                        <button class="text-red-500"><x-heroicon-o-trash class="w-5 h-5" /></button>
+                        <a href="{{ route('management_posko.posko.edit', $p->id_posko) }}"
+                        class="text-blue-500">
+                            <x-heroicon-o-pencil-square class="w-5 h-5" />
+                        </a>
+
+                        <button 
+                            onclick="openModal('{{ $p->id_posko }}', '{{ $p->nama_posko }}')" 
+                            class="text-red-500 hover:text-red-700">
+                            <x-heroicon-o-trash class="w-5 h-5" />
+                        </button>
                     </td>
                 </tr>
             @empty
@@ -91,4 +99,61 @@
 
 </div>
 
+<!-- MODAL HAPUS -->
+<div id="deleteModal" class="fixed inset-0 backdrop-blur-sm bg-white/10 hidden items-center justify-center z-50">
+
+    <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-6">
+
+        <!-- Header -->
+        <div class="flex items-start gap-3">
+            <div class="bg-red-100 p-2 rounded-full">
+                <x-heroicon-o-exclamation-triangle class="w-6 h-6 text-red-500"/>
+            </div>
+
+            <div>
+                <h2 class="text-lg font-semibold text-gray-800">Hapus Data Posko</h2>
+                <p class="text-sm text-gray-500 mt-1">
+                    Apakah Anda yakin ingin menghapus data posko 
+                    <span id="namaPosko" class="font-semibold"></span>? 
+                    Tindakan ini tidak dapat dibatalkan.
+                </p>
+            </div>
+        </div>
+
+        <!-- Action -->
+        <div class="flex justify-end gap-3 mt-6">
+            <button onclick="closeModal()" 
+                class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">
+                Batal
+            </button>
+
+            <form id="deleteForm" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type="submit" 
+                    class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600">
+                    Hapus Data
+                </button>
+            </form>
+        </div>
+
+    </div>
+</div>
+
+<script>
+function openModal(id, nama) {
+    const modal = document.getElementById('deleteModal');
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+
+    document.getElementById('namaPosko').innerText = `"${nama}"`;
+
+    // set dynamic route
+    document.getElementById('deleteForm').action = `/posko/${id}`;
+}
+
+function closeModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
+}
+</script>
 @endsection

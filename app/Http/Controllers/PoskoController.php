@@ -44,4 +44,46 @@ class PoskoController extends Controller
 
         return redirect()->route('management_posko.posko.index');
     }
+
+    public function edit($id)
+    {
+        $posko = Posko::findOrFail($id);
+        $desa = Desa::all();
+        $pengaduan = PengaduanBencana::where('status_pengaduan', '!=', 'SELESAI')->get();
+
+        return view('management_posko.posko.edit', compact('posko', 'desa', 'pengaduan'));
+    }
+
+    public function update(Request $request, $id)
+    {
+        $request->validate([
+            'nama_posko' => 'required|max:100',
+            'tanggal_dibuat' => 'required|date',
+            'id_desa' => 'required',
+            'id_pengaduan' => 'required',
+            'lokasi' => 'required'
+        ]);
+
+        $posko = Posko::findOrFail($id);
+
+        $posko->update([
+            'nama_posko' => $request->nama_posko,
+            'tanggal_dibuat' => $request->tanggal_dibuat,
+            'id_desa' => $request->id_desa,
+            'id_pengaduan' => $request->id_pengaduan,
+            'lokasi' => $request->lokasi
+        ]);
+
+        return redirect()->route('management_posko.posko.index');
+    }
+
+    public function destroy($id)
+    {
+        $posko = Posko::findOrFail($id);
+
+        $posko->delete();
+
+        return redirect()->route('management_posko.posko.index')
+            ->with('success', 'Data posko berhasil dihapus');
+    }
 }
