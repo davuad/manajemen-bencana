@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Manajemen Bencana</title>
+    <link rel="icon" href="{{ asset('logo-dinsos.png') }}" type="image/png">
     @vite('resources/css/app.css')
 
     <style>

@@ -12,3 +12,5 @@ Route::get('/p', function () {
 });
 
 Route::get('/posko', [PoskoController::class, 'index'])->name('management_posko.posko.index');
+Route::get('/posko/create', [PoskoController::class, 'create'])->name('management_posko.posko.create');
+Route::post('/posko', [PoskoController::class, 'store'])->name('management_posko.posko.store');

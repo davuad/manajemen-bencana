@@ -13,9 +13,9 @@
             </p>
         </div>
 
-        <button class="bg-indigo-700 text-white px-4 py-2 rounded-lg">
+        <a href="{{ route('management_posko.posko.create') }}" class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
             + Tambah Data Posko
-        </button>
+        </a>
 
     </div>
 
@@ -37,35 +37,38 @@
 
             <thead class="bg-gray-100">
                 <tr>
-                    <th class="p-3 text-left">No</th>
-                    <th class="text-left">ID Posko</th>
-                    <th class="text-left">Nama Posko</th>
-                    <th class="text-left">Lokasi</th>
-                    <th class="text-left">Desa</th>
-                    <th class="text-left">Tanggal</th>
+                    <th class="p-3 text-center">No</th>
+                    <th class="text-center">Nama Posko</th>
+                    <th class="text-center">Desa</th>
+                    <th class="text-center">Deskripsi Bencana</th>
+                    <th class="text-center">Lokasi</th>
+                    <th class="text-center">Tanggal</th>
                     <th class="text-left">Aksi</th>
                 </tr>
             </thead>
 
             <tbody>
+                @forelse($posko as $key => $p)
+                <tr class="border-t">
+                    <td class="p-2">{{ $key + 1 }}</td>
+                    <td class="p-2">{{ $p->nama_posko }}</td>
+                    <td class="p-2">{{ $p->desa->nama_desa ?? '-' }}</td>
+                    <td class="p-2">{{ $p->pengaduan->deskripsi ?? '-' }}</td>
+                    <td class="p-2">{{ $p->tanggal_dibuat }}</td>
+                    <td class="p-2">{{ $p->lokasi }}</td>
 
-                @foreach ($poskos as $index => $posko)
-                <tr class="border-b hover:bg-gray-50">
-
-                    <td class="p-3">{{ $index + 1 }}</td>
-                    <td>{{ $posko['id'] }}</td>
-                    <td>{{ $posko['nama'] }}</td>
-                    <td>{{ $posko['lokasi'] }}</td>
-                    <td>{{ $posko['desa'] }}</td>
-                    <td>{{ $posko['tanggal'] }}</td>
-
-                    <td class="flex gap-2 py-3">
-                        <button class="text-blue-500">Edit</button>
-                        <button class="text-red-500">Hapus</button>
+                    <td class="flex gap-1 py-3">
+                        <button class="text-blue-500"><x-heroicon-o-pencil-square class="w-5 h-5" /></button>
+                        <button class="text-red-500"><x-heroicon-o-trash class="w-5 h-5" /></button>
                     </td>
-
                 </tr>
-                @endforeach
+            @empty
+                <tr>
+                    <td colspan="6" class="text-center p-4">
+                        Data belum ada
+                    </td>
+                </tr>
+            @endforelse
 
             </tbody>
 

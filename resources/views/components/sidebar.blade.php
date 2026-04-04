@@ -7,7 +7,7 @@
 
     <div class="p-4 flex items-center justify-between">
         <div x-show="sidebarOpen" x-transition class="flex items-center gap-3">
-            <img src="logo-dinsos.png" alt="Logo Dinsos" class="w-13 h-13">
+            <img src={{ asset('logo-dinsos.png') }} alt="Logo Dinsos" class="w-13 h-13">
             <div>
                 <h1 class="font-bold">Dinas Sosial</h1>
                 <p class="text-xs text-gray-300">Kabupaten Cilacap</p>
@@ -71,12 +71,7 @@
 
                     <!-- Olah Data Posko -->
                     <a href="{{ route('management_posko.posko.index') }}"
-                    class="block px-3 py-2 text-sm rounded transition-all duration-200"
-                    :class="{
-                        'bg-white/10': {{ request()->routeIs('management_posko.posko.index') ? 'true' : 'false' }},
-                        'hover:bg-blue-700': !{{ request()->routeIs('management_posko.posko.index') ? 'true' : 'false' }}
-                    }"
-                    >
+                    class="block px-3 py-2 text-sm rounded transition-all duration-200 {{ request()->routeIs('management_posko.posko.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
                         Olah Data Posko
                     </a>
 

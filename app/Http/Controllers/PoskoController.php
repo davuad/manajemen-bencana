@@ -2,29 +2,46 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Desa;
+use App\Models\PengaduanBencana;
+use App\Models\Posko;
 use Illuminate\Http\Request;
 
 class PoskoController extends Controller
 {
     public function index()
     {
-        $poskos = [
-            [
-                'id' => 'POS-1',
-                'nama' => 'Posko Cilacap Tengah 1',
-                'lokasi' => 'Cilacap Tengah',
-                'desa' => 'Desa A',
-                'tanggal' => '10 Januari 2026',
-            ],
-            [
-                'id' => 'POS-2',
-                'nama' => 'Posko Cilacap Selatan 1',
-                'lokasi' => 'Cilacap Selatan',
-                'desa' => 'Desa B',
-                'tanggal' => '27 Januari 2026',
-            ],
-        ];
+        $posko = Posko::with(['desa', 'pengaduan'])->get();
 
-        return view('management_posko.posko.index', compact('poskos'));
+        return view('management_posko.posko.index', compact('posko'));
+    }
+
+    public function create()
+    {
+        $desa = Desa::all();
+        $pengaduan = PengaduanBencana::where('status_pengaduan', '!=', 'SELESAI')->get();
+
+        return view('management_posko.posko.create', compact('desa', 'pengaduan'));
+    }
+
+    public function store(Request $request)
+    {
+        $request->validate([
+            'nama_posko' => 'required|max:100',
+            'tanggal_dibuat' => 'required|date',
+            'id_desa' => 'required',
+            'id_pengaduan' => 'required',
+            'lokasi' => 'required'
+        ]);
+
+        Posko::create([
+            'nama_posko' => $request->nama_posko,
+            'tanggal_dibuat' => $request->tanggal_dibuat,
+            'id_desa' => $request->id_desa,
+            'id_pengaduan' => $request->id_pengaduan,
+            'lokasi' => $request->lokasi
+        ]);
+
+        return redirect()->route('management_posko.posko.index');
     }
 }
