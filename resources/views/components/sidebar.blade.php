@@ -76,11 +76,11 @@
                     </a>
 
                     <!-- Dapur Umum -->
-                    <a href="#"
+                    <a href="{{ route('management_posko.dapur_umum.index') }}"
                     class="block px-3 py-2 text-sm rounded transition-all duration-200"
                     :class="{
-                        'bg-white/10': {{ request()->routeIs('management_posko.dapur.*') ? 'true' : 'false' }},
-                        'hover:bg-blue-700': !{{ request()->routeIs('management_posko.dapur.*') ? 'true' : 'false' }}
+                        'bg-white/10': {{ request()->routeIs('management_posko.dapur_umum.*') ? 'true' : 'false' }},
+                        'hover:bg-blue-700': !{{ request()->routeIs('management_posko.dapur_umum.*') ? 'true' : 'false' }}
                     }"
                     >
                         Dapur Umum

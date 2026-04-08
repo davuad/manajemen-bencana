@@ -8,8 +8,6 @@ class PengaduanBencana extends Model
 {
     protected $table = 'pengaduan_bencana';
 
-    protected $primaryKey = 'id_pengaduan';
-
     public $incrementing = true;
     protected $keyType = 'int';
 

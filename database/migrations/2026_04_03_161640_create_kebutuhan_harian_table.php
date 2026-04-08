@@ -12,9 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('kebutuhan_harian', function (Blueprint $table) {
-            $table->increments('id_kebutuhan');
-
-            $table->unsignedInteger('id_dapur');
+            $table->id();
 
             $table->date('tanggal');
             $table->integer('jumlah_warga');
@@ -23,9 +21,8 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->foreign('id_dapur')
-                ->references('id_dapur')
-                ->on('dapur_umum')
+            $table->foreignId('dapur_id')
+                ->constrained('dapur')
                 ->cascadeOnDelete();
         });
     }

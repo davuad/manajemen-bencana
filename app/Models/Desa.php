@@ -9,8 +9,6 @@ class Desa extends Model
 {
     protected $table = 'desa';
 
-    protected $primaryKey = 'id_desa';
-
     public $incrementing = true;
     protected $keyType = 'int';
 

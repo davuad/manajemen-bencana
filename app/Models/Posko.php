@@ -8,16 +8,11 @@ class Posko extends Model
 {
     protected $table = 'posko';
 
-    protected $primaryKey = 'id_posko';
-
-    public $incrementing = true;
-    protected $keyType = 'int';
-
     protected $fillable = [
         'nama_posko',
         'tanggal_dibuat',
-        'id_desa',
-        'id_pengaduan',
+        'desa_id',
+        'pengaduan_bencana_id',
         'lokasi'
     ];
 
@@ -25,11 +20,11 @@ class Posko extends Model
 
     public function desa()
     {
-        return $this->belongsTo(Desa::class, 'id_desa');
+        return $this->belongsTo(Desa::class);
     }
 
     public function pengaduan()
     {
-        return $this->belongsTo(PengaduanBencana::class, 'id_pengaduan');
+        return $this->belongsTo(PengaduanBencana::class, 'pengaduan_bencana_id');
     }
 }

@@ -9,7 +9,7 @@
     </div>
 
     <div class="bg-white rounded-xl p-5 m-3 mt-5">
-        <form action="{{ route('management_posko.posko.update', $posko->id_posko) }}" method="POST" class="space-y-6">
+        <form action="{{ route('management_posko.posko.update', $posko->id) }}" method="POST" class="space-y-6">
             @csrf
             @method('PUT')
 
@@ -33,11 +33,11 @@
 
                 <div>
                     <label>Desa Terdampak *</label>
-                    <select name="id_desa" class="w-full border rounded-lg p-3">
+                    <select name="desa_id" class="w-full border rounded-lg p-3">
                         <option value="">Pilih Desa</option>
                         @foreach($desa as $d)
-                            <option value="{{ $d->id_desa }}"
-                                {{ $posko->id_desa == $d->id_desa ? 'selected' : '' }}>
+                            <option value="{{ $d->id }}"
+                                {{ $posko->desa_id == $d->id ? 'selected' : '' }}>
                                 {{ $d->nama_desa }}
                             </option>
                         @endforeach
@@ -48,11 +48,11 @@
             <!-- Pengaduan -->
             <div>
                 <label>Tautkan ke Laporan Bencana *</label>
-                <select name="id_pengaduan" class="w-full border rounded-lg p-3">
+                <select name="pengaduan_bencana_id" class="w-full border rounded-lg p-3">
                     <option value="">Pilih Laporan</option>
                     @foreach($pengaduan as $p)
-                        <option value="{{ $p->id_pengaduan }}"
-                            {{ $posko->id_pengaduan == $p->id_pengaduan ? 'selected' : '' }}>
+                        <option value="{{ $p->id }}"
+                            {{ $posko->pengaduan_bencana_id == $p->id ? 'selected' : '' }}>
                             {{ $p->deskripsi }}
                         </option>
                     @endforeach

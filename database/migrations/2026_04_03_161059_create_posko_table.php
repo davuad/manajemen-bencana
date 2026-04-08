@@ -12,26 +12,21 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('posko', function (Blueprint $table) {
-            $table->increments('id_posko'); 
+            $table->id();
 
-            $table->unsignedInteger('id_pengaduan');
             $table->string('nama_posko', 100);
             $table->string('lokasi', 150);
-            $table->unsignedInteger('id_desa');
-
             $table->date('tanggal_dibuat');
 
+            $table->foreignId('pengaduan_bencana_id')
+                ->constrained('pengaduan_bencana')
+                ->cascadeOnDelete();
+
+            $table->foreignId('desa_id')
+                ->constrained('desa')
+                ->cascadeOnDelete();
+
             $table->timestamps();
-
-            $table->foreign('id_pengaduan')
-                ->references('id_pengaduan')
-                ->on('pengaduan_bencana')
-                ->cascadeOnDelete();
-
-            $table->foreign('id_desa')
-                ->references('id_desa')
-                ->on('desa')
-                ->cascadeOnDelete();
         });
     }
 

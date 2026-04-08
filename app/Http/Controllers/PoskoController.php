@@ -12,7 +12,6 @@ class PoskoController extends Controller
     public function index()
     {
         $posko = Posko::with(['desa', 'pengaduan'])->get();
-
         return view('management_posko.posko.index', compact('posko'));
     }
 
@@ -29,16 +28,16 @@ class PoskoController extends Controller
         $request->validate([
             'nama_posko' => 'required|max:100',
             'tanggal_dibuat' => 'required|date',
-            'id_desa' => 'required',
-            'id_pengaduan' => 'required',
+            'desa_id' => 'required',
+            'pengaduan_bencana_id' => 'required',
             'lokasi' => 'required'
         ]);
 
         Posko::create([
             'nama_posko' => $request->nama_posko,
             'tanggal_dibuat' => $request->tanggal_dibuat,
-            'id_desa' => $request->id_desa,
-            'id_pengaduan' => $request->id_pengaduan,
+            'desa_id' => $request->desa_id,
+            'pengaduan_bencana_id' => $request->pengaduan_bencana_id,
             'lokasi' => $request->lokasi
         ]);
 
@@ -59,8 +58,8 @@ class PoskoController extends Controller
         $request->validate([
             'nama_posko' => 'required|max:100',
             'tanggal_dibuat' => 'required|date',
-            'id_desa' => 'required',
-            'id_pengaduan' => 'required',
+            'desa_id' => 'required',
+            'pengaduan_bencana_id' => 'required',
             'lokasi' => 'required'
         ]);
 
@@ -69,8 +68,8 @@ class PoskoController extends Controller
         $posko->update([
             'nama_posko' => $request->nama_posko,
             'tanggal_dibuat' => $request->tanggal_dibuat,
-            'id_desa' => $request->id_desa,
-            'id_pengaduan' => $request->id_pengaduan,
+            'desa_id' => $request->desa_id,
+            'pengaduan_bencana_id' => $request->pengaduan_bencana_id,
             'lokasi' => $request->lokasi
         ]);
 
@@ -80,7 +79,6 @@ class PoskoController extends Controller
     public function destroy($id)
     {
         $posko = Posko::findOrFail($id);
-
         $posko->delete();
 
         return redirect()->route('management_posko.posko.index')
