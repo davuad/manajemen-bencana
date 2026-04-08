@@ -18,7 +18,7 @@
 <div class="flex h-screen" x-cloak>
 
     {{-- Sidebar --}}
-    @include('components.sidebar')
+    @include('layouts.sidebar')
 
     {{-- Content --}}
     <div class="flex-1 flex flex-col"
@@ -27,7 +27,10 @@
             loaded ? 'transition-all duration-300' : ''
          ]">
 
-        @include('components.navbar')
+        @include('layouts.navigation')
+        {{-- @include('components.navbar') --}}
+
+        {{-- Main Content --}}
 
         <main class="p-6">
             @yield('content')

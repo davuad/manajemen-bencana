@@ -1,22 +1,17 @@
-<header class="bg-white sticky top-0 shadow px-6 py-4 flex justify-between items-center">
+<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
 
-    <div class="flex items-center gap-4">
-
-        {{-- Toggle --}}
-        <button @click="sidebarOpen = !sidebarOpen" class="text-xl hover:bg-gray-100">
+    <!-- Primary Navigation Menu -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+            <div class="flex items-center gap-4">
+                        <!-- Toggle Sidebar -->
+        <button @click="sidebarOpen = !sidebarOpen"
+                class="text-gray-600 hover:bg-gray-100 p-2 rounded">
             <x-heroicon-o-bars-3 class="w-6 h-6" />
         </button>
-
         <h1 class="font-semibold text-gray-700">
             Sistem Manajemen Bencana
         </h1>
-
-    </div>
-
-    <div class="flex items-center gap-4">
-       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="flex justify-between h-16">
-            <div class="flex">
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
@@ -105,7 +100,4 @@
             </div>
         </div>
     </div>
-
-    </div>
-
-</header>
+</nav>
