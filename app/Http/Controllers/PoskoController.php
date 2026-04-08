@@ -28,8 +28,8 @@ class PoskoController extends Controller
         $request->validate([
             'nama_posko' => 'required|max:100',
             'tanggal_dibuat' => 'required|date',
-            'desa_id' => 'required',
-            'pengaduan_bencana_id' => 'required',
+            'desa_id' => 'required|exists:desa,id',
+            'pengaduan_bencana_id' => 'required|exists:pengaduan_bencana,id',
             'lokasi' => 'required'
         ]);
 
@@ -38,10 +38,12 @@ class PoskoController extends Controller
             'tanggal_dibuat' => $request->tanggal_dibuat,
             'desa_id' => $request->desa_id,
             'pengaduan_bencana_id' => $request->pengaduan_bencana_id,
-            'lokasi' => $request->lokasi
+            'lokasi' => $request->lokasi,
+            'status' => 'aktif'
         ]);
 
-        return redirect()->route('management_posko.posko.index');
+        return redirect()->route('management_posko.posko.index')
+            ->with('success', 'Data posko berhasil ditambahkan');
     }
 
     public function edit($id)
@@ -58,9 +60,10 @@ class PoskoController extends Controller
         $request->validate([
             'nama_posko' => 'required|max:100',
             'tanggal_dibuat' => 'required|date',
-            'desa_id' => 'required',
-            'pengaduan_bencana_id' => 'required',
-            'lokasi' => 'required'
+            'desa_id' => 'required|exists:desa,id',
+            'pengaduan_bencana_id' => 'required|exists:pengaduan_bencana,id',
+            'lokasi' => 'required',
+            'status' => 'required|in:aktif,tidak_aktif' // validasi radio button
         ]);
 
         $posko = Posko::findOrFail($id);
@@ -70,10 +73,12 @@ class PoskoController extends Controller
             'tanggal_dibuat' => $request->tanggal_dibuat,
             'desa_id' => $request->desa_id,
             'pengaduan_bencana_id' => $request->pengaduan_bencana_id,
-            'lokasi' => $request->lokasi
+            'lokasi' => $request->lokasi,
+            'status' => $request->status
         ]);
 
-        return redirect()->route('management_posko.posko.index');
+        return redirect()->route('management_posko.posko.index')
+            ->with('success', 'Data posko berhasil diperbarui');
     }
 
     public function destroy($id)

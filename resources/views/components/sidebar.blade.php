@@ -66,7 +66,7 @@
                     x-transition:leave="transition ease-in duration-150"
                     x-transition:leave-start="opacity-100 translate-y-0"
                     x-transition:leave-end="opacity-0 -translate-y-1"
-                    class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden"
+                    class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2"
                 >
 
                     <!-- Olah Data Posko -->
@@ -87,11 +87,11 @@
                     </a>
 
                     <!-- Kebutuhan Harian -->
-                    <a href="#"
+                    <a href="{{ route('management_posko.kebutuhan_harian.index') }}"
                     class="block px-3 py-2 text-sm rounded transition-all duration-200"
                     :class="{
-                        'bg-blue-900': {{ request()->routeIs('management_posko.kebutuhan.*') ? 'true' : 'false' }},
-                        'hover:bg-blue-700': !{{ request()->routeIs('management_posko.kebutuhan.*') ? 'true' : 'false' }}
+                        'bg-blue-900': {{ request()->routeIs('management_posko.kebutuhan_harian.*') ? 'true' : 'false' }},
+                        'hover:bg-blue-700': !{{ request()->routeIs('management_posko.kebutuhan_harian.*') ? 'true' : 'false' }}
                     }"
                     >
                         Kebutuhan Harian

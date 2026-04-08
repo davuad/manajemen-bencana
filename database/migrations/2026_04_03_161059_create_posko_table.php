@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('nama_posko', 100);
             $table->string('lokasi', 150);
             $table->date('tanggal_dibuat');
+            $table->string('status')->default('aktif');
 
             $table->foreignId('pengaduan_bencana_id')
                 ->constrained('pengaduan_bencana')

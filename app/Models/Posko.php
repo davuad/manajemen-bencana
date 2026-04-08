@@ -13,7 +13,8 @@ class Posko extends Model
         'tanggal_dibuat',
         'desa_id',
         'pengaduan_bencana_id',
-        'lokasi'
+        'lokasi',
+        'status'
     ];
 
     // RELASI

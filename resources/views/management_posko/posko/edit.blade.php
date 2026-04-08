@@ -13,13 +13,45 @@
             @csrf
             @method('PUT')
 
-            <!-- Nama Posko -->
-            <div>
-                <label class="block font-medium">Nama Posko *</label>
-                <input type="text" name="nama_posko"
-                    value="{{ old('nama_posko', $posko->nama_posko) }}"
-                    class="w-full border rounded-lg p-3"
-                    placeholder="Contoh: Posko Balai Desa Suka Maju">
+            <div class="grid grid-cols-2 gap-4">
+                <!-- Nama Posko -->
+                <div>
+                    <label class="block font-medium">Nama Posko *</label>
+                    <input type="text" name="nama_posko"
+                        value="{{ old('nama_posko', $posko->nama_posko) }}"
+                        class="w-full border rounded-lg p-3"
+                        placeholder="Contoh: Posko Balai Desa Suka Maju">
+                </div>
+                <div>
+                    <label class="block font-medium">Status *</label>
+                    <div class="flex gap-3 mt-4">
+                        
+                        <!-- Aktif -->
+                        <label class="cursor-pointer">
+                            <input type="radio" name="status" value="aktif" class="hidden peer"
+                                {{ $posko->status == 'aktif' ? 'checked' : '' }}>
+                            
+                            <span class="px-6 py-3 rounded-full font-semibold transition-all duration-200
+                                peer-checked:bg-green-400 peer-checked:text-green-900
+                                bg-green-100 text-green-400 opacity-60">
+                                Aktif
+                            </span>
+                        </label>
+
+                        <!-- Tidak Aktif -->
+                        <label class="cursor-pointer">
+                            <input type="radio" name="status" value="tidak_aktif" class="hidden peer"
+                                {{ $posko->status == 'tidak_aktif' ? 'checked' : '' }}>
+                            
+                            <span class="px-6 py-3 rounded-full font-semibold transition-all duration-200
+                                peer-checked:bg-red-200 peer-checked:text-red-700
+                                bg-red-100 text-red-400 opacity-60">
+                                Tidak Aktif
+                            </span>
+                        </label>
+
+                    </div>
+                </div>
             </div>
 
             <!-- Tanggal & Desa -->

@@ -21,8 +21,8 @@ return new class extends Migration
 
             $table->timestamps();
 
-            $table->foreignId('dapur_id')
-                ->constrained('dapur')
+            $table->foreignId('dapur_umum_id')
+                ->constrained('dapur_umum')
                 ->cascadeOnDelete();
         });
     }

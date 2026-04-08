@@ -7,14 +7,15 @@
     <div class="flex justify-between items-center mb-6">
 
         <div>
-            <h2 class="text-xl font-bold">Olah Data Posko</h2>
+            <h2 class="text-xl font-bold">Olah Data Kebutuhan Harian</h2>
             <p class="text-gray-500 text-sm">
-                Kelola informasi titik posko darurat bencana
+                Kelola kebutuhan konsumsi harian dapur umum
             </p>
         </div>
 
-        <a href="{{ route('management_posko.posko.create') }}" class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
-            + Tambah Data Posko
+        <a href="{{ route('management_posko.kebutuhan_harian.create') }}" 
+           class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
+            + Tambah Data
         </a>
 
     </div>
@@ -22,11 +23,11 @@
     <div class="flex gap-4 mb-6">
 
         <input type="text"
-               placeholder="Cari berdasarkan Nama Posko atau ID posko"
+               placeholder="Cari berdasarkan tanggal atau dapur"
                class="flex-1 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
 
         <select class="border rounded-lg px-4 py-2">
-            <option>Semua Desa Terdampak</option>
+            <option>Semua Dapur</option>
         </select>
 
     </div>
@@ -38,57 +39,45 @@
             <thead class="bg-gray-100">
                 <tr>
                     <th class="p-3 text-center">No</th>
-                    <th class="text-center">Nama Posko</th>
-                    <th class="text-left pl-4">Desa</th>
-                    <th class="text-center">Deskripsi Bencana</th>
-                    <th class="text-left">Lokasi</th>
-                    <th class="text-left">Tanggal</th>
-                    <th class="text-left pl-4">Status</th>
+                    <th class="text-center">Tanggal</th>
+                    <th class="text-center">Dapur</th>
+                    <th class="text-center">Jumlah Warga</th>
+                    <th class="text-center">Porsi / Orang dalam sehari</th>
+                    <th class="text-center">Total Porsi</th>
                     <th class="text-left">Aksi</th>
                 </tr>
             </thead>
 
             <tbody>
-                @forelse($posko as $key => $p)
+                @forelse($kebutuhan as $key => $k)
                 <tr class="border-t">
-                    <td class="p-2 pl-6">{{ $key + 1 }}</td>
-                    <td class="p-2 pl-6">{{ $p->nama_posko }}</td>
-                    <td class="p-2 pl-4">{{ $p->desa->nama_desa ?? '-' }}</td>
-                    <td class="p-2">{{ $p->pengaduan->deskripsi ?? '-' }}</td>
-                    <td class="p-2">{{ $p->lokasi }}</td>
-                    <td class="p-2">{{ $p->tanggal_dibuat }}</td>
-                    <td class="p-2 ">
-                        @if($p->status == 'aktif')
-                            <span class="inline-block px-4 py-2 rounded-full bg-green-200 text-green-800 font-semibold">
-                                Aktif
-                            </span>
-                        @else
-                            <span class="inline-block px-4 py-2 rounded-full bg-red-200 text-red-700 font-semibold opacity-70">
-                                Tidak Aktif
-                            </span>
-                        @endif
-                    </td>
+                    <td class="p-2 text-center">{{ $key + 1 }}</td>
+                    <td class="p-2 text-center">{{ $k->tanggal }}</td>
+                    <td class="p-2 text-center">{{ $k->dapur_umum->nama_dapur_umum ?? '-' }}</td>
+                    <td class="p-2 text-center">{{ $k->jumlah_warga }}</td>
+                    <td class="p-2 text-center">{{ $k->porsi_per_orang }}</td>
+                    <td class="p-2 text-center">{{ $k->total_porsi }}</td>
 
-                    <td class="flex gap-1 py-4">
-                        <a href="{{ route('management_posko.posko.edit', $p->id) }}"
-                        class="text-blue-500">
+                    <td class="flex gap-1 py-3">
+                        <a href="{{ route('management_posko.kebutuhan_harian.edit', $k->id) }}"
+                           class="text-blue-500">
                             <x-heroicon-o-pencil-square class="w-5 h-5" />
                         </a>
 
                         <button 
-                            onclick="openModal('{{ $p->id }}', '{{ $p->nama_posko }}')" 
+                            onclick="openModal('{{ $k->id }}', '{{ $k->tanggal }}')" 
                             class="text-red-500 hover:text-red-700">
                             <x-heroicon-o-trash class="w-5 h-5" />
                         </button>
                     </td>
                 </tr>
-            @empty
+                @empty
                 <tr>
-                    <td colspan="6" class="text-center p-4">
+                    <td colspan="7" class="text-center p-4">
                         Data belum ada
                     </td>
                 </tr>
-            @endforelse
+                @endforelse
 
             </tbody>
 
@@ -99,7 +88,7 @@
     <div class="flex justify-between items-center mt-6 text-sm">
 
         <p class="text-gray-500">
-            Menampilkan data posko
+            Menampilkan data kebutuhan harian
         </p>
 
         <div class="flex gap-2">
@@ -123,10 +112,10 @@
             </div>
 
             <div>
-                <h2 class="text-lg font-semibold text-gray-800">Hapus Data Posko</h2>
+                <h2 class="text-lg font-semibold text-gray-800">Hapus Data</h2>
                 <p class="text-sm text-gray-500 mt-1">
-                    Apakah Anda yakin ingin menghapus data posko 
-                    <span id="namaPosko" class="font-semibold"></span>? 
+                    Apakah Anda yakin ingin menghapus data tanggal 
+                    <span id="namaData" class="font-semibold"></span>? 
                     Tindakan ini tidak dapat dibatalkan.
                 </p>
             </div>
@@ -152,20 +141,25 @@
     </div>
 </div>
 
+
 <script>
 function openModal(id, nama) {
     const modal = document.getElementById('deleteModal');
     modal.classList.remove('hidden');
     modal.classList.add('flex');
 
-    document.getElementById('namaPosko').innerText = `"${nama}"`;
+    document.getElementById('namaData').innerText = `"${nama}"`;
 
-    // set dynamic route
-    document.getElementById('deleteForm').action = `/posko/${id}`;
+    // ✅ pakai route Laravel
+    let url = "{{ route('management_posko.kebutuhan_harian.destroy', ':id') }}";
+    url = url.replace(':id', id);
+
+    document.getElementById('deleteForm').action = url;
 }
 
 function closeModal() {
     document.getElementById('deleteModal').classList.add('hidden');
 }
 </script>
+
 @endsection
