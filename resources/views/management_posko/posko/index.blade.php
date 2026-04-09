@@ -25,7 +25,7 @@
                placeholder="Cari berdasarkan Nama Posko atau ID posko"
                class="flex-1 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
 
-        <select class="border rounded-lg px-4 py-2">
+        <select class="border rounded-lg py-2">
             <option>Semua Desa Terdampak</option>
         </select>
 
@@ -84,7 +84,7 @@
                 </tr>
             @empty
                 <tr>
-                    <td colspan="6" class="text-center p-4">
+                    <td colspan="8" class="text-center p-4">
                         Data belum ada
                     </td>
                 </tr>
@@ -160,8 +160,11 @@ function openModal(id, nama) {
 
     document.getElementById('namaPosko').innerText = `"${nama}"`;
 
-    // set dynamic route
-    document.getElementById('deleteForm').action = `/posko/${id}`;
+    // route delete posko
+    let url = "{{ route('management_posko.posko.destroy', ':id') }}";
+    url = url.replace(':id', id);
+
+    document.getElementById('deleteForm').action = url;
 }
 
 function closeModal() {

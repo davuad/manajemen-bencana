@@ -123,7 +123,10 @@ function openModal(id, nama) {
     document.getElementById('namaDapur').innerText = `"${nama}"`;
 
     // route delete dapur
-    document.getElementById('deleteForm').action = `/dapur-umum/${id}`;
+    let url = "{{ route('management_posko.dapur_umum.destroy', ':id') }}";
+    url = url.replace(':id', id);
+
+    document.getElementById('deleteForm').action = url;
 }
 
 function closeModal() {

@@ -150,7 +150,6 @@ function openModal(id, nama) {
 
     document.getElementById('namaData').innerText = `"${nama}"`;
 
-    // ✅ pakai route Laravel
     let url = "{{ route('management_posko.kebutuhan_harian.destroy', ':id') }}";
     url = url.replace(':id', id);
 
