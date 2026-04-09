@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\DapurUmumController;
 use App\Http\Controllers\KebutuhanHarianController;
 use App\Http\Controllers\PoskoController;
@@ -26,6 +27,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('dapur_umum', DapurUmumController::class);
         Route::resource('kebutuhan_harian', KebutuhanHarianController::class);
     });
+
+    Route::resource('users', UserController::class);
 });
 
 require __DIR__ . '/auth.php';
