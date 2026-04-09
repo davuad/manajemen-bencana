@@ -49,6 +49,7 @@ class DapurUmumController extends Controller
     {
         $validated = $request->validate([
             'posko_id' => 'required|exists:posko,id',
+            'nama_dapur_umum' => 'required|max:100',
             'kapasitas_warga' => 'required|integer',
             'jumlah_warga' => 'required|integer',
             'penanggung_jawab' => 'required|max:100',
