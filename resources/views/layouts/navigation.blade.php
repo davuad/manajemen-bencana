@@ -27,13 +27,27 @@
                 <x-dropdown align="right" width="48">
                     <x-slot name="trigger">
                         <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                            <!-- Nama -->
                             <div>{{ Auth::user()->nama }}</div>
 
+                            <!-- Foto Profil -->
+                            @if(Auth::user()->foto)
+                                <img src="{{ asset('storage/' . Auth::user()->foto) }}" alt="Foto Profil" class="w-10 h-10 rounded-full object-cover mr-2">
+                            @else
+                                <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center mr-2">
+                                    <span class="text-white text-xs font-bold">
+                                        {{ strtoupper(substr(Auth::user()->nama, 0, 1)) }}
+                                    </span>
+                                </div>
+                            @endif
+
+                            <!-- Panah -->
                             <div class="ms-1">
                                 <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd" />
                                 </svg>
                             </div>
+
                         </button>
                     </x-slot>
 

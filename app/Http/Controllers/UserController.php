@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
@@ -15,7 +16,7 @@ class UserController extends Controller
     public function index()
     {
         $users = User::with('roles')->paginate(10);
-        return view('users.index', compact('users'));
+        return view('manajemen_pengguna.index', compact('users'));
     }
 
     /**
@@ -24,7 +25,7 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::all();
-        return view('users.create', compact('roles'));
+        return view('manajemen_pengguna.create', compact('roles'));
     }
 
     /**
@@ -39,9 +40,16 @@ class UserController extends Controller
             'nik' => ['nullable', 'string', 'max:16', 'unique:user'],
             'no_wa' => ['nullable', 'string', 'max:15'],
             'alamat' => ['nullable', 'string'],
+            'deskripsi' => ['nullable', 'string', 'max:500'],
+            'foto' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'],
             'status' => ['required', 'in:aktif,nonaktif'],
             'role' => ['required', 'exists:roles,name'],
         ]);
+
+        $fotoPath = null;
+        if ($request->hasFile('foto')) {
+            $fotoPath = $request->file('foto')->store('users', 'public');
+        }
 
         $user = User::create([
             'nama' => $validated['nama'],
@@ -50,12 +58,14 @@ class UserController extends Controller
             'nik' => $validated['nik'] ?? null,
             'no_wa' => $validated['no_wa'] ?? null,
             'alamat' => $validated['alamat'] ?? null,
+            'deskripsi' => $validated['deskripsi'] ?? null,
+            'foto' => $fotoPath,
             'status' => $validated['status'],
         ]);
 
         $user->assignRole($validated['role']);
 
-        return redirect()->route('users.index')->with('success', 'User berhasil ditambahkan');
+        return redirect()->route('admin.manajemen_user.index')->with('success', 'User berhasil ditambahkan');
     }
 
     /**
@@ -63,7 +73,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return view('users.show', compact('user'));
+        return view('manajemen_pengguna.show', compact('user'));
     }
 
     /**
@@ -71,9 +81,16 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
+        // Cegah edit user dengan role admin
+        if ($user->hasRole('admin')) {
+            return redirect()->route('admin.manajemen_user.index')
+                ->with('error', 'Anda tidak dapat mengedit user admin');
+        }
+
         $roles = Role::all();
         $userRole = $user->roles->first();
-        return view('users.edit', compact('user', 'roles', 'userRole'));
+
+        return view('manajemen_pengguna.edit', compact('user', 'roles', 'userRole'));
     }
 
     /**
@@ -87,10 +104,23 @@ class UserController extends Controller
             'nik' => ['nullable', 'string', 'max:16', 'unique:user,nik,' . $user->id],
             'no_wa' => ['nullable', 'string', 'max:15'],
             'alamat' => ['nullable', 'string'],
+            'deskripsi' => $validated['deskripsi'] ?? null,
+            'foto' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'], // ← Tambah ini
             'status' => ['required', 'in:aktif,nonaktif'],
             'role' => ['required', 'exists:roles,name'],
             'password' => ['nullable', 'string', 'min:8', 'confirmed'],
         ]);
+
+        // Handle upload foto
+        $fotoPath = $user->foto; // Tetap foto lama jika tidak ada upload baru
+        if ($request->hasFile('foto')) {
+            // Hapus foto lama jika ada
+            if ($user->foto && Storage::disk('public')->exists($user->foto)) {
+                Storage::disk('public')->delete($user->foto);
+            }
+            // Upload foto baru
+            $fotoPath = $request->file('foto')->store('users', 'public');
+        }
 
         $user->update([
             'nama' => $validated['nama'],
@@ -98,6 +128,7 @@ class UserController extends Controller
             'nik' => $validated['nik'] ?? null,
             'no_wa' => $validated['no_wa'] ?? null,
             'alamat' => $validated['alamat'] ?? null,
+            'foto' => $fotoPath, // ← Tambah ini
             'status' => $validated['status'],
         ]);
 
@@ -107,7 +138,7 @@ class UserController extends Controller
 
         $user->syncRoles($validated['role']);
 
-        return redirect()->route('users.index')->with('success', 'User berhasil diperbarui');
+        return redirect()->route('admin.manajemen_user.index')->with('success', 'User berhasil diperbarui');
     }
 
     /**
@@ -115,7 +146,13 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
+        if ($user->hasRole('admin')) {
+            return redirect()->route('admin.manajemen_user.index')
+                ->with('error', 'Anda tidak dapat menghapus user admin');
+        }
+
         $user->delete();
-        return redirect()->route('users.index')->with('success', 'User berhasil dihapus');
+        return redirect()->route('admin.manajemen_user.index')
+            ->with('success', 'User berhasil dihapus');
     }
 }

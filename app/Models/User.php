@@ -22,6 +22,8 @@ class User extends Authenticatable
         'nik',
         'no_wa',
         'alamat',
+        'deskripsi',
+        'foto',
         'status',
     ];
 

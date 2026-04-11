@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('nik', 16)->unique()->nullable();
             $table->string('no_wa', 15)->nullable();
             $table->text('alamat')->nullable();
+            $table->text('deskripsi')->nullable();
             $table->enum('status', ['aktif', 'nonaktif'])->default('aktif');
             $table->rememberToken();
             $table->timestamps();

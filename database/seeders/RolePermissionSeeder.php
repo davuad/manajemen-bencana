@@ -22,6 +22,10 @@ class RolePermissionSeeder extends Seeder
             'manajemen role',
             'manajemen laporan',
             'manajemen barang',
+            'manajemen distribusi',
+            'manajemen pengaduan',
+            'lihat pengaduan',
+            'buat pengaduan',
         ];
 
         foreach ($permissions as $permission) {
@@ -35,6 +39,8 @@ class RolePermissionSeeder extends Seeder
         $admin = Role::firstOrCreate(['name' => 'admin']);
         $user = User::create([
             'nama' => 'Admin',
+            'foto' => 'users/foto-admin.jpg',
+            'deskripsi' => 'Administrator Sistem',
             'email' => 'admin@admin.com',
             'password' => bcrypt('admin123'),
             'nik' => '1234567890123456',

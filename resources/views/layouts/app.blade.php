@@ -30,10 +30,23 @@
         @include('layouts.navigation')
         {{-- @include('components.navbar') --}}
 
+        {{-- Page Heading --}}
+        @isset($header)
+            <header class="bg-white shadow">
+                <div class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
+                    {{ $header }}
+                </div>
+            </header>
+        @endisset
+
         {{-- Main Content --}}
 
-        <main class="p-6">
-            @yield('content')
+        <main class="flex-1 overflow-auto p-6">
+            @if(isset($slot))
+                {{ $slot }}
+            @else
+                @yield('content')
+            @endif
         </main>
     </div>
 
