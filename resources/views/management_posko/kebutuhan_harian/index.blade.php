@@ -20,17 +20,30 @@
 
     </div>
 
-    <div class="flex gap-4 mb-6">
+    <form method="GET" action="{{ route('management_posko.kebutuhan_harian.index') }}">
+        <div class="flex gap-4 mb-6">
 
-        <input type="text"
-               placeholder="Cari berdasarkan tanggal atau dapur"
-               class="flex-1 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
+            <input type="text"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Cari berdasarkan tanggal atau dapur"
+                class="flex-1 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
 
-        <select class="border rounded-lg px-4 py-2">
-            <option>Semua Dapur</option>
-        </select>
+            <select name="posko" class="border rounded-lg py-2">
+                <option value="">Semua Dapur</option>
+                @foreach($dapur as $d)
+                    <option value="{{ $d->id }}" {{ request('dapur_umum') == $d->id ? 'selected' : '' }}>
+                        {{ $d->nama_dapur_umum }}
+                    </option>
+                @endforeach
+            </select>
 
-    </div>
+            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
+                Filter
+            </button>
+
+        </div>
+    </form>
 
     <div class="overflow-x-auto">
 
@@ -86,14 +99,13 @@
     </div>
 
     <div class="flex justify-between items-center mt-6 text-sm">
-
         <p class="text-gray-500">
-            Menampilkan data kebutuhan harian
+            Menampilkan {{ $kebutuhan->firstItem() }} - {{ $kebutuhan->lastItem() }} 
+            dari {{ $kebutuhan->total() }} data kebutuhan harian
         </p>
 
-        <div class="flex gap-2">
-            <button class="px-3 py-1 border rounded">1</button>
-            <button class="px-3 py-1 border rounded">2</button>
+        <div>
+            {{ $kebutuhan->withQueryString()->links() }}
         </div>
 
     </div>

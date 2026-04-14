@@ -70,6 +70,5 @@
                     Simpan Data Posko
                 </button>
             </div>
-            </div>
         </form>
 @endsection

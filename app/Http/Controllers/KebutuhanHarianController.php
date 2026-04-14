@@ -8,11 +8,26 @@ use Illuminate\Http\Request;
 
 class KebutuhanHarianController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $kebutuhan = KebutuhanHarian::with('dapur_umum')->get();
+        $query = KebutuhanHarian::with('dapur_umum');
 
-        return view('management_posko.kebutuhan_harian.index', compact('kebutuhan'));
+        if ($request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nama_dapur_umum', 'like', '%' . $request->search . '%')
+                    ->orWhere('tanggal', $request->search);
+            });
+        }
+
+        if ($request->dapur_umum) {
+            $query->where('dapur_umum_id', $request->dapur_umum);
+        }
+
+        $kebutuhan = $query->orderBy('id', 'asc')->paginate(5);
+
+        $dapur = \App\Models\DapurUmum::all();
+
+        return view('management_posko.kebutuhan_harian.index', compact('kebutuhan', 'dapur'));
     }
 
     public function create()
