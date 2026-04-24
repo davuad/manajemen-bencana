@@ -8,11 +8,26 @@ use Illuminate\Http\Request;
 
 class DapurUmumController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $dapur = DapurUmum::with('posko')->get();
+        $query = DapurUmum::with('posko');
 
-        return view('management_posko.dapur_umum.index', compact('dapur'));
+        if ($request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nama_dapur_umum', 'like', '%' . $request->search . '%')
+                    ->orWhere('id', $request->search);
+            });
+        }
+
+        if ($request->posko) {
+            $query->where('posko_id', $request->posko);
+        }
+
+        $dapur = $query->orderBy('id', 'asc')->paginate(5);
+
+        $posko = \App\Models\Posko::all();
+
+        return view('management_posko.dapur_umum.index', compact('dapur', 'posko'));
     }
 
     public function create()

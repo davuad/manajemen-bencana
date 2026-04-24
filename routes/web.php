@@ -5,6 +5,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\DapurUmumController;
 use App\Http\Controllers\KebutuhanHarianController;
 use App\Http\Controllers\PoskoController;
+use App\Http\Controllers\DistribusiController;
+use App\Http\Controllers\DetailDistribusiController;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
 
@@ -29,10 +31,20 @@ Route::middleware('auth')->group(function () {
         Route::resource('kebutuhan_harian', KebutuhanHarianController::class);
     });
 
+
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
         Route::model('manajemen_user', User::class);
         Route::resource('manajemen_user', UserController::class);
-    });
+
+        });
+    Route::resource('management_distribusi/distribusi', DistribusiController::class);
+    Route::prefix('management-distribusi')
+    ->name('management_distribusi.')
+    ->group(function () {
+
+        Route::resource('distribusi', DistribusiController::class);
+        Route::resource('detail_distribusi', DetailDistribusiController::class);
+     });
 });
 
 require __DIR__ . '/auth.php';

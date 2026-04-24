@@ -19,17 +19,30 @@
 
     </div>
 
-    <div class="flex gap-4 mb-6">
+    <form method="GET" action="{{ route('management_posko.posko.index') }}">
+        <div class="flex gap-4 mb-6">
 
-        <input type="text"
-               placeholder="Cari berdasarkan Nama Posko atau ID posko"
-               class="flex-1 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
+            <input type="text"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Cari berdasarkan Nama Posko atau ID posko"
+                class="flex-1 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
 
-        <select class="border rounded-lg py-2">
-            <option>Semua Desa Terdampak</option>
-        </select>
+            <select name="desa" class="border rounded-lg py-2">
+                <option value="">Semua Desa Terdampak</option>
+                @foreach($desa as $d)
+                    <option value="{{ $d->id }}" {{ request('desa') == $d->id ? 'selected' : '' }}>
+                        {{ $d->nama_desa }}
+                    </option>
+                @endforeach
+            </select>
 
-    </div>
+            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
+                Filter
+            </button>
+
+        </div>
+    </form>
 
     <div class="overflow-x-auto">
 
@@ -99,12 +112,12 @@
     <div class="flex justify-between items-center mt-6 text-sm">
 
         <p class="text-gray-500">
-            Menampilkan data posko
+            Menampilkan {{ $posko->firstItem() }} - {{ $posko->lastItem() }} 
+            dari {{ $posko->total() }} data posko
         </p>
 
-        <div class="flex gap-2">
-            <button class="px-3 py-1 border rounded">1</button>
-            <button class="px-3 py-1 border rounded">2</button>
+        <div>
+            {{ $posko->withQueryString()->links() }}
         </div>
 
     </div>

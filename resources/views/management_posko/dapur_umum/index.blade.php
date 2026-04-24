@@ -20,6 +20,31 @@
 
     </div>
 
+    <form method="GET" action="{{ route('management_posko.dapur_umum.index') }}">
+        <div class="flex gap-4 mb-6">
+
+            <input type="text"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Cari berdasarkan Nama Dapur Umum atau ID Dapur Umum"
+                class="flex-1 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
+
+            <select name="posko" class="border rounded-lg py-2">
+                <option value="">Semua Posko</option>
+                @foreach($posko as $p)
+                    <option value="{{ $p->id }}" {{ request('posko') == $p->id ? 'selected' : '' }}>
+                        {{ $p->nama_posko }}
+                    </option>
+                @endforeach
+            </select>
+
+            <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
+                Filter
+            </button>
+
+        </div>
+    </form>
+
     <div class="overflow-x-auto">
 
         <table class="w-full text-sm">
@@ -73,7 +98,18 @@
         </table>
 
     </div>
+        <div class="flex justify-between items-center mt-6 text-sm">
 
+        <p class="text-gray-500">
+            Menampilkan {{ $dapur->firstItem() }} - {{ $dapur->lastItem() }} 
+            dari {{ $dapur->total() }} data dapur umum
+        </p>
+
+        <div>
+            {{ $dapur->withQueryString()->links() }}
+        </div>
+
+    </div>
 </div>
 
 <!-- MODAL HAPUS -->

@@ -9,10 +9,26 @@ use Illuminate\Http\Request;
 
 class PoskoController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $posko = Posko::with(['desa', 'pengaduan'])->get();
-        return view('management_posko.posko.index', compact('posko'));
+        $query = Posko::with(['desa', 'pengaduan']);
+
+        if ($request->search) {
+            $query->where(function ($q) use ($request) {
+                $q->where('nama_posko', 'like', '%' . $request->search . '%')
+                    ->orWhere('id', $request->search);
+            });
+        }
+
+        if ($request->desa) {
+            $query->where('desa_id', $request->desa);
+        }
+
+        $posko = $query->orderBy('id', 'asc')->paginate(5);
+
+        $desa = \App\Models\Desa::all();
+
+        return view('management_posko.posko.index', compact('posko', 'desa'));
     }
 
     public function create()
@@ -30,7 +46,7 @@ class PoskoController extends Controller
             'tanggal_dibuat' => 'required|date',
             'desa_id' => 'required|exists:desa,id',
             'pengaduan_bencana_id' => 'required|exists:pengaduan_bencana,id',
-            'lokasi' => 'required'
+            'lokasi' => 'required',
         ]);
 
         Posko::create([
@@ -41,6 +57,7 @@ class PoskoController extends Controller
             'lokasi' => $request->lokasi,
             'status' => 'aktif'
         ]);
+
 
         return redirect()->route('management_posko.posko.index')
             ->with('success', 'Data posko berhasil ditambahkan');
@@ -63,7 +80,7 @@ class PoskoController extends Controller
             'desa_id' => 'required|exists:desa,id',
             'pengaduan_bencana_id' => 'required|exists:pengaduan_bencana,id',
             'lokasi' => 'required',
-            'status' => 'required|in:aktif,tidak_aktif' // validasi radio button
+            'status' => 'required|in:aktif,tidak aktif'
         ]);
 
         $posko = Posko::findOrFail($id);

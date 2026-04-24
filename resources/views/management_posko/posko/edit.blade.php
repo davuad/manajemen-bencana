@@ -40,8 +40,8 @@
 
                         <!-- Tidak Aktif -->
                         <label class="cursor-pointer">
-                            <input type="radio" name="status" value="tidak_aktif" class="hidden peer"
-                                {{ $posko->status == 'tidak_aktif' ? 'checked' : '' }}>
+                            <input type="radio" name="status" value="tidak aktif" class="hidden peer"
+                                {{ $posko->status == 'tidak aktif' ? 'checked' : '' }}>
                             
                             <span class="px-6 py-3 rounded-full font-semibold transition-all duration-200
                                 peer-checked:bg-red-200 peer-checked:text-red-700
