@@ -21,13 +21,36 @@
 
     <div class="flex gap-4 mb-6">
 
-        <input type="text"
-               placeholder="Cari berdasarkan Nama Pengguna atau ID Pengguna"
-               class="flex-1 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
+        <form action="{{ route('admin.manajemen_user.index') }}" method="GET" class="flex gap-4 mb-6">
+    
+            <!-- Search Input -->
+            <input type="text"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Cari berdasarkan Nama atau Email"
+                class="flex-1 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
 
-        <select class="border rounded-lg px-4 py-2">
-            <option>Semua Role</option>
-        </select>
+            <!-- Filter Role -->
+            <select name="role" class="border rounded-lg px-4 py-2">
+                <option value="">Semua Role</option>
+                @foreach($roles as $role)
+                    <option value="{{ $role->name }}" {{ request('role') == $role->name ? 'selected' : '' }}>
+                        {{ ucfirst($role->name) }}
+                    </option>
+                @endforeach
+            </select>
+
+            <!-- Tombol Filter (Opsional) -->
+            <button type="submit" class="bg-indigo-700 text-white px-4 py-2 rounded-lg">
+                Cari / Filter
+            </button>
+            @if(request('search') || request('role') || request('status'))
+                <a href="{{ route('admin.manajemen_user.index') }}" class="px-4 py-2 text-sm text-gray-600 hover:text-gray-900 underline flex items-center justify-center">
+                    Reset
+                </a>
+            @endif
+
+        </form>
 
     </div>
 

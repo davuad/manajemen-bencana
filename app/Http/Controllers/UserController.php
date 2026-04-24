@@ -13,10 +13,30 @@ class UserController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $users = User::with('roles')->paginate(10);
-        return view('manajemen_pengguna.index', compact('users'));
+        $query = User::with('roles');
+
+        // Filter role DULU (sebelum search)
+        if ($request->filled('role')) {
+            $query->whereHas('roles', function ($q) use ($request) {
+                $q->where('name', $request->role);
+            });
+        }
+
+        // Search SETELAH filter role
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->where(function ($q) use ($search) {
+                $q->where('nama', 'like', "%{$search}%")
+                    ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $roles = Role::where('name', '!=', 'admin')->get();
+        $users = $query->paginate(10)->appends($request->query());
+
+        return view('manajemen_pengguna.index', compact('users', 'roles'));
     }
 
     /**
@@ -104,7 +124,7 @@ class UserController extends Controller
             'nik' => ['nullable', 'string', 'max:16', 'unique:user,nik,' . $user->id],
             'no_wa' => ['nullable', 'string', 'max:15'],
             'alamat' => ['nullable', 'string'],
-            'deskripsi' => $validated['deskripsi'] ?? null,
+            'deskripsi' => ['nullable', 'string'],
             'foto' => ['nullable', 'image', 'mimes:jpeg,png,jpg', 'max:2048'], // ← Tambah ini
             'status' => ['required', 'in:aktif,nonaktif'],
             'role' => ['required', 'exists:roles,name'],
@@ -130,6 +150,7 @@ class UserController extends Controller
             'alamat' => $validated['alamat'] ?? null,
             'foto' => $fotoPath, // ← Tambah ini
             'status' => $validated['status'],
+            'deskripsi' => $validated['deskripsi'] ?? null,
         ]);
 
         if ($validated['password'] ?? null) {
