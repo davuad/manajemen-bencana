@@ -39,7 +39,6 @@
             <span x-show="sidebarOpen" x-transition>Distribusi Bantuan</span>
         </a>
 
-<<<<<<< HEAD
         <!-- KATEGORI BENCANA -->
         <a href="{{ route('kategori_bencana.index') }}" 
         class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
@@ -100,13 +99,11 @@
                     </span>
                 </a>
 
-=======
         <!-- ================= MANAGEMEN POSKO ================= -->
         <div 
             x-data="{ openMenu: {{ request()->routeIs('management_posko.*') ? 'true' : 'false' }} }"
             class="rounded"
         >
->>>>>>> 3241a2ad534f6283bc7cc1abd0b47eebdac8db76
             <div 
                 @click="openMenu = !openMenu"
                 class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
