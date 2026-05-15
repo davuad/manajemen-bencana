@@ -88,9 +88,14 @@
             </td>
 
             <td class="flex gap-1 py-4">
-                <button onclick="console.log({{ json_encode($user) }}); openDetailModal({{ json_encode($user) }})" class="text-blue-500 hover:text-blue-700">
-                    <x-heroicon-o-eye class="w-5 h-5" />
+                <button 
+                onclick="openDetailModal(this)" 
+                data-user='@json($user)'
+                class="text-blue-500 hover:text-blue-700">
+                
+                <x-heroicon-o-eye class="w-5 h-5" />
                 </button>
+                
 
                 @if($user->hasRole('admin'))
                     <button disabled class="text-gray-300 cursor-not-allowed" title="Tidak dapat mengedit admin">

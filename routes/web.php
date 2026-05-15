@@ -7,6 +7,11 @@ use App\Http\Controllers\KebutuhanHarianController;
 use App\Http\Controllers\PoskoController;
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
+use App\Http\Controllers\KategoriBencanaController;
+use App\Http\Controllers\BencanaController;
+use App\Http\Controllers\GudangController;
+use App\Http\Controllers\KategoriBantuanController;
+use App\Http\Controllers\StokGudangController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -33,6 +38,15 @@ Route::middleware('auth')->group(function () {
         Route::model('manajemen_user', User::class);
         Route::resource('manajemen_user', UserController::class);
     });
+});
+
+Route::middleware('auth')->group(function () {
+
+    Route::resource('kategori_bencana', KategoriBencanaController::class);
+    Route::resource('bencana', BencanaController::class);
+    Route::resource('gudang', GudangController::class);
+    Route::resource('kategori_bantuan', KategoriBantuanController::class);
+    Route::resource('stok_gudang', StokGudangController::class);
 });
 
 require __DIR__ . '/auth.php';

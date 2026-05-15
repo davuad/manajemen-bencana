@@ -28,11 +28,6 @@
         </a>
 
         <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
-            <span><x-heroicon-o-squares-2x2 class="w-5 h-5" /></span>
-            <span x-show="sidebarOpen" x-transition>Kategori Bencana</span>
-        </a>
-
-        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
             <span><x-heroicon-o-archive-box class="w-5 h-5" /></span>
             <span x-show="sidebarOpen" x-transition>Gudang Logistik</span>
         </a>
@@ -41,6 +36,66 @@
             <span><x-heroicon-o-truck class="w-5 h-5" /></span>
             <span x-show="sidebarOpen" x-transition>Distribusi Bantuan</span>
         </a>
+
+        <!-- KATEGORI BENCANA -->
+        <a href="{{ route('kategori_bencana.index') }}" 
+        class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
+        <span><x-heroicon-o-squares-2x2 class="w-5 h-5" /></span>
+        <span x-show="sidebarOpen" x-transition>Kategori Bencana</span>
+        </a>
+
+        <!-- DATA BENCANA -->
+        <a href="{{ route('bencana.index') }}" 
+        class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+        {{ request()->routeIs('bencana.*') ? 'bg-blue-700' : 'hover:bg-blue-800' }}">
+            <span>
+                <x-heroicon-o-fire class="w-5 h-5" />
+            </span>
+
+            <span x-show="sidebarOpen" x-transition>
+                Data Bencana
+            </span>
+        </a>
+
+        <!-- KATEGORI BANTUAN -->
+        <a href="{{ route('kategori_bantuan.index') }}" 
+        class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+        {{ request()->routeIs('kategori_bantuan.*') ? 'bg-blue-700' : 'hover:bg-blue-800' }}">
+
+            <span>
+                <x-heroicon-o-cube class="w-5 h-5" />
+            </span>
+
+            <span x-show="sidebarOpen" x-transition>
+                Kategori Bantuan
+            </span>
+        </a>
+
+        <!-- DATA GUDANG -->
+        <a href="{{ route('gudang.index') }}"
+            class="flex items-center gap-3 px-3 py-2 rounded 
+            {{ request()->routeIs('gudang.*') ? 'bg-blue-700' : 'hover:bg-blue-800' }}">
+
+                <x-heroicon-o-building-storefront class="w-5 h-5" />
+
+                <span x-show="sidebarOpen">
+                    Data Gudang
+                </span>
+            </a>
+
+            <!-- STOK GUDANG -->
+                <a href="{{ route('stok_gudang.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded 
+                    {{ request()->routeIs('stok.*') ? 'bg-blue-700' : 'hover:bg-blue-800' }}">
+
+                    <span>
+                        <x-heroicon-o-archive-box-arrow-down class="w-5 h-5" />
+                    </span>
+
+                    <span x-show="sidebarOpen">
+                        Stok Gudang
+                    </span>
+                </a>
 
             <div 
                 x-data="{ openMenu: {{ request()->routeIs('management_posko.*') ? 'true' : 'false' }} }"
