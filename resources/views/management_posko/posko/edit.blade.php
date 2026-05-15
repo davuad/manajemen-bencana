@@ -77,6 +77,19 @@
                 </div>
             </div>
 
+            <div>
+                <label>Nama Bencana *</label>
+                <select name="bencana_id" class="w-full border rounded-lg p-3">
+                    <option value="">Pilih Nama Bencana</option>
+                    @foreach($bencana as $b)
+                        <option value="{{ $b->id }}"
+                            {{ $posko->bencana_id == $b->id ? 'selected' : '' }}>
+                            {{ $b->nama_bencana }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
             <!-- Pengaduan -->
             <div>
                 <label>Tautkan ke Laporan Bencana *</label>

@@ -8,81 +8,151 @@ use Illuminate\Http\Request;
 
 class KebutuhanHarianController extends Controller
 {
-    public function index(Request $request)
+    /**
+     * INDEX
+     * Menampilkan kebutuhan berdasarkan dapur umum tertentu
+     */
+    public function index(Request $request, $dapur)
     {
-        $query = KebutuhanHarian::with('dapur_umum');
+        $dapur = DapurUmum::findOrFail($dapur);
 
+        $query = KebutuhanHarian::with('dapur_umum')
+            ->where('dapur_umum_id', $dapur->id);
+
+        // SEARCH
         if ($request->search) {
+
             $query->where(function ($q) use ($request) {
-                $q->where('nama_dapur_umum', 'like', '%' . $request->search . '%')
-                    ->orWhere('tanggal', $request->search);
+
+                $q->where('tanggal', 'like', '%' . $request->search . '%');
             });
         }
 
-        if ($request->dapur_umum) {
-            $query->where('dapur_umum_id', $request->dapur_umum);
-        }
+        $kebutuhan = $query
+            ->orderBy('tanggal', 'desc')
+            ->paginate(5);
 
-        $kebutuhan = $query->orderBy('id', 'asc')->paginate(5);
-
-        $dapur = \App\Models\DapurUmum::all();
-
-        return view('management_posko.kebutuhan_harian.index', compact('kebutuhan', 'dapur'));
+        return view(
+            'management_posko.kebutuhan_harian.index',
+            compact('kebutuhan', 'dapur')
+        );
     }
 
-    public function create()
+    /**
+     * FORM CREATE
+     */
+    public function create($dapur)
     {
-        $dapur = DapurUmum::all();
+        $dapur = DapurUmum::findOrFail($dapur);
 
-        return view('management_posko.kebutuhan_harian.create', compact('dapur'));
+        return view(
+            'management_posko.kebutuhan_harian.create',
+            compact('dapur')
+        );
     }
 
-    public function store(Request $request)
+    /**
+     * STORE
+     */
+    public function store(Request $request, $dapur)
     {
+        $dapur = DapurUmum::findOrFail($dapur);
+
         $validated = $request->validate([
             'tanggal' => 'required|date',
-            'jumlah_warga' => 'required|integer',
-            'porsi_per_orang' => 'required|integer',
-            'total_porsi' => 'required|integer',
-            'dapur_umum_id' => 'required|exists:dapur_umum,id',
+            'jumlah_warga' => 'required|integer|min:1',
+            'porsi_per_orang' => 'required|integer|min:1',
         ]);
 
-        KebutuhanHarian::create($validated);
+        // AUTO HITUNG TOTAL
+        $totalPorsi = $request->jumlah_warga * $request->porsi_per_orang;
 
-        return redirect()->route('management_posko.kebutuhan_harian.index');
+        KebutuhanHarian::create([
+            'dapur_umum_id' => $dapur->id,
+            'tanggal' => $request->tanggal,
+            'jumlah_warga' => $request->jumlah_warga,
+            'porsi_per_orang' => $request->porsi_per_orang,
+            'total_porsi' => $totalPorsi,
+        ]);
+
+        return redirect()
+            ->route(
+                'management_posko.kebutuhan_harian.index',
+                $dapur->id
+            )
+            ->with(
+                'success',
+                'Data kebutuhan harian berhasil ditambahkan'
+            );
     }
 
+    /**
+     * FORM EDIT
+     */
     public function edit($id)
     {
-        $kebutuhan = KebutuhanHarian::findOrFail($id);
-        $dapur = DapurUmum::all();
+        $kebutuhan = KebutuhanHarian::with('dapur_umum')
+            ->findOrFail($id);
 
-        return view('management_posko.kebutuhan_harian.edit', compact('kebutuhan', 'dapur'));
+        return view(
+            'management_posko.kebutuhan_harian.edit',
+            compact('kebutuhan')
+        );
     }
 
+    /**
+     * UPDATE
+     */
     public function update(Request $request, $id)
     {
+        $kebutuhan = KebutuhanHarian::findOrFail($id);
+
         $validated = $request->validate([
             'tanggal' => 'required|date',
-            'jumlah_warga' => 'required|integer',
-            'porsi_per_orang' => 'required|integer',
-            'total_porsi' => 'required|integer',
-            'dapur_umum_id' => 'required|exists:dapur_umum,id',
+            'jumlah_warga' => 'required|integer|min:1',
+            'porsi_per_orang' => 'required|integer|min:1',
         ]);
 
-        $kebutuhan = KebutuhanHarian::findOrFail($id);
-        $kebutuhan->update($validated);
+        // AUTO HITUNG TOTAL
+        $totalPorsi = $request->jumlah_warga * $request->porsi_per_orang;
 
-        return redirect()->route('management_posko.kebutuhan_harian.index')
-            ->with('success', 'Data kebutuhan harian berhasil diupdate');
+        $kebutuhan->update([
+            'tanggal' => $request->tanggal,
+            'jumlah_warga' => $request->jumlah_warga,
+            'porsi_per_orang' => $request->porsi_per_orang,
+            'total_porsi' => $totalPorsi,
+        ]);
+
+        return redirect()
+            ->route(
+                'management_posko.kebutuhan_harian.index',
+                $kebutuhan->dapur_umum_id
+            )
+            ->with(
+                'success',
+                'Data kebutuhan harian berhasil diupdate'
+            );
     }
 
+    /**
+     * DELETE
+     */
     public function destroy($id)
     {
         $kebutuhan = KebutuhanHarian::findOrFail($id);
+
+        $dapurId = $kebutuhan->dapur_umum_id;
+
         $kebutuhan->delete();
 
-        return redirect()->route('management_posko.kebutuhan_harian.index')
-            ->with('success', 'Data kebutuhan harian berhasil dihapus');
+        return redirect()
+            ->route(
+                'management_posko.kebutuhan_harian.index',
+                $dapurId
+            )
+            ->with(
+                'success',
+                'Data kebutuhan harian berhasil dihapus'
+            );
     }
 }

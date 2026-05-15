@@ -33,7 +33,15 @@ Route::middleware('auth')->group(function () {
     Route::prefix('management-posko')->name('management_posko.')->group(function () {
         Route::resource('posko', PoskoController::class);
         Route::resource('dapur_umum', DapurUmumController::class);
-        Route::resource('kebutuhan_harian', KebutuhanHarianController::class);
+
+        Route::prefix('kebutuhan_harian')->name('kebutuhan_harian.')->group(function () {
+            Route::get('/{dapur}',[KebutuhanHarianController::class, 'index'])->name('index');
+            Route::get('/{dapur}/create',[KebutuhanHarianController::class, 'create'])->name('create');
+            Route::post('/{dapur}',[KebutuhanHarianController::class, 'store'])->name('store');
+            Route::get('/edit/{id}',[KebutuhanHarianController::class, 'edit'])->name('edit');
+            Route::put('/update/{id}',[KebutuhanHarianController::class, 'update'])->name('update');
+            Route::delete('/delete/{id}',[KebutuhanHarianController::class, 'destroy'])->name('destroy');
+        });
     });
 
 

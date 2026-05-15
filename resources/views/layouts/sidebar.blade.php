@@ -99,7 +99,6 @@
                     </span>
                 </a>
 
-        <!-- ================= MANAGEMEN POSKO ================= -->
         <div 
             x-data="{ openMenu: {{ request()->routeIs('management_posko.*') ? 'true' : 'false' }} }"
             class="rounded"
@@ -134,12 +133,6 @@
                 class="block px-3 py-2 text-sm rounded {{ request()->routeIs('management_posko.dapur_umum.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
                     Dapur Umum
                 </a>
-
-                <a href="{{ route('management_posko.kebutuhan_harian.index') }}"
-                class="block px-3 py-2 text-sm rounded {{ request()->routeIs('management_posko.kebutuhan_harian.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
-                    Kebutuhan Harian
-                </a>
-
             </div>
         </div>
 

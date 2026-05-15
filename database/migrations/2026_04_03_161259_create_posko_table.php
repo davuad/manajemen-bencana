@@ -27,6 +27,10 @@ return new class extends Migration
                 ->constrained('desa')
                 ->cascadeOnDelete();
 
+            $table->foreignId('bencana_id')
+                ->constrained('bencana')
+                ->cascadeOnDelete();
+
             $table->timestamps();
         });
     }

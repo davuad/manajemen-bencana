@@ -9,53 +9,37 @@ class Bencana extends Model
     protected $table = 'bencana';
 
     protected $fillable = [
-<<<<<<< HEAD
         'nama_bencana',
         'kategori_id',
         'desa_id',
-        'pengaduan_id',
+        'pengaduan_bencana_id',
         'tanggal',
         'status_bencana',
-        'tingkat_kerusakan'
+        'tingkat_kerusakan',
+        'jumlah_korban'
     ];
 
-    // 🔗 Relasi ke kategori
+    // RELASI KE KATEGORI
     public function kategori()
     {
         return $this->belongsTo(KategoriBencana::class, 'kategori_id');
     }
 
-        public function desa()
+    // RELASI KE DESA
+    public function desa()
     {
-        return $this->belongsTo(\App\Models\Desa::class, 'desa_id');
+        return $this->belongsTo(Desa::class, 'desa_id');
     }
 
-    public function pengaduan()
-    {
-        return $this->belongsTo(\App\Models\PengaduanBencana::class, 'pengaduan_id');
-=======
-        'kategori_id',
-        'pengaduan_bencana_id',
-        'desa_id',
-        'tanggal',
-        'jumlah_korban',
-        'tingkat_kerusakan'
-    ];
-
-    // RELASI
+    // RELASI KE PENGADUAN
     public function pengaduan()
     {
         return $this->belongsTo(PengaduanBencana::class, 'pengaduan_bencana_id');
     }
 
-    public function desa()
-    {
-        return $this->belongsTo(Desa::class);
-    }
-
+    // RELASI KE DISTRIBUSI
     public function distribusis()
     {
         return $this->hasMany(Distribusi::class, 'bencana_id');
->>>>>>> 3241a2ad534f6283bc7cc1abd0b47eebdac8db76
     }
 }
