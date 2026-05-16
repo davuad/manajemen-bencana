@@ -30,6 +30,11 @@ class Posko extends Model
         return $this->belongsTo(PengaduanBencana::class, 'pengaduan_bencana_id');
     }
 
+    public function stokPosko()
+    {
+        return $this->hasMany(StokPosko::class, 'posko_id');
+    }
+    
     public function bencana()
     {
         return $this->belongsTo(Bencana::class);

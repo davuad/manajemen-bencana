@@ -12,12 +12,18 @@ class Bencana extends Model
         'nama_bencana',
         'kategori_id',
         'desa_id',
-        'pengaduan_bencana_id',
+        'pengaduan_id',
         'tanggal',
         'status_bencana',
         'tingkat_kerusakan',
         'jumlah_korban'
+        
     ];
+
+    protected $casts = [
+        'tanggal' => 'date',
+    ];
+
 
     // RELASI KE KATEGORI
     public function kategori()
@@ -31,15 +37,17 @@ class Bencana extends Model
         return $this->belongsTo(Desa::class, 'desa_id');
     }
 
-    // RELASI KE PENGADUAN
+
+    // Relasi ke pengaduan_bencana
     public function pengaduan()
     {
-        return $this->belongsTo(PengaduanBencana::class, 'pengaduan_bencana_id');
+        return $this->belongsTo(PengaduanBencana::class, 'pengaduan_id', 'id');
     }
 
+    // Relasi ke distribusi (kalau memang tabel distribusi masih pakai bencana_id)
     // RELASI KE DISTRIBUSI
     public function distribusis()
     {
-        return $this->hasMany(Distribusi::class, 'bencana_id');
+        return $this->hasMany(Distribusi::class, 'bencana_id', 'id');
     }
 }

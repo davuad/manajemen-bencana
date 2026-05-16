@@ -7,6 +7,10 @@ use App\Http\Controllers\KebutuhanHarianController;
 use App\Http\Controllers\PoskoController;
 use App\Http\Controllers\DistribusiController;
 use App\Http\Controllers\DetailDistribusiController;
+use App\Http\Controllers\DetailPaketController;
+use App\Http\Controllers\DistribusiPaketController;
+use App\Http\Controllers\PaketBantuanController;
+
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
 use App\Http\Controllers\KategoriBencanaController;
@@ -49,6 +53,7 @@ Route::middleware('auth')->group(function () {
         Route::model('manajemen_user', User::class);
         Route::resource('manajemen_user', UserController::class);
     });
+    // Route::resource('management_distribusi/distribusi', DistribusiController::class);
 
     Route::resource('management_distribusi/distribusi', DistribusiController::class);
     Route::prefix('management-distribusi')
@@ -57,6 +62,14 @@ Route::middleware('auth')->group(function () {
 
             Route::resource('distribusi', DistribusiController::class);
             Route::resource('detail_distribusi', DetailDistribusiController::class);
+            Route::resource('paket_bantuan', PaketBantuanController::class);
+            Route::resource('detail_paket', DetailPaketController::class);
+            Route::resource('distribusi_paket', DistribusiPaketController::class);
+
+            Route::patch('distribusi_paket/{id}/selesai', [DistribusiPaketController::class, 'selesai'])
+                ->name('distribusi_paket.selesai');
+            Route::get('/distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])
+                ->name('management_distribusi.distribusi_paket.show');
         });
 });
 
