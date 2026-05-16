@@ -13,6 +13,11 @@ use App\Http\Controllers\PaketBantuanController;
 
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
+use App\Http\Controllers\KategoriBencanaController;
+use App\Http\Controllers\BencanaController;
+use App\Http\Controllers\GudangController;
+use App\Http\Controllers\KategoriBantuanController;
+use App\Http\Controllers\StokGudangController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -32,7 +37,15 @@ Route::middleware('auth')->group(function () {
     Route::prefix('management-posko')->name('management_posko.')->group(function () {
         Route::resource('posko', PoskoController::class);
         Route::resource('dapur_umum', DapurUmumController::class);
-        Route::resource('kebutuhan_harian', KebutuhanHarianController::class);
+
+        Route::prefix('kebutuhan_harian')->name('kebutuhan_harian.')->group(function () {
+            Route::get('/{dapur}',[KebutuhanHarianController::class, 'index'])->name('index');
+            Route::get('/{dapur}/create',[KebutuhanHarianController::class, 'create'])->name('create');
+            Route::post('/{dapur}',[KebutuhanHarianController::class, 'store'])->name('store');
+            Route::get('/edit/{id}',[KebutuhanHarianController::class, 'edit'])->name('edit');
+            Route::put('/update/{id}',[KebutuhanHarianController::class, 'update'])->name('update');
+            Route::delete('/delete/{id}',[KebutuhanHarianController::class, 'destroy'])->name('destroy');
+        });
     });
 
 
@@ -41,6 +54,8 @@ Route::middleware('auth')->group(function () {
         Route::resource('manajemen_user', UserController::class);
     });
     // Route::resource('management_distribusi/distribusi', DistribusiController::class);
+
+    Route::resource('management_distribusi/distribusi', DistribusiController::class);
     Route::prefix('management-distribusi')
         ->name('management_distribusi.')
         ->group(function () {
@@ -56,6 +71,15 @@ Route::middleware('auth')->group(function () {
             Route::get('/distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])
                 ->name('management_distribusi.distribusi_paket.show');
         });
+});
+
+Route::middleware('auth')->group(function () {
+
+    Route::resource('kategori_bencana', KategoriBencanaController::class);
+    Route::resource('bencana', BencanaController::class);
+    Route::resource('gudang', GudangController::class);
+    Route::resource('kategori_bantuan', KategoriBantuanController::class);
+    Route::resource('stok_gudang', StokGudangController::class);
 });
 
 require __DIR__ . '/auth.php';

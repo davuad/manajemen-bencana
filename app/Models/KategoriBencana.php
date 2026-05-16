@@ -4,9 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class KategoriBencana extends Model
 {
+    use HasFactory;
+
     protected $table = 'kategori_bencana';
 
     protected $fillable = [
@@ -19,3 +22,9 @@ class KategoriBencana extends Model
         return $this->hasMany(WargaTerdampak::class, 'kategori_id', 'id');
     }
 }
+    // Relasi ke tabel bencana (1 kategori punya banyak bencana)
+    // public function bencana()
+    // {
+    //     return $this->hasMany(Bencana::class, 'kategori_id');
+    // }
+

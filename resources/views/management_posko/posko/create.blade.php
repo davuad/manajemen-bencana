@@ -37,6 +37,18 @@
                     </select>
                 </div>
 
+                <div class="md:col-span-2">
+                    <label>Nama Bencana</label>
+                    <select name="bencana_id" class="w-full border rounded-lg p-3">
+                        <option value="">Pilih Nama Bencana</option>
+                        @foreach($bencana as $b)
+                            <option value="{{ $b->id }}">
+                                {{ $b->nama_bencana }}
+                            </option>
+                        @endforeach
+                    </select>
+                </div>
+
                 <!-- Pengaduan -->
                 <div class="md:col-span-2">
                     <label>Tautkan ke Laporan Bencana *</label>

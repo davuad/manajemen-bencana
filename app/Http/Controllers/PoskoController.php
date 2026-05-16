@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bencana;
 use App\Models\Desa;
 use App\Models\PengaduanBencana;
 use App\Models\Posko;
@@ -26,17 +27,19 @@ class PoskoController extends Controller
 
         $posko = $query->orderBy('id', 'asc')->paginate(5);
 
-        $desa = \App\Models\Desa::all();
+        $desa = Desa::all();
+        $bencana = Bencana::all();
 
-        return view('management_posko.posko.index', compact('posko', 'desa'));
+        return view('management_posko.posko.index', compact('posko', 'desa', 'bencana'));
     }
 
     public function create()
     {
         $desa = Desa::all();
+        $bencana = Bencana::all();
         $pengaduan = PengaduanBencana::where('status_pengaduan', '!=', 'SELESAI')->get();
 
-        return view('management_posko.posko.create', compact('desa', 'pengaduan'));
+        return view('management_posko.posko.create', compact('desa', 'pengaduan', 'bencana'));
     }
 
     public function store(Request $request)
@@ -45,6 +48,7 @@ class PoskoController extends Controller
             'nama_posko' => 'required|max:100',
             'tanggal_dibuat' => 'required|date',
             'desa_id' => 'required|exists:desa,id',
+            'bencana_id' => 'required|exists:bencana,id',
             'pengaduan_bencana_id' => 'required|exists:pengaduan_bencana,id',
             'lokasi' => 'required',
         ]);
@@ -53,6 +57,7 @@ class PoskoController extends Controller
             'nama_posko' => $request->nama_posko,
             'tanggal_dibuat' => $request->tanggal_dibuat,
             'desa_id' => $request->desa_id,
+            'bencana_id' => $request->bencana_id,
             'pengaduan_bencana_id' => $request->pengaduan_bencana_id,
             'lokasi' => $request->lokasi,
             'status' => 'aktif'
@@ -67,9 +72,10 @@ class PoskoController extends Controller
     {
         $posko = Posko::findOrFail($id);
         $desa = Desa::all();
+        $bencana = Bencana::all();
         $pengaduan = PengaduanBencana::where('status_pengaduan', '!=', 'SELESAI')->get();
 
-        return view('management_posko.posko.edit', compact('posko', 'desa', 'pengaduan'));
+        return view('management_posko.posko.edit', compact('posko', 'desa', 'pengaduan', 'bencana'));
     }
 
     public function update(Request $request, $id)
@@ -78,17 +84,19 @@ class PoskoController extends Controller
             'nama_posko' => 'required|max:100',
             'tanggal_dibuat' => 'required|date',
             'desa_id' => 'required|exists:desa,id',
+            'bencana_id' => 'required|exists:bencana,id',
             'pengaduan_bencana_id' => 'required|exists:pengaduan_bencana,id',
             'lokasi' => 'required',
             'status' => 'required|in:aktif,tidak aktif'
         ]);
-
+        
         $posko = Posko::findOrFail($id);
 
         $posko->update([
             'nama_posko' => $request->nama_posko,
             'tanggal_dibuat' => $request->tanggal_dibuat,
             'desa_id' => $request->desa_id,
+            'bencana_id' => $request->bencana_id,
             'pengaduan_bencana_id' => $request->pengaduan_bencana_id,
             'lokasi' => $request->lokasi,
             'status' => $request->status

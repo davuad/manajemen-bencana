@@ -12,6 +12,7 @@ class Posko extends Model
         'nama_posko',
         'tanggal_dibuat',
         'desa_id',
+        'bencana_id',
         'pengaduan_bencana_id',
         'lokasi',
         'status'
@@ -32,5 +33,10 @@ class Posko extends Model
     public function stokPosko()
     {
         return $this->hasMany(StokPosko::class, 'posko_id');
+    }
+    
+    public function bencana()
+    {
+        return $this->belongsTo(Bencana::class);
     }
 }

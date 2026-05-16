@@ -53,6 +53,7 @@
                     <th class="p-3 text-center">No</th>
                     <th class="text-center">Nama Posko</th>
                     <th class="text-left pl-4">Desa</th>
+                    <th class="text-center">Nama Bencana</th>
                     <th class="text-center">Deskripsi Bencana</th>
                     <th class="text-left">Lokasi</th>
                     <th class="text-left">Tanggal</th>
@@ -67,6 +68,7 @@
                     <td class="p-2 pl-6">{{ $key + 1 }}</td>
                     <td class="p-2 pl-6">{{ $p->nama_posko }}</td>
                     <td class="p-2 pl-4">{{ $p->desa->nama_desa ?? '-' }}</td>
+                    <td class="p-2 pl-4">{{ $p->bencana->nama_bencana ?? '-' }}</td>
                     <td class="p-2">{{ $p->pengaduan->deskripsi ?? '-' }}</td>
                     <td class="p-2">{{ $p->lokasi }}</td>
                     <td class="p-2">{{ $p->tanggal_dibuat }}</td>

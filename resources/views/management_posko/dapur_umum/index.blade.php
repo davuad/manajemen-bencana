@@ -45,70 +45,98 @@
         </div>
     </form>
 
-    <div class="overflow-x-auto">
-
-        <table class="w-full text-sm">
-
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="p-3 text-center">No</th>
-                    <th class="text-center">Nama Posko</th>
-                    <th class="text-center">Nama Dapur Umum</th>
-                    <th class="text-center">Kapasitas</th>
-                    <th class="text-center">Jumlah Warga</th>
-                    <th class="text-center">Penanggung Jawab</th>
-                    <th class="text-left">Aksi</th>
+    <div class="bg-white rounded-2xl p-5 m-3 mt-5 shadow-sm overflow-x-auto">
+        <table class="w-full border-collapse">
+            <thead>
+                <tr class="bg-gray-100 text-gray-700 text-sm">
+                    <th class="p-4 text-left">No</th>
+                    <th class="p-4 text-left">Nama Dapur</th>
+                    <th class="p-4 text-left">Posko</th>
+                    <th class="p-4 text-left">Kapasitas</th>
+                    <th class="p-4 text-left">Jumlah Warga</th>
+                    <th class="p-4 text-left">Penanggung Jawab</th>
+                    <th class="p-4 text-center">Aksi</th>
                 </tr>
             </thead>
 
             <tbody>
-                @forelse($dapur as $key => $d)
-                <tr class="border-t">
-                    <td class="p-2 text-center">{{ $key + 1 }}</td>
-                    <td class="p-2 text-center">{{ $d->posko->nama_posko ?? '-' }}</td>
-                    <td class="p-2 text-center">{{ $d->nama_dapur_umum }}</td>
-                    <td class="p-2 text-center">{{ $d->kapasitas_warga }}</td>
-                    <td class="p-2 text-center">{{ $d->jumlah_warga }}</td>
-                    <td class="p-2 text-center">{{ $d->penanggung_jawab }}</td>
+                @forelse($dapur as $index => $item)
+                    <tr class="border-b hover:bg-gray-50">
+                        <td class="p-4">
+                            {{ $dapur->firstItem() + $index }}
+                        </td>
 
-                    <td class="flex gap-1 py-3">
-                        <!-- EDIT -->
-                        <a href="{{ route('management_posko.dapur_umum.edit', $d->id) }}"
-                           class="text-blue-500">
-                            <x-heroicon-o-pencil-square class="w-5 h-5" />
-                        </a>
+                        <td class="p-4 font-medium text-gray-800">
+                            {{ $item->nama_dapur_umum }}
+                        </td>
 
-                        <!-- DELETE -->
-                        <button 
-                            onclick="openModal('{{ $d->id }}', '{{ $d->nama_dapur_umum }}')" 
-                            class="text-red-500 hover:text-red-700">
-                            <x-heroicon-o-trash class="w-5 h-5" />
-                        </button>
-                    </td>
-                </tr>
+                        <td class="p-4">
+                            {{ $item->posko->nama_posko ?? '-' }}
+                        </td>
+
+                        <td class="p-4">
+                            {{ $item->kapasitas_warga }} Orang
+                        </td>
+
+                        <td class="p-4">
+                            {{ $item->jumlah_warga }} Orang
+                        </td>
+
+                        <td class="p-4">
+                            {{ $item->penanggung_jawab }}
+                        </td>
+
+                        <td class="p-4">
+
+                            <div class="flex justify-center gap-2">
+
+                                {{-- DETAIL KEBUTUHAN --}}
+                                <a href="{{ route('management_posko.kebutuhan_harian.index', $item->id) }}"
+                                class="px-3 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">
+
+                                    Detail Kebutuhan
+
+                                </a>
+
+                                {{-- EDIT --}}
+                                <a href="{{ route('management_posko.dapur_umum.edit', $item->id) }}"
+                                class="px-3 py-2 bg-yellow-500 text-white rounded-lg text-sm hover:bg-yellow-600">
+                                    Edit
+                                </a>
+
+                                {{-- DELETE --}}
+                                <form action="{{ route('management_posko.dapur_umum.destroy', $item->id) }}"
+                                    method="POST"
+                                    onsubmit="return confirm('Yakin ingin menghapus data ini?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="px-3 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700">
+                                        Hapus
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
                 @empty
-                <tr>
-                    <td colspan="6" class="text-center p-4">
-                        Data dapur umum belum ada
-                    </td>
-                </tr>
+                    <tr>
+                        <td colspan="7"
+                            class="text-center p-6 text-gray-500">
+                            Data dapur umum belum tersedia
+                        </td>
+                    </tr>
                 @endforelse
             </tbody>
-
         </table>
-
     </div>
-        <div class="flex justify-between items-center mt-6 text-sm">
 
+    <div class="flex justify-between items-center mt-6 text-sm">
         <p class="text-gray-500">
             Menampilkan {{ $dapur->firstItem() }} - {{ $dapur->lastItem() }} 
             dari {{ $dapur->total() }} data dapur umum
         </p>
-
         <div>
             {{ $dapur->withQueryString()->links() }}
         </div>
-
     </div>
 </div>
 
