@@ -39,4 +39,9 @@ class Posko extends Model
     {
         return $this->belongsTo(Bencana::class);
     }
+
+    public function korban()
+    {
+        return $this->hasMany(Korban::class);
+    }    
 }

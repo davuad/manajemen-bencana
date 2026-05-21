@@ -178,6 +178,20 @@
             </div>
         </div>
 
+        <!-- ================= DATA KORBAN ================= -->
+        <a href="{{ route('management_korban.korban.index') }}"
+        class="flex items-center gap-3 px-3 py-2 rounded 
+        {{ request()->routeIs('management_korban.korban.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+            
+            <span>
+                <x-heroicon-o-user-group class="w-5 h-5" />
+            </span>
+
+            <span x-show="sidebarOpen" x-transition>
+                Data Korban
+            </span>
+        </a>
+
         <!-- ================= WARGA ================= -->
         <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
             <span>👥</span>
