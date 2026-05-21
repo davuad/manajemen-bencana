@@ -10,6 +10,7 @@ use App\Http\Controllers\DetailDistribusiController;
 use App\Http\Controllers\DetailPaketController;
 use App\Http\Controllers\DistribusiPaketController;
 use App\Http\Controllers\PaketBantuanController;
+use App\Http\Controllers\KorbanController;
 
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
@@ -71,6 +72,18 @@ Route::middleware('auth')->group(function () {
             Route::get('/distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])
                 ->name('management_distribusi.distribusi_paket.show');
         });
+
+        // Korban
+        Route::resource('management_korban/korban', KorbanController::class);
+        Route::prefix('management-korban')
+        ->name('management_korban.')
+        ->group(function () {
+            Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])
+                ->name('korban.reviewPdf');
+
+            Route::resource('korban', KorbanController::class);
+        });
+
 });
 
 Route::middleware('auth')->group(function () {

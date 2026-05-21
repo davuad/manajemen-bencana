@@ -50,4 +50,10 @@ class Bencana extends Model
     {
         return $this->hasMany(Distribusi::class, 'bencana_id', 'id');
     }
+
+    // Relasi ke korban
+    public function korban()
+    {
+        return $this->hasMany(Korban::class, 'bencana_id');
+    }       
 }
