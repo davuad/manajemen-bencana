@@ -1,5 +1,5 @@
 <aside
-    class="bg-[#1E3A8A] text-white h-screen fixed left-0 top-0 w-64
+    class="bg-[#1E3A8A] text-white h-screen fixed left-0 top-0 w-64 overflow-y-auto
     transform transition-all duration-300 ease-in-out"
     :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
 
@@ -104,6 +104,44 @@
                     </span>
                 </a>
 
+                  <div 
+    x-data="{ openMenu: {{ request()->routeIs('desa.*') || request()->routeIs('warga.*') ? 'true' : 'false' }} }"
+    class="rounded"
+>
+    <div 
+        @click="openMenu = !openMenu"
+        class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
+        :class="openMenu ? 'bg-orange-500' : 'hover:bg-blue-800'"
+    >
+        <span>
+            <x-heroicon-o-folder class="w-5 h-5" />
+        </span>
+        <span x-show="sidebarOpen" x-transition>
+            Data Wilayah & Warga
+        </span>
+    </div>
+
+    <div 
+        x-show="openMenu"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 -translate-y-1"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 -translate-y-1"
+        class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2"
+    >
+        <a href="{{ route('desa.index') }}"
+           class="block px-3 py-2 text-sm rounded transition-all duration-200 {{ request()->routeIs('desa.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Data Desa
+        </a>
+
+        <a href="{{ route('warga.index') }}"
+           class="block px-3 py-2 text-sm rounded transition-all duration-200 {{ request()->routeIs('warga.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Data Warga Terdampak
+        </a>
+    </div>
+</div>
         <div 
             x-data="{ openMenu: {{ request()->routeIs('management_posko.*') ? 'true' : 'false' }} }"
             class="rounded"
@@ -135,7 +173,7 @@
                     Dapur Umum
                 </a>
 
-                <a href="{{ route('management_posko.kebutuhan_harian.index') }}"
+                <a href="{{ route('management_posko.dapur_umum.index') }}"
                     class="block px-3 py-2 text-sm rounded {{ request()->routeIs('management_posko.kebutuhan_harian.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
                     Kebutuhan Harian
                 </a>

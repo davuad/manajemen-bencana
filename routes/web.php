@@ -11,6 +11,8 @@ use App\Http\Controllers\DetailPaketController;
 use App\Http\Controllers\DistribusiPaketController;
 use App\Http\Controllers\PaketBantuanController;
 use App\Http\Controllers\KorbanController;
+use App\Http\Controllers\DesaController;
+use App\Http\Controllers\WargaTerdampakController;
 
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
@@ -96,3 +98,21 @@ Route::middleware('auth')->group(function () {
 });
 
 require __DIR__ . '/auth.php';
+Route::middleware('auth')->group(function () {
+    Route::get('/data-desa', [DesaController::class, 'index'])->name('desa.index');
+    Route::get('/data-desa/create', [DesaController::class, 'create'])->name('desa.create');
+    Route::post('/data-desa/store', [DesaController::class, 'store'])->name('desa.store');
+    Route::get('/data-desa/detail/{id}', [DesaController::class, 'detail'])->name('desa.detail');
+    Route::get('/data-desa/edit/{id}', [DesaController::class, 'edit'])->name('desa.edit');
+    Route::post('/data-desa/update/{id}', [DesaController::class, 'update'])->name('desa.update');
+    Route::get('/data-desa/delete/{id}', [DesaController::class, 'delete'])->name('desa.delete');
+
+    Route::get('/warga-terdampak', [WargaTerdampakController::class, 'index'])->name('warga.index');
+    Route::get('/warga-terdampak/create', [WargaTerdampakController::class, 'create'])->name('warga.create');
+    Route::post('/warga-terdampak/store', [WargaTerdampakController::class, 'store'])->name('warga.store');
+    Route::get('/warga-terdampak/detail/{id}', [WargaTerdampakController::class, 'detail'])->name('warga.detail');
+    Route::get('/warga-terdampak/edit/{id}', [WargaTerdampakController::class, 'edit'])->name('warga.edit');
+    Route::post('/warga-terdampak/update/{id}', [WargaTerdampakController::class, 'update'])->name('warga.update');
+    Route::get('/warga-terdampak/delete/{id}', [WargaTerdampakController::class, 'delete'])->name('warga.delete');
+    Route::post('/warga-terdampak/ubah-status/{id}', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
+});
