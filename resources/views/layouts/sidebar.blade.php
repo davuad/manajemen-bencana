@@ -1,6 +1,5 @@
 <aside
-    class="bg-[#1E3A8A] text-white h-screen fixed left-0 top-0 w-64 overflow-y-auto
-    transform transition-all duration-300 ease-in-out"
+    class="bg-[#1E3A8A] text-white h-screen fixed left-0 top-0 w-64 overflow-y-auto"
     :class="sidebarOpen ? 'translate-x-0' : '-translate-x-full'">
 
     <div class="p-4 flex items-center justify-between">
@@ -15,11 +14,6 @@
 
     {{-- Menu --}}
     <nav class="mt-4 space-y-2 px-2">
-        <a href="{{ route('admin.manajemen_user.index') }}"
-            class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
-            <span><x-heroicon-o-users class="w-5 h-5" /></span>
-            <span x-show="sidebarOpen" x-transition>Manajemen Pengguna</span>
-        </a>
         @role('admin')
             <a href="{{ route('admin.manajemen_user.index') }}" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
                 <span><x-heroicon-o-users class="w-5 h-5" /></span>

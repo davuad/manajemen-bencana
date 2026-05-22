@@ -2,6 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\DetailPaket;
+use App\Models\JenisBarang;
+use App\Models\StokGudang;
 use Illuminate\Database\Eloquent\Model;
 
 class Barang extends Model

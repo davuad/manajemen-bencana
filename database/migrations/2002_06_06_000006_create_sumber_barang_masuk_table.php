@@ -6,7 +6,7 @@ use Illuminate\Support\Facades\Schema;
 return new class extends Migration {
     public function up(): void
     {
-        Schema::create('sumber', function (Blueprint $table) {
+        Schema::create('sumber_barang_masuk', function (Blueprint $table) {
             $table->id(); // PK
 
             $table->string('nama_sumber'); // APBN, Donasi
