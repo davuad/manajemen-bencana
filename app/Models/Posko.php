@@ -17,15 +17,23 @@ class Posko extends Model
         'status'
     ];
 
-    // RELASI
-
     public function desa()
     {
-        return $this->belongsTo(Desa::class);
+        return $this->belongsTo(Desa::class, 'desa_id');
     }
 
     public function pengaduan()
     {
         return $this->belongsTo(PengaduanBencana::class, 'pengaduan_bencana_id');
+    }
+
+    public function petugas()
+    {
+        return $this->hasMany(Petugas::class, 'posko_id');
+    }
+
+    public function pengambilan()
+    {
+        return $this->hasMany(Pengambilan::class, 'posko_id');
     }
 }

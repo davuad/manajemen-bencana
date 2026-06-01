@@ -102,8 +102,81 @@
                     </a>
 
                 </div>
-
             </div>
+
+            <div 
+    x-data="{ openMenu: {{ request()->routeIs('manajemen_barang.*') ? 'true' : 'false' }} }"
+    class="rounded"
+>
+    <div 
+        @click="openMenu = !openMenu"
+        class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
+        :class="openMenu 
+            ? 'bg-orange-500' 
+            : 'hover:bg-blue-800'"
+    >
+        <span>
+            <x-heroicon-o-cube class="w-5 h-5" />
+        </span>
+        <span x-show="sidebarOpen" x-transition>
+            Manajemen Barang
+        </span>
+    </div>
+
+    <!-- Dropdown Menu -->
+    <div 
+        x-show="openMenu"
+        x-transition:enter="transition ease-out duration-200"
+        x-transition:enter-start="opacity-0 -translate-y-1"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition ease-in duration-150"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 -translate-y-1"
+        class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2"
+    >
+
+        <!-- Petugas -->
+        <a href="{{ route('manajemen_barang.petugas.index') }}"
+        class="block px-3 py-2 text-sm rounded transition-all duration-200 {{ request()->routeIs('manajemen_barang.petugas.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Petugas
+        </a>
+
+        <!-- Pengambilan -->
+        <a href="{{ route('manajemen_barang.pengambilan.index') }}"
+        class="block px-3 py-2 text-sm rounded transition-all duration-200"
+       :class="{
+            'bg-white/10': {{ request()->routeIs('manajemen_barang.pengambilan.*') ? 'true' : 'false' }},
+            'hover:bg-blue-700': !{{ request()->routeIs('manajemen_barang.pengambilan.*') ? 'true' : 'false' }}
+}"
+        >
+            Pengambilan
+        </a>
+
+        <!-- Pengembalian -->
+        <a href="{{ route('manajemen_barang.pengembalian.index') }}"
+        class="block px-3 py-2 text-sm rounded transition-all duration-200"
+       :class="{
+            'bg-white/10': {{ request()->routeIs('manajemen_barang.pengembalian.*') ? 'true' : 'false' }},
+            'hover:bg-blue-700': !{{ request()->routeIs('manajemen_barang.pengembalian.*') ? 'true' : 'false' }}
+}"
+        >
+            Pengembalian
+        </a>
+
+        <!-- Stok Posko
+        <a href="{{ route('manajemen_barang.stok_posko.index') }}"
+        class="block px-3 py-2 text-sm rounded transition-all duration-200"
+       :class="{
+            'bg-white/10': {{ request()->routeIs('manajemen_barang.stok_posko.*') ? 'true' : 'false' }},
+            'hover:bg-blue-700': {{ request()->routeIs('manajemen_barang.stok_posko.*') ? 'false' : 'true' }}
+        }"
+        >
+            Data Barang Masuk Posko
+        </a> -->
+
+    </div>
+</div>
+
 
         <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
             <span>👥</span>
