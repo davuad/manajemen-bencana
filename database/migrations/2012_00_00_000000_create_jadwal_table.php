@@ -13,6 +13,26 @@ return new class extends Migration
     {
         Schema::create('jadwal', function (Blueprint $table) {
             $table->id();
+             // Foreign Key
+            $table->foreignId('bencana_id')
+                  ->constrained('bencana')
+                  ->onDelete('cascade');
+
+            $table->foreignId('pegawai_id')
+                  ->constrained('pegawai')
+                  ->onDelete('cascade');
+
+            // Field utama
+            $table->date('tanggal_layanan');
+            $table->time('jam_mulai');
+            $table->time('jam_selesai');
+
+            $table->string('jenis_layanan', 100);
+            $table->string('sarana', 50);
+            $table->string('petugas_lapangan', 100);
+            $table->string('lokasi_layanan', 150);
+             $table->enum('status', ['dijadwalkan', 'selesai'])->default('dijadwalkan');
+
             $table->timestamps();
         });
     }
