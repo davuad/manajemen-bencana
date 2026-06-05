@@ -13,6 +13,7 @@ use App\Http\Controllers\PaketBantuanController;
 use App\Http\Controllers\KorbanController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\WargaTerdampakController;
+use App\Http\Controllers\JadwalController;
 
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
@@ -42,12 +43,12 @@ Route::middleware('auth')->group(function () {
         Route::resource('dapur_umum', DapurUmumController::class);
 
         Route::prefix('kebutuhan_harian')->name('kebutuhan_harian.')->group(function () {
-            Route::get('/{dapur}',[KebutuhanHarianController::class, 'index'])->name('index');
-            Route::get('/{dapur}/create',[KebutuhanHarianController::class, 'create'])->name('create');
-            Route::post('/{dapur}',[KebutuhanHarianController::class, 'store'])->name('store');
-            Route::get('/edit/{id}',[KebutuhanHarianController::class, 'edit'])->name('edit');
-            Route::put('/update/{id}',[KebutuhanHarianController::class, 'update'])->name('update');
-            Route::delete('/delete/{id}',[KebutuhanHarianController::class, 'destroy'])->name('destroy');
+            Route::get('/{dapur}', [KebutuhanHarianController::class, 'index'])->name('index');
+            Route::get('/{dapur}/create', [KebutuhanHarianController::class, 'create'])->name('create');
+            Route::post('/{dapur}', [KebutuhanHarianController::class, 'store'])->name('store');
+            Route::get('/edit/{id}', [KebutuhanHarianController::class, 'edit'])->name('edit');
+            Route::put('/update/{id}', [KebutuhanHarianController::class, 'update'])->name('update');
+            Route::delete('/delete/{id}', [KebutuhanHarianController::class, 'destroy'])->name('destroy');
         });
     });
 
@@ -75,9 +76,9 @@ Route::middleware('auth')->group(function () {
                 ->name('management_distribusi.distribusi_paket.show');
         });
 
-        // Korban
-        Route::resource('management_korban/korban', KorbanController::class);
-        Route::prefix('management-korban')
+    // Korban
+    Route::resource('management_korban/korban', KorbanController::class);
+    Route::prefix('management-korban')
         ->name('management_korban.')
         ->group(function () {
             Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])
@@ -85,7 +86,6 @@ Route::middleware('auth')->group(function () {
 
             Route::resource('korban', KorbanController::class);
         });
-
 });
 
 Route::middleware('auth')->group(function () {
@@ -115,4 +115,18 @@ Route::middleware('auth')->group(function () {
     Route::post('/warga-terdampak/update/{id}', [WargaTerdampakController::class, 'update'])->name('warga.update');
     Route::get('/warga-terdampak/delete/{id}', [WargaTerdampakController::class, 'delete'])->name('warga.delete');
     Route::post('/warga-terdampak/ubah-status/{id}', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
+});
+
+
+// Jadwal Layanan (Khusus Admin)
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+    Route::get('/jadwal/create', [JadwalController::class, 'create'])->name('jadwal.create');
+    Route::post('/jadwal', [JadwalController::class, 'store'])->name('jadwal.store');
+    Route::get('/jadwal/{id}/edit', [JadwalController::class, 'edit'])->name('jadwal.edit');
+    Route::put('/jadwal/{id}', [JadwalController::class, 'update'])->name('jadwal.update');
+    Route::delete('/jadwal/{id}', [JadwalController::class, 'destroy'])->name('jadwal.destroy');
+
+    // Route custom untuk cetak PDF
+    Route::get('/jadwal/cetak-pdf', [JadwalController::class, 'cetak_pdf'])->name('jadwal.cetak');
 });
