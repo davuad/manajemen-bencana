@@ -132,6 +132,7 @@ Route::middleware('auth')->group(function () {
 
 
 // Jadwal Layanan (Khusus Admin)
+
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
     Route::get('/jadwal/create', [JadwalController::class, 'create'])->name('jadwal.create');
@@ -142,5 +143,21 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
 
     // Route custom untuk cetak PDF
     Route::get('/jadwal/cetak-pdf', [JadwalController::class, 'cetak_pdf'])->name('jadwal.cetak');
+});
+
+Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')->group(function () {
+    
+});
+Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->group(function () {
+    
+});
+Route::middleware(['auth', 'role:kabid'])->prefix('kabid')->name('kabid.')->group(function () {
+    
+});
+Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(function () {
+    
+});
+Route::middleware(['auth', 'role:ketua_tim'])->prefix('ketua_tim')->name('ketua_tim.')->group(function () {
+    
 });
 
