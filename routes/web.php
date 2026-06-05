@@ -13,6 +13,7 @@ use App\Http\Controllers\PaketBantuanController;
 use App\Http\Controllers\KorbanController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\WargaTerdampakController;
+use App\Http\Controllers\JadwalController;
 
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
@@ -86,6 +87,7 @@ Route::middleware('auth')->group(function () {
     Route::resource('management_distribusi/distribusi', DistribusiController::class);
 
 
+
     // Korban
     Route::resource('management_korban/korban', KorbanController::class);
     Route::prefix('management-korban')
@@ -126,3 +128,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/warga-terdampak/delete/{id}', [WargaTerdampakController::class, 'delete'])->name('warga.delete');
     Route::post('/warga-terdampak/ubah-status/{id}', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 });
+
+
+
+// Jadwal Layanan (Khusus Admin)
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+    Route::get('/jadwal/create', [JadwalController::class, 'create'])->name('jadwal.create');
+    Route::post('/jadwal', [JadwalController::class, 'store'])->name('jadwal.store');
+    Route::get('/jadwal/{id}/edit', [JadwalController::class, 'edit'])->name('jadwal.edit');
+    Route::put('/jadwal/{id}', [JadwalController::class, 'update'])->name('jadwal.update');
+    Route::delete('/jadwal/{id}', [JadwalController::class, 'destroy'])->name('jadwal.destroy');
+
+    // Route custom untuk cetak PDF
+    Route::get('/jadwal/cetak-pdf', [JadwalController::class, 'cetak_pdf'])->name('jadwal.cetak');
+});
+
