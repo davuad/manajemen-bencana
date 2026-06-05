@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class PaketBantuan extends Model
 {
+    //Yuni
     protected $table = 'paket_bantuan';
 
     protected $fillable = [

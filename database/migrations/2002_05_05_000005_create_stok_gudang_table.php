@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void
     {
-       Schema::create('stok_gudang', function (Blueprint $table) {
+        Schema::create('stok_gudang', function (Blueprint $table) {
             $table->id();
 
             $table->foreignId('gudang_id')
