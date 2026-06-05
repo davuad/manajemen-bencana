@@ -17,14 +17,14 @@ return new class extends Migration
 
             $table->string('id_jenis_barang', 10);
             $table->foreign('id_jenis_barang')
-                ->references('id_jenis_barang')
-                ->on('jenis_barang')
-                ->onDelete('cascade');
+                    ->references('id_jenis_barang')
+                    ->on('jenis_barang')
+                    ->onDelete('cascade');
 
             $table->integer('stok')->default(0);
             $table->string('satuan', 20);
             $table->text('keterangan')->nullable();
-
+            
             $table->timestamps();
         });
     }
