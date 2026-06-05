@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-// ⬇️ TAMBAHKAN DI SINI
 use Illuminate\Database\Eloquent\Model;
 use App\Models\BarangKeluar;
 use App\Models\Bencana;
@@ -14,7 +13,6 @@ class Distribusi extends Model
     protected $table = 'distribusi';
 
     protected $fillable = [
-    'barang_keluar_id',
     'bencana_id',
     'posko_id',
     'tanggal_distribusi',
@@ -27,24 +25,19 @@ class Distribusi extends Model
     'status',
 ];
 
-    public function barangKeluar()
-    {
-        return $this->belongsTo(BarangKeluar::class);
-    }
+public function bencana()
+{
+    return $this->belongsTo(Bencana::class);
+}
 
-    public function bencana()
-    {
-        return $this->belongsTo(Bencana::class);
-    }
+public function posko()
+{
+    return $this->belongsTo(Posko::class);
+}
 
-    public function posko()
-    {
-        return $this->belongsTo(Posko::class);
-    }
+public function detailDistribusis()
+{
+    return $this->hasMany(DetailDistribusi::class);
+}
 
-    public function detailDistribusis()
-    {
-        return $this->hasMany(DetailDistribusi::class);
-    }
-    
 }
