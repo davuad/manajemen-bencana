@@ -11,7 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::create('foto_pengaduan', function (Blueprint $table) {
+            $table->id('id');
+
+            $table->foreignId('pengaduan_bencana_id')
+                ->constrained('pengaduan_bencana')
+                ->onDelete('cascade');
+
+            $table->string('file_foto');
+            $table->string('keterangan', 100)->nullable();
+
+            $table->timestamps();
+        });
     }
 
     /**
@@ -19,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('foto_pengaduan');
     }
 };
