@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('jabatan', 100);
             $table->string('instansi', 100);
             $table->string('alamat', 150);
+            $table->string('nama_posko', 100);
             $table->string('no_hp', 15);
 
             $table->string('status', 100);
