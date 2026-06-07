@@ -3,33 +3,47 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Gudang;
+use App\Models\PengajuanBarang;
+use App\Models\Pegawai;
 
 class BarangKeluar extends Model
 {
     protected $table = 'barang_keluar';
 
     protected $fillable = [
-        'kategori_id',
-        'pengaduan_bencana_id',
-        'desa_id',
-        'tanggal',
-        'jumlah_korban',
-        'tingkat_kerusakan'
+        'gudang_id',
+        'pengajuan_barang_id',
+        'petugas_gudang_id',
+        'updated_by',
+        'tgl_keluar',
+        'status_proses',
+        'catatan'
     ];
 
-    // RELASI
-    public function pengaduan()
+    public function gudang()
     {
-        return $this->belongsTo(PengaduanBencana::class, 'pengaduan_bencana_id');
+        return $this->belongsTo(Gudang::class);
     }
 
-    public function desa()
+    public function pengajuanBarang()
     {
-        return $this->belongsTo(Desa::class);
+        return $this->belongsTo(PengajuanBarang::class);
     }
 
-    public function distribusis()
+    public function petugasGudang()
     {
-        return $this->hasMany(Distribusi::class, 'barang_keluar_id');
+        return $this->belongsTo(Pegawai::class, 'petugas_gudang_id');
     }
+
+    public function detailBarangKeluar()
+    {
+        return $this->hasMany(DetailBarangKeluar::class, 'barang_keluar_id');
+    }
+
+    public function updater()
+    {
+        return $this->belongsTo(User::class, 'updated_by');
+    }
+
 }
