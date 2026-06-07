@@ -7,6 +7,7 @@ use App\Http\Controllers\KebutuhanHarianController;
 use App\Http\Controllers\PoskoController;
 use App\Http\Controllers\DistribusiController;
 use App\Http\Controllers\DetailDistribusiController;
+use App\Http\Controllers\PenerimaDistribusiController;
 use App\Http\Controllers\DetailPaketController;
 use App\Http\Controllers\DistribusiPaketController;
 use App\Http\Controllers\PaketBantuanController;
@@ -68,6 +69,7 @@ Route::middleware('auth')->group(function () {
 
                     Route::resource('distribusi', DistribusiController::class);
                     Route::resource('detail_distribusi', DetailDistribusiController::class);
+                    Route::resource('penerima_distribusi', PenerimaDistribusiController::class);
                     Route::resource('paket_bantuan', PaketBantuanController::class);
                     Route::resource('detail_paket', DetailPaketController::class);
                     Route::resource('distribusi_paket', DistribusiPaketController::class);
