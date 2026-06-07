@@ -9,7 +9,7 @@
 </div>
 
 <div class="bg-white rounded-xl p-5 m-3 mt-5">
-    <form action="{{ route('management_distribusi.paket_bantuan.store') }}" method="POST" class="space-y-6">
+    <form action="{{ route('admin.management_distribusi.paket_bantuan.store') }}" method="POST" class="space-y-6">
         @csrf
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -59,7 +59,7 @@
 
         <!-- Button -->
         <div class="flex justify-end gap-3">
-            <a href="{{ route('management_distribusi.paket_bantuan.index') }}" class="px-4 py-2 bg-gray-300 rounded-lg">
+            <a href="{{ route('admin.management_distribusi.paket_bantuan.index') }}" class="px-4 py-2 bg-gray-300 rounded-lg">
                 Batal
             </a>
 

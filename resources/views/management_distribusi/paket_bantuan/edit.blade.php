@@ -9,7 +9,7 @@
     </div>
 
     <div class="bg-white rounded-xl p-5 m-3 mt-5">
-        <form action="{{ route('management_distribusi.paket_bantuan.update', $paket_bantuan->id) }}" method="POST"
+        <form action="{{ route('admin.management_distribusi.paket_bantuan.update', $paket_bantuan->id) }}" method="POST"
             class="space-y-6">
             @csrf
             @method('PUT')
@@ -73,7 +73,7 @@
 
             <!-- Button -->
             <div class="flex justify-end gap-3">
-                <a href="{{ route('management_distribusi.paket_bantuan.index') }}" class="px-4 py-2 bg-gray-300 rounded-lg">
+                <a href="{{ route('admin.management_distribusi.paket_bantuan.index') }}" class="px-4 py-2 bg-gray-300 rounded-lg">
                     Batal
                 </a>
 

@@ -163,7 +163,7 @@ class DistribusiPaketController extends Controller
             DB::commit();
 
             return redirect()
-                ->route('management_distribusi.distribusi_paket.index')
+                ->route('admin.management_distribusi.distribusi_paket.index')
                 ->with('success', 'Distribusi berhasil dibuat.');
         } catch (\Exception $e) {
             DB::rollback();

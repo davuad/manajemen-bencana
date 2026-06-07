@@ -1,27 +1,26 @@
 <?php
 
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\BencanaController;
 use App\Http\Controllers\DapurUmumController;
-use App\Http\Controllers\KebutuhanHarianController;
-use App\Http\Controllers\PoskoController;
-use App\Http\Controllers\DistribusiController;
+use App\Http\Controllers\DesaController;
 use App\Http\Controllers\DetailDistribusiController;
 use App\Http\Controllers\DetailPaketController;
+use App\Http\Controllers\DistribusiController;
 use App\Http\Controllers\DistribusiPaketController;
-use App\Http\Controllers\PaketBantuanController;
-use App\Http\Controllers\KorbanController;
-use App\Http\Controllers\DesaController;
-use App\Http\Controllers\WargaTerdampakController;
-use App\Http\Controllers\JadwalController;
-
-use Illuminate\Support\Facades\Route;
-use App\Models\User;
-use App\Http\Controllers\KategoriBencanaController;
-use App\Http\Controllers\BencanaController;
 use App\Http\Controllers\GudangController;
+use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\KategoriBantuanController;
+use App\Http\Controllers\KategoriBencanaController;
+use App\Http\Controllers\KebutuhanHarianController;
+use App\Http\Controllers\KorbanController;
+use App\Http\Controllers\PaketBantuanController;
+use App\Http\Controllers\PoskoController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StokGudangController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\WargaTerdampakController;
+use App\Models\User;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('welcome');
