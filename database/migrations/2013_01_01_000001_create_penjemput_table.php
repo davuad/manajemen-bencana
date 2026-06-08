@@ -11,8 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('penjemput_', function (Blueprint $table) {
+        Schema::create('penjemput', function (Blueprint $table) {
             $table->id();
+
+            //data penjemput
+            $table->string('nama_penjemput', 100);
+            $table->string('nik', 20);
+            $table->string('hubungan_dengan_anak', 50);
+            $table->text('alamat')->nullable();
+            $table->string('no_hp', 20);
             $table->timestamps();
         });
     }
