@@ -26,5 +26,5 @@ class AnakTerpisah extends Model
     public function penjemputan()
     {
         return $this->hasOne(PenjemputanAnak::class, 'anak_id');
-    }
+    }   
 }

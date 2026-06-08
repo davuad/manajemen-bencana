@@ -1,51 +1,50 @@
 @extends('layouts.app')
 
 @section('content')
+
 <div class="mx-3">
     <h2 class="text-xl font-bold">Edit Data Distribusi</h2>
     <p class="text-gray-500 text-sm">
-        Perbarui data distribusi agar tetap akurat
+        Ubah data distribusi bantuan
     </p>
 </div>
 
-<div class="bg-white rounded-xl p-5 m-3 mt-5">
-    <form action="{{ route('management_distribusi.distribusi.update', $distribusi->id) }}" method="POST" class="space-y-6">
+<div class="bg-white rounded-xl p-6 m-3 mt-5 shadow">
+
+    {{-- ERROR --}}
+    @if ($errors->any())
+        <div class="bg-red-100 text-red-700 p-4 rounded mb-4">
+            <b>Terjadi kesalahan:</b>
+            <ul class="list-disc ml-5 mt-2">
+                @foreach ($errors->all() as $error)
+                    <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+    @endif
+
+    <form action="{{ route('management_distribusi.distribusi.update', $distribusi->id) }}" method="POST">
         @csrf
         @method('PUT')
 
-        <!-- RELASI -->
-        <div class="grid grid-cols-3 gap-4">
+        <!-- ================= DATA UTAMA ================= -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
             <div>
-                <label>Barang Keluar</label>
-                <select name="barang_keluar_id" class="w-full border rounded-lg p-3">
-                    <option value="">Pilih</option>
-                    @foreach($barangKeluar as $bk)
-                        <option value="{{ $bk->id }}"
-                            {{ $distribusi->barang_keluar_id == $bk->id ? 'selected' : '' }}>
-                            ID {{ $bk->id }}
-                        </option>
-                    @endforeach
-                </select>
-            </div>
-
-            <div>
-                <label>Bencana</label>
-                <select name="bencana_id" class="w-full border rounded-lg p-3">
-                    <option value="">Pilih</option>
+                <label>Bencana *</label>
+                <select name="bencana_id" class="w-full border rounded-lg p-3" required>
                     @foreach($bencana as $b)
                         <option value="{{ $b->id }}"
                             {{ $distribusi->bencana_id == $b->id ? 'selected' : '' }}>
-                            ID {{ $b->id }}
+                            {{ $b->nama_bencana }}
                         </option>
                     @endforeach
                 </select>
             </div>
 
             <div>
-                <label>Posko</label>
-                <select name="posko_id" class="w-full border rounded-lg p-3">
-                    <option value="">Pilih</option>
+                <label>Posko *</label>
+                <select name="posko_id" class="w-full border rounded-lg p-3" required>
                     @foreach($posko as $p)
                         <option value="{{ $p->id }}"
                             {{ $distribusi->posko_id == $p->id ? 'selected' : '' }}>
@@ -55,86 +54,203 @@
                 </select>
             </div>
 
+            <div>
+                <label>Tanggal Distribusi *</label>
+                <input type="date"
+                    name="tanggal_distribusi"
+                    value="{{ $distribusi->tanggal_distribusi }}"
+                    class="w-full border rounded-lg p-3" required>
+            </div>
+
+            <div>
+                <label>Lokasi Distribusi *</label>
+                <input type="text"
+                    name="lokasi_distribusi"
+                    value="{{ $distribusi->lokasi_distribusi }}"
+                    class="w-full border rounded-lg p-3" required>
+            </div>
+
+            <div>
+                <label>Desa Posko</label>
+                <input type="text"
+                    value="{{ optional(optional($distribusi->posko)->desa)->nama_desa ?? '-' }}"
+                    class="w-full border rounded-lg p-3 bg-gray-100"
+                    readonly>
+            </div>
+
+            <div>
+                <label>Kendaraan *</label>
+                <input type="text"
+                    name="kendaraan"
+                    value="{{ $distribusi->kendaraan }}"
+                    class="w-full border rounded-lg p-3" required>
+            </div>
+
+            <div>
+                <label>Nama Supir *</label>
+                <input type="text"
+                    name="nama_supir"
+                    value="{{ $distribusi->nama_supir }}"
+                    class="w-full border rounded-lg p-3" required>
+            </div>
+
+            <div>
+                <label>No Kendaraan *</label>
+                <input type="text"
+                    name="nomor_kendaraan"
+                    value="{{ $distribusi->nomor_kendaraan }}"
+                    class="w-full border rounded-lg p-3" required>
+            </div>
+
+            <div>
+                <label>Kategori *</label>
+                <select name="kategori_distribusi" class="w-full border rounded-lg p-3" required>
+                    <option value="bencana"
+                        {{ $distribusi->kategori_distribusi == 'bencana' ? 'selected' : '' }}>
+                        Bencana
+                    </option>
+                    <option value="pasca_bencana"
+                        {{ $distribusi->kategori_distribusi == 'pasca_bencana' ? 'selected' : '' }}>
+                        Pasca Bencana
+                    </option>
+                </select>
+            </div>
+
+            <div>
+                <label>Status *</label>
+                <select name="status" class="w-full border rounded-lg p-3" required>
+                    <option value="pending" {{ $distribusi->status == 'pending' ? 'selected' : '' }}>Pending</option>
+                    <option value="dikirim" {{ $distribusi->status == 'dikirim' ? 'selected' : '' }}>Dikirim</option>
+                    <option value="selesai" {{ $distribusi->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
+                </select>
+            </div>
+
+            <div class="md:col-span-2">
+                <label>Keterangan</label>
+                <textarea name="keterangan"
+                    class="w-full border rounded-lg p-3"
+                    rows="3">{{ $distribusi->keterangan }}</textarea>
+            </div>
+
         </div>
 
-        <!-- INPUT -->
-        <div class="grid grid-cols-2 gap-4">
+        <!-- ================= DETAIL BARANG ================= -->
+        <h3 class="font-bold mt-8 mb-3">Detail Barang</h3>
 
-            <div>
-                <label>Tanggal</label>
-                <input type="date" name="tanggal_distribusi"
-                    value="{{ old('tanggal_distribusi', $distribusi->tanggal_distribusi) }}"
-                    class="w-full border rounded-lg p-3">
-            </div>
+        <div class="overflow-x-auto">
+            <table class="w-full border border-gray-300 rounded-lg text-sm">
 
-            <div>
-                <label>Lokasi</label>
-                <input type="text" name="lokasi_distribusi"
-                    value="{{ old('lokasi_distribusi', $distribusi->lokasi_distribusi) }}"
-                    class="w-full border rounded-lg p-3">
-            </div>
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="p-3 border text-left">Nama Barang</th>
+                        <th class="p-3 border text-center">Jumlah Keluar</th>
+                        <th class="p-3 border text-center">Jumlah Kirim</th>
+                        <th class="p-3 border text-center">Satuan</th>
+                    </tr>
+                </thead>
 
-            <div>
-                <label>Kendaraan</label>
-                <input type="text" name="kendaraan"
-                    value="{{ old('kendaraan', $distribusi->kendaraan) }}"
-                    class="w-full border rounded-lg p-3">
-            </div>
+                <tbody>
+                @forelse($barangKeluar as $i => $bk)
 
-            <div>
-                <label>Nama Supir</label>
-                <input type="text" name="nama_supir"
-                    value="{{ old('nama_supir', $distribusi->nama_supir) }}"
-                    class="w-full border rounded-lg p-3">
-            </div>
+                    @php
+                        $detail = $distribusi->detailDistribusis
+                            ->where('barang_keluar_id', $bk->id)
+                            ->first();
+                    @endphp
 
-            <div>
-                <label>No Kendaraan</label>
-                <input type="text" name="nomor_kendaraan"
-                    value="{{ old('nomor_kendaraan', $distribusi->nomor_kendaraan) }}"
-                    class="w-full border rounded-lg p-3">
-            </div>
+                    <tr>
 
-            <div>
-                <label>Kategori</label>
-                <input type="text" name="kategori_distribusi"
-                    value="{{ old('kategori_distribusi', $distribusi->kategori_distribusi) }}"
-                    class="w-full border rounded-lg p-3">
-            </div>
+                        <!-- NAMA -->
+                        <td class="border p-3">
+                            {{ optional($bk->barang)->nama_barang ?? '-' }}
 
-        </div>
+                            <input type="hidden"
+                                name="barang_detail[{{ $i }}][barang_keluar_id]"
+                                value="{{ $bk->id }}">
+                        </td>
 
-        <!-- KETERANGAN -->
-        <div>
-            <label>Keterangan</label>
-            <textarea name="keterangan"
-                class="w-full border rounded-lg p-3"
-                rows="3">{{ old('keterangan', $distribusi->keterangan) }}</textarea>
-        </div>
+                        <!-- JUMLAH KELUAR -->
+                        <td class="border p-3 text-center">
+                            <input type="number"
+                                value="{{ $bk->jumlah }}"
+                                class="w-24 border rounded-lg p-2 text-center bg-gray-100"
+                                readonly>
+                        </td>
 
-        <!-- STATUS -->
-        <div>
-            <label>Status</label>
-            <select name="status" class="w-full border rounded-lg p-3">
-                <option value="pending" {{ $distribusi->status == 'pending' ? 'selected' : '' }}>Pending</option>
-                <option value="dikirim" {{ $distribusi->status == 'dikirim' ? 'selected' : '' }}>Dikirim</option>
-                <option value="selesai" {{ $distribusi->status == 'selesai' ? 'selected' : '' }}>Selesai</option>
-            </select>
+                        <!-- JUMLAH KIRIM -->
+                        <td class="border p-3 text-center">
+                            <input type="number"
+                                name="barang_detail[{{ $i }}][jumlah_kirim]"
+                                value="{{ $detail->jumlah_kirim ?? $bk->jumlah }}"
+                                data-max="{{ $bk->jumlah }}"
+                                class="w-24 border rounded-lg p-2 text-center"
+                                oninput="validasiEdit(this)"
+                                required>
+                        </td>
+
+                        <!-- SATUAN -->
+                        <td class="border p-3 text-center">
+                            <input type="text"
+                                value="{{ optional($bk->barang)->satuan ?? '-' }}"
+                                class="w-28 border rounded-lg p-2 text-center bg-gray-100"
+                                readonly>
+
+                            <input type="hidden"
+                                name="barang_detail[{{ $i }}][satuan]"
+                                value="{{ optional($bk->barang)->satuan }}">
+                        </td>
+
+                    </tr>
+
+                @empty
+                    <tr>
+                        <td colspan="4" class="p-4 text-gray-400 text-center">
+                            Tidak ada data barang keluar
+                        </td>
+                    </tr>
+                @endforelse
+                </tbody>
+
+            </table>
         </div>
 
         <!-- BUTTON -->
-        <div class="flex justify-end gap-3">
+        <div class="flex justify-end gap-3 mt-6">
             <a href="{{ route('management_distribusi.distribusi.index') }}"
                class="px-4 py-2 bg-gray-300 rounded-lg">
                 Batal
             </a>
 
             <button type="submit"
-                class="px-6 py-2 bg-yellow-500 text-white rounded-lg">
+                class="px-6 py-2 bg-blue-600 text-white rounded-lg">
                 Update Data
             </button>
         </div>
 
     </form>
 </div>
+
+<script>
+function validasiEdit(input) {
+    let max = parseInt(input.dataset.max);
+    let value = parseInt(input.value);
+
+    if (isNaN(value) || input.value === '') {
+        input.value = 1;
+        return;
+    }
+
+    if (value > max) {
+        alert('Jumlah kirim tidak boleh lebih dari stok asli (' + max + ')');
+        input.value = max;
+        return;
+    }
+
+    if (value < 1) {
+        input.value = 1;
+        return;
+    }
+}
+</script>
+
 @endsection
