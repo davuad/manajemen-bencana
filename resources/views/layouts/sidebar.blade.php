@@ -21,7 +21,7 @@
         </a>
         @endrole
 
-        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
+        <a href=""{{ route('pengaduan_bencana.index') }} class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
             <span><x-heroicon-o-exclamation-triangle class="w-5 h-5" /></span>
             <span x-show="sidebarOpen" x-transition>Pengaduan Bencana</span>
         </a>

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PengaduanBencanaController;
 use App\Http\Controllers\DapurUmumController;
 use App\Http\Controllers\KebutuhanHarianController;
 use App\Http\Controllers\PoskoController;
@@ -36,6 +37,18 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+Route::middleware('auth')->group(function () {
+    Route::get('/pengaduan', [PengaduanBencanaController::class, 'index'])->name('pengaduan_bencana.index');
+    Route::get('/pengaduan/create', [PengaduanBencanaController::class, 'create']);
+    Route::post('/pengaduan/store', [PengaduanBencanaController::class, 'store']);
+    Route::get('/pengaduan/{id}', [PengaduanBencanaController::class, 'show']);
+    Route::put('/pengaduan/{id}', [PengaduanBencanaController::class, 'update']);
+    Route::delete('/pengaduan/{id}', [PengaduanBencanaController::class, 'destroy']);
+    Route::get('/kebutuhan/{id}', [PengaduanBencanaController::class, 'detailKebutuhan']);
+    Route::get('/foto/{id}', [PengaduanBencanaController::class, 'detailFoto']);
+    Route::delete('/foto/{id}', [PengaduanBencanaController::class, 'hapusFoto']);
 });
 
 Route::middleware('auth')->group(function () {
