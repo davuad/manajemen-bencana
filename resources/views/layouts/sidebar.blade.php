@@ -239,6 +239,43 @@
             <span x-show="sidebarOpen" x-transition>Warga</span>
         </a>
 
+<!-- ================= MANAJEMEN PEGAWAI ================= -->
+<div
+    x-data="{ openMenuPegawai: {{ request()->routeIs('management_pegawai.*') ? 'true' : 'false' }} }"
+    class="rounded">
+
+    <div
+        @click="openMenuPegawai = !openMenuPegawai"
+        class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
+        :class="openMenuPegawai ? 'bg-orange-500' : 'hover:bg-blue-800'">
+
+        <span>
+            <x-heroicon-o-users class="w-5 h-5" />
+        </span>
+
+        <span x-show="sidebarOpen" x-transition>
+            Manajemen Pegawai
+        </span>
+    </div>
+
+    <div
+        x-show="openMenuPegawai"
+        x-transition
+        class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
+
+        <a href="{{ route('management_pegawai.pegawai.index') }}"
+            class="block px-3 py-2 text-sm rounded {{ request()->routeIs('management_pegawai.pegawai.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Data Pegawai
+        </a>
+
+        <a href="{{ route('management_pegawai.relawan.index') }}"
+            class="block px-3 py-2 text-sm rounded {{ request()->routeIs('management_pegawai.relawan.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Data Relawan
+        </a>
+
+    </div>
+</div>
+
     </nav>
 
 </aside>

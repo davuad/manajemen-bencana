@@ -15,7 +15,11 @@ use App\Http\Controllers\PaketBantuanController;
 use App\Http\Controllers\KorbanController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\WargaTerdampakController;
+ elyza
+use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\RelawanController;
 use App\Http\Controllers\JadwalController;
+ main
 
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
@@ -153,6 +157,17 @@ Route::middleware('auth')->group(function () {
     Route::post('/warga-terdampak/ubah-status/{id}', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 });
 
+ elyza
+Route::middleware('auth')
+    ->prefix('management-pegawai')
+    ->name('management_pegawai.')
+    ->group(function () {
+
+        Route::resource('pegawai', PegawaiController::class);
+        Route::resource('relawan', RelawanController::class);
+
+    });
+
 
 
 // Jadwal Layanan (Khusus Admin)
@@ -185,3 +200,4 @@ Route::middleware(['auth', 'role:ketua_tim'])->prefix('ketua_tim')->name('ketua_
     
 });
 
+ main
