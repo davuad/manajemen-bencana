@@ -14,6 +14,7 @@ return new class extends Migration
             $table->string('jabatan', 100);
             $table->string('no_hp', 20);
             $table->text('alamat');
+            $table->boolean('status_aktif')->default(true);
             $table->timestamps();
         });
     }

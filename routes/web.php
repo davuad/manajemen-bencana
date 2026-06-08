@@ -13,6 +13,8 @@ use App\Http\Controllers\PaketBantuanController;
 use App\Http\Controllers\KorbanController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\WargaTerdampakController;
+use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\RelawanController;
 
 use Illuminate\Support\Facades\Route;
 use App\Models\User;
@@ -116,3 +118,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/warga-terdampak/delete/{id}', [WargaTerdampakController::class, 'delete'])->name('warga.delete');
     Route::post('/warga-terdampak/ubah-status/{id}', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 });
+
+Route::middleware('auth')
+    ->prefix('management-pegawai')
+    ->name('management_pegawai.')
+    ->group(function () {
+
+        Route::resource('pegawai', PegawaiController::class);
+        Route::resource('relawan', RelawanController::class);
+
+    });
