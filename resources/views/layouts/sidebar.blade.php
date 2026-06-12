@@ -219,10 +219,12 @@
                 Data Korban
             </span>
         </a>
+        
         <!-- ================= JADWAL LAYANAN ================= -->
-        <a href="{{ route('jadwal.index') }}"
+    
+        <a href="{{ route('admin.jadwal.index') }}"
             class="flex items-center gap-3 px-3 py-2 rounded
-   {{ request()->routeIs('jadwal.index') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+{{ request()->routeIs('admin.jadwal.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
 
             <span>
                 <x-heroicon-o-clock class="w-5 h-5" />
