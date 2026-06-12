@@ -153,10 +153,7 @@
                     Dapur Umum
                 </a>
 
-                <a href="{{ route('management_posko.dapur_umum.index') }}"
-                    class="block px-3 py-2 text-sm rounded {{ request()->routeIs('management_posko.kebutuhan_harian.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
-                    Kebutuhan Harian
-                </a>
+                
 
             </div>
         </div>
