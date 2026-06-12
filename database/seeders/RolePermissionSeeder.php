@@ -50,7 +50,7 @@ class RolePermissionSeeder extends Seeder
         $user->assignRole($admin);
 
         $relawan = Role::firstOrCreate(['name' => 'relawan']);
-        $kadus = Role::firstOrCreate(['name' => 'kadus']);
+        $kadus = Role::firstOrCreate(['name' => 'kadus']); //
         $kabid = Role::firstOrCreate(['name' => 'kabid']);
         $desa = Role::firstOrCreate(['name' => 'desa']);
         $ketua_tim = Role::firstOrCreate(['name' => 'ketua_tim']);

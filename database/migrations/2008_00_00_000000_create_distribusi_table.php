@@ -11,29 +11,23 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('distribusi', function (Blueprint $table) {
-            $table->id();
+       Schema::create('distribusi', function (Blueprint $table) {
+    $table->id();
+    $table->foreignId('bencana_id')->constrained('bencana')->cascadeOnDelete();
+    $table->foreignId('posko_id')->constrained('posko')->cascadeOnDelete();
 
-            // Kolom FK
-            $table->foreignId('barang_keluar_id')->nullable()
-                  ->constrained('barang_keluar') // mengacu ke id di barang_keluar
-                  ->cascadeOnDelete();
+    $table->date('tanggal_distribusi');
+    $table->string('lokasi_distribusi');
+    $table->string('kendaraan');
+    $table->string('nama_supir');
+    $table->string('nomor_kendaraan');
 
-            $table->foreignId('bencana_id')->nullable();
+    $table->enum('kategori_distribusi', ['bencana', 'pasca_bencana']);
+    $table->enum('status', ['pending', 'dikirim', 'selesai']);
 
-            $table->foreignId('posko_id')->nullable();
-
-            $table->date('tanggal_distribusi');
-            $table->string('lokasi_distribusi', 100);
-            $table->string('kendaraan', 100);
-            $table->string('nama_supir', 100);
-            $table->string('nomor_kendaraan', 100);
-            $table->string('keterangan', 255)->nullable();
-            $table->string('kategori_distribusi', 50);
-            $table->string('status', 20);
-
-            $table->timestamps();
-        });
+    $table->text('keterangan')->nullable();
+    $table->timestamps();
+});
     }
 
     /**

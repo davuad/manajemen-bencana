@@ -11,7 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::create('relawan', function (Blueprint $table) {
+            $table->id('id_relawan');
+            $table->string('nama_relawan');
+            $table->string('jenis_psks');
+            $table->string('kecamatan');
+            $table->string('no_hp');
+            $table->text('alamat');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -19,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('relawan');
     }
 };
