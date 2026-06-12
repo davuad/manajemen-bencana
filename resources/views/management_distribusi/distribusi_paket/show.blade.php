@@ -15,7 +15,7 @@
             <div class="flex justify-end gap-3 mt-6">
 
                 {{-- Kembali --}}
-                <a href="{{ route('management_distribusi.distribusi_paket.index') }}"
+                <a href="{{ route('admin.management_distribusi.distribusi_paket.index') }}"
                     class="flex items-center gap-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg">
                     <x-heroicon-o-arrow-left class="w-5 h-5" />
                     Kembali
@@ -23,7 +23,7 @@
 
                 {{-- Sudah Disalurkan --}}
                 @if ($distribusi->status_distribusi == 'Proses Penyaluran')
-                    <form action="{{ route('management_distribusi.distribusi_paket.selesai', $distribusi->id) }}"
+                    <form action="{{ route('admin.management_distribusi.distribusi_paket.selesai', $distribusi->id) }}"
                         method="POST">
                         @csrf
                         @method('PATCH')

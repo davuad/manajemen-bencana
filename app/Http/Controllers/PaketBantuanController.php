@@ -53,7 +53,7 @@ class PaketBantuanController extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect()->route('management_distribusi.paket_bantuan.index')
+        return redirect()->route('admin.management_distribusi.paket_bantuan.index')
             ->with('success', 'Data paket bantuan berhasil ditambahkan');
     }
 
@@ -83,7 +83,7 @@ class PaketBantuanController extends Controller
             'status' => $request->status,
         ]);
 
-        return redirect()->route('management_distribusi.paket_bantuan.index')
+        return redirect()->route('admin.management_distribusi.paket_bantuan.index')
             ->with('success', 'Data paket bantuan berhasil diperbarui');
     }
 
@@ -92,7 +92,7 @@ class PaketBantuanController extends Controller
         $paket_bantuan = PaketBantuan::findOrFail($id);
         $paket_bantuan->delete();
 
-        return redirect()->route('management_distribusi.paket_bantuan.index')
+        return redirect()->route('admin.management_distribusi.paket_bantuan.index')
             ->with('success', 'Data paket bantuan berhasil dihapus');
     }
 }
