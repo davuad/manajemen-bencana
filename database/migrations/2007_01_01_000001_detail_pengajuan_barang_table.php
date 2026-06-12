@@ -15,7 +15,12 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('pengajuan_barang_id')->constrained('pengajuan_barang')->cascadeOnDelete();
-            $table->foreignId('barang_id')->constrained('barang')->cascadeOnDelete();
+            $table->string('barang_id', 10);
+
+            $table->foreign('barang_id')
+                ->references('id_barang')
+                ->on('barang')
+                ->cascadeOnDelete();
 
             $table->enum('kategori_penerima', ['warga', 'pengungsi', 'relawan', 'anak-anak', 'lansia']);
             $table->integer('jumlah');
