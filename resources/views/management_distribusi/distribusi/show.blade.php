@@ -148,7 +148,7 @@
 
     <!-- BUTTON -->
     <div class="flex justify-end gap-3 mt-6">
-        <a href="{{ route('management_distribusi.distribusi.index') }}"
+        <a href="{{ route('admin.management_distribusi.distribusi.index') }}"
            class="px-4 py-2 bg-gray-300 rounded-lg">
             Kembali
         </a>
