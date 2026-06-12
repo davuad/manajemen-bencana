@@ -179,7 +179,7 @@
 
             <div x-show="openMenuDistribusi" x-transition class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
 
-                <a href="{{ route('management_distribusi.distribusi.index') }}"
+                <a href="{{ route('admin.management_distribusi.distribusi.index') }}"
                     class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.management_distribusi.distribusi.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
                     Distribusi
                 </a>
@@ -210,9 +210,9 @@
             </span>
         </a>
         <!-- ================= JADWAL LAYANAN ================= -->
-        <a href="{{ route('jadwal.index') }}"
+        <a href="{{ route('admin.jadwal.index') }}"
             class="flex items-center gap-3 px-3 py-2 rounded
-   {{ request()->routeIs('jadwal.index') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+   {{ request()->routeIs('admin.jadwal.index') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
 
             <span>
                 <x-heroicon-o-clock class="w-5 h-5" />

@@ -1,5 +1,6 @@
 <?php
 
+
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -15,7 +16,7 @@ return new class extends Migration
             $table->id(); // primary key
 
             $table->unsignedBigInteger('pengembalian_barang_id');
-            $table->unsignedBigInteger('barang_id');
+            $table->string('barang_id', 10);
 
             $table->text('jumlah_barang_dikembalikan');
             $table->enum('kondisi', ['Baik', 'Rusak Ringan', 'Rusak Berat']);
@@ -28,7 +29,7 @@ return new class extends Migration
                   ->onDelete('cascade');
 
             $table->foreign('barang_id')
-                  ->references('id')->on('barang')
+                  ->references('id_barang')->on('barang')
                   ->onDelete('cascade');
         });
     }
