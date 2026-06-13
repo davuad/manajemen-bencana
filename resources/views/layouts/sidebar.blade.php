@@ -12,7 +12,7 @@
     </div>
 
     {{-- Menu --}}
-    <nav class="mt-4 space-y-2 px-2">
+    <nav class="mt-4 space-y-2 px-2  pb-12"">
         @role('admin')
             <a href="{{ route('admin.management_user.index') }}"
                 class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
