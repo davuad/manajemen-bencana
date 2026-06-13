@@ -12,7 +12,7 @@ class BencanaController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Bencana::with(['kategori','desa','pengaduan']);
+        $query = Bencana::with(['kategori', 'desa', 'pengaduan']);
 
         // SEARCH kategori
         if ($request->search) {
@@ -60,7 +60,7 @@ class BencanaController extends Controller
 
         Bencana::create($request->all());
 
-        return redirect()->route('bencana.index')
+        return redirect()->route('admin.bencana.index')
             ->with('success', 'Data berhasil ditambahkan');
     }
 
@@ -89,7 +89,7 @@ class BencanaController extends Controller
         $bencana = Bencana::findOrFail($id);
         $bencana->update($request->all());
 
-        return redirect()->route('bencana.index')
+        return redirect()->route('admin.bencana.index')
             ->with('success', 'Data berhasil diupdate');
     }
 
@@ -97,7 +97,7 @@ class BencanaController extends Controller
     {
         Bencana::findOrFail($id)->delete();
 
-        return redirect()->route('bencana.index')
+        return redirect()->route('admin.bencana.index')
             ->with('success', 'Data berhasil dihapus');
     }
 }

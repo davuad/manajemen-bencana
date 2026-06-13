@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\StokGudang;
 use App\Models\Gudang;
-use App\Models\Barang; 
+use App\Models\Barang;
 use Illuminate\Http\Request;
 
 class StokGudangController extends Controller
@@ -59,7 +59,7 @@ class StokGudangController extends Controller
             'keterangan' => $request->keterangan,
         ]);
 
-        return redirect()->route('stok_gudang.index')
+        return redirect()->route('admin.stok_gudang.index')
             ->with('success', 'Stok berhasil ditambahkan');
     }
 
@@ -98,7 +98,7 @@ class StokGudangController extends Controller
             'keterangan' => $request->keterangan,
         ]);
 
-        return redirect()->route('stok_gudang.index')
+        return redirect()->route('admin.stok_gudang.index')
             ->with('success', 'Stok berhasil diupdate');
     }
 
@@ -109,7 +109,7 @@ class StokGudangController extends Controller
     {
         StokGudang::findOrFail($id)->delete();
 
-        return redirect()->route('stok_gudang.index')
+        return redirect()->route('admin.stok_gudang.index')
             ->with('success', 'Stok berhasil dihapus');
     }
 }

@@ -36,29 +36,29 @@ class GudangController extends Controller
 
         Gudang::create($request->all());
 
-        return redirect()->route('gudang.index')
+        return redirect()->route('admin.gudang.index')
             ->with('success', 'Data berhasil ditambahkan');
     }
 
-       public function edit($id)
-{
-    $gudang = Gudang::findOrFail($id);
-    return view('gudang.edit', compact('gudang'));
-}
+    public function edit($id)
+    {
+        $gudang = Gudang::findOrFail($id);
+        return view('gudang.edit', compact('gudang'));
+    }
 
-public function update(Request $request, $id)
-{
-    $gudang = Gudang::findOrFail($id);
+    public function update(Request $request, $id)
+    {
+        $gudang = Gudang::findOrFail($id);
 
-    $gudang->update($request->all());
+        $gudang->update($request->all());
 
-    return redirect()->route('gudang.index');
-}
+        return redirect()->route('admin.gudang.index');
+    }
 
-public function destroy($id)
-{
-    Gudang::findOrFail($id)->delete();
+    public function destroy($id)
+    {
+        Gudang::findOrFail($id)->delete();
 
-    return redirect()->route('gudang.index');
-}
+        return redirect()->route('admin.gudang.index');
+    }
 }

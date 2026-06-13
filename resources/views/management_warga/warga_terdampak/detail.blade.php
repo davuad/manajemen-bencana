@@ -12,7 +12,8 @@
         {{-- Card --}}
         <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
             {{-- Header --}}
-            <div class="flex flex-col gap-4 border-b border-gray-100 px-6 py-5 lg:flex-row lg:items-start lg:justify-between">
+            <div
+                class="flex flex-col gap-4 border-b border-gray-100 px-6 py-5 lg:flex-row lg:items-start lg:justify-between">
                 <div>
                     <h2 class="text-xl font-bold text-gray-900 uppercase tracking-wide">
                         Detail Data Warga Terdampak
@@ -23,17 +24,13 @@
                 </div>
 
                 <div class="flex flex-col gap-3 sm:flex-row">
-                    <a
-                        href="{{ route('warga.index') }}"
-                        class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-                    >
+                    <a href="{{ route('admin.warga.index') }}"
+                        class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
                         Kembali
                     </a>
 
-                    <a
-                        href="{{ route('warga.edit', $warga->id) }}"
-                        class="inline-flex items-center justify-center rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-orange-600"
-                    >
+                    <a href="{{ route('admin.warga.edit', $warga->id) }}"
+                        class="inline-flex items-center justify-center rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-orange-600">
                         Edit Data
                     </a>
                 </div>
@@ -46,7 +43,8 @@
                     {{-- Profile --}}
                     <div class="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-2">
                         <div class="mb-5 flex items-start gap-4">
-                            <div class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-100 text-sm font-bold text-indigo-700">
+                            <div
+                                class="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-100 text-sm font-bold text-indigo-700">
                                 {{ str_pad($warga->id, 2, '0', STR_PAD_LEFT) }}
                             </div>
 
@@ -56,7 +54,8 @@
                                 </h3>
                                 <p class="mt-1 text-sm text-gray-500">
                                     {{-- Diubah ke relasi bencana --}}
-                                    Kepala Keluarga · {{ $warga->desa?->nama_desa ?? '-' }} · {{ $warga->bencana?->nama_bencana ?? '-' }}
+                                    Kepala Keluarga · {{ $warga->desa?->nama_desa ?? '-' }} ·
+                                    {{ $warga->bencana?->nama_bencana ?? '-' }}
                                 </p>
                             </div>
                         </div>
@@ -93,7 +92,8 @@
                         <div>
                             <p class="text-xs font-medium text-gray-400">Jenis Bantuan</p>
                             <div class="mt-2">
-                                <span class="inline-flex rounded-full bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-700">
+                                <span
+                                    class="inline-flex rounded-full bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-700">
                                     {{ $warga->jenis_bantuan }}
                                 </span>
                             </div>
@@ -103,19 +103,23 @@
                             <p class="text-xs font-medium text-gray-400">Status Penyaluran</p>
                             <div class="mt-2">
                                 @if ($warga->status_penyaluran == 'Belum diproses')
-                                    <span class="inline-flex rounded-full bg-red-100 px-3 py-1.5 text-xs font-semibold text-red-700">
+                                    <span
+                                        class="inline-flex rounded-full bg-red-100 px-3 py-1.5 text-xs font-semibold text-red-700">
                                         Belum Diproses
                                     </span>
                                 @elseif ($warga->status_penyaluran == 'Proses Penyaluran')
-                                    <span class="inline-flex rounded-full bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-700">
+                                    <span
+                                        class="inline-flex rounded-full bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-700">
                                         Proses Penyaluran
                                     </span>
                                 @elseif ($warga->status_penyaluran == 'Sudah disalurkan')
-                                    <span class="inline-flex rounded-full bg-green-100 px-3 py-1.5 text-xs font-semibold text-green-700">
+                                    <span
+                                        class="inline-flex rounded-full bg-green-100 px-3 py-1.5 text-xs font-semibold text-green-700">
                                         Sudah Disalurkan
                                     </span>
                                 @else
-                                    <span class="inline-flex rounded-full bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-700">
+                                    <span
+                                        class="inline-flex rounded-full bg-gray-100 px-3 py-1.5 text-xs font-semibold text-gray-700">
                                         {{ $warga->status_penyaluran }}
                                     </span>
                                 @endif
@@ -143,12 +147,14 @@
 
                         <div class="rounded-2xl border border-gray-200 bg-white p-4">
                             <p class="text-xs font-medium text-gray-400">NIK Kepala Keluarga</p>
-                            <p class="mt-2 text-base font-semibold break-words text-gray-900">{{ $warga->nik_kepala_keluarga }}</p>
+                            <p class="mt-2 text-base font-semibold break-words text-gray-900">
+                                {{ $warga->nik_kepala_keluarga }}</p>
                         </div>
 
                         <div class="rounded-2xl border border-gray-200 bg-white p-4">
                             <p class="text-xs font-medium text-gray-400">Nama Kepala Keluarga</p>
-                            <p class="mt-2 text-base font-semibold break-words text-gray-900">{{ $warga->nama_kepala_keluarga }}</p>
+                            <p class="mt-2 text-base font-semibold break-words text-gray-900">
+                                {{ $warga->nama_kepala_keluarga }}</p>
                         </div>
 
                         <div class="rounded-2xl border border-gray-200 bg-white p-4 md:col-span-2">
@@ -158,18 +164,21 @@
 
                         <div class="rounded-2xl border border-gray-200 bg-white p-4">
                             <p class="text-xs font-medium text-gray-400">Desa</p>
-                            <p class="mt-2 text-base font-semibold break-words text-gray-900">{{ $warga->desa?->nama_desa ?? '-' }}</p>
+                            <p class="mt-2 text-base font-semibold break-words text-gray-900">
+                                {{ $warga->desa?->nama_desa ?? '-' }}</p>
                         </div>
 
                         <div class="rounded-2xl border border-gray-200 bg-white p-4">
                             <p class="text-xs font-medium text-gray-400">Bencana</p>
                             {{-- Diubah ke relasi bencana --}}
-                            <p class="mt-2 text-base font-semibold break-words text-gray-900">{{ $warga->bencana?->nama_bencana ?? '-' }}</p>
+                            <p class="mt-2 text-base font-semibold break-words text-gray-900">
+                                {{ $warga->bencana?->nama_bencana ?? '-' }}</p>
                         </div>
 
                         <div class="rounded-2xl border border-gray-200 bg-white p-4">
                             <p class="text-xs font-medium text-gray-400">Jumlah Anggota</p>
-                            <p class="mt-2 text-base font-semibold break-words text-gray-900">{{ $warga->jumlah_anggota }}</p>
+                            <p class="mt-2 text-base font-semibold break-words text-gray-900">{{ $warga->jumlah_anggota }}
+                            </p>
                         </div>
 
                         <div class="rounded-2xl border border-gray-200 bg-white p-4">
@@ -181,12 +190,14 @@
 
                         <div class="rounded-2xl border border-gray-200 bg-white p-4">
                             <p class="text-xs font-medium text-gray-400">Jenis Bantuan</p>
-                            <p class="mt-2 text-base font-semibold break-words text-gray-900">{{ $warga->jenis_bantuan }}</p>
+                            <p class="mt-2 text-base font-semibold break-words text-gray-900">{{ $warga->jenis_bantuan }}
+                            </p>
                         </div>
 
                         <div class="rounded-2xl border border-gray-200 bg-white p-4">
                             <p class="text-xs font-medium text-gray-400">Status Penyaluran</p>
-                            <p class="mt-2 text-base font-semibold break-words text-gray-900">{{ $warga->status_penyaluran }}</p>
+                            <p class="mt-2 text-base font-semibold break-words text-gray-900">
+                                {{ $warga->status_penyaluran }}</p>
                         </div>
 
                         <div class="rounded-2xl border border-gray-200 bg-white p-4 md:col-span-2">
