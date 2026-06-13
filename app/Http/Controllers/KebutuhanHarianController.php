@@ -77,7 +77,7 @@ class KebutuhanHarianController extends Controller
 
         return redirect()
             ->route(
-                'management_posko.kebutuhan_harian.index',
+                'admin.management_posko.kebutuhan_harian.index',
                 $dapur->id
             )
             ->with(
@@ -93,10 +93,11 @@ class KebutuhanHarianController extends Controller
     {
         $kebutuhan = KebutuhanHarian::with('dapur_umum')
             ->findOrFail($id);
+        $dapur = DapurUmum::all();
 
         return view(
             'management_posko.kebutuhan_harian.edit',
-            compact('kebutuhan')
+            compact('kebutuhan', 'dapur')
         );
     }
 
@@ -125,7 +126,7 @@ class KebutuhanHarianController extends Controller
 
         return redirect()
             ->route(
-                'management_posko.kebutuhan_harian.index',
+                'admin.management_posko.kebutuhan_harian.index',
                 $kebutuhan->dapur_umum_id
             )
             ->with(
@@ -147,7 +148,7 @@ class KebutuhanHarianController extends Controller
 
         return redirect()
             ->route(
-                'management_posko.kebutuhan_harian.index',
+                'admin.management_posko.kebutuhan_harian.index',
                 $dapurId
             )
             ->with(

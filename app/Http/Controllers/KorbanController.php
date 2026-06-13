@@ -69,7 +69,7 @@ class KorbanController extends Controller
 
         Korban::create($data);
 
-        return redirect()->route('management_korban.korban.index')
+        return redirect()->route('admin.management_korban.korban.index')
             ->with('success', 'Data korban berhasil ditambahkan.');
     }
 
@@ -111,7 +111,7 @@ class KorbanController extends Controller
 
         $korban->update($data);
 
-        return redirect()->route('management_korban.korban.index')
+        return redirect()->route('admin.management_korban.korban.index')
             ->with('success', 'Data korban berhasil diperbarui.');
     }
 
@@ -119,7 +119,7 @@ class KorbanController extends Controller
     {
         $korban->delete();
 
-        return redirect()->route('management_korban.korban.index')
+        return redirect()->route('admin.management_korban.korban.index')
             ->with('success', 'Data korban berhasil dihapus.');
     }
 
