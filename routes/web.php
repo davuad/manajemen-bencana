@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnakTerpisahController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\DapurUmumController;
@@ -58,6 +59,8 @@ Route::middleware('auth')->group(function () {
         ->name('admin.')
         ->group(function () {
 
+
+            Route::resource('anak_terpisah', AnakTerpisahController::class);
 
             Route::model('manajemen_user', User::class);
             Route::resource('manajemen_user', UserController::class);
