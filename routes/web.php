@@ -1,6 +1,9 @@
 <?php
 
+
+use App\Http\Controllers\AnakTerpisahController;
 use App\Http\Controllers\BencanaController;
+
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PengaduanBencanaController;
@@ -21,6 +24,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\KategoriBencanaController;
 use App\Http\Controllers\GudangController;
 use App\Http\Controllers\KategoriBantuanController;
+use App\Http\Controllers\PenjemputanAnakController;
 use App\Http\Controllers\KebutuhanHarianController;
 use App\Http\Controllers\PoskoController;
 use App\Http\Controllers\StokGudangController;
@@ -46,6 +50,20 @@ Route::middleware(['auth', 'role:admin'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
+
+    Route::resource('anak_terpisah', AnakTerpisahController::class);
+
+    Route::get('penjemputan', [PenjemputanAnakController::class, 'index'])
+        ->name('penjemputan.index');
+
+    Route::get('penjemputan/{anak_id}/jemput', [PenjemputanAnakController::class, 'formJemput'])
+        ->name('penjemputan.jemput');
+
+    Route::post('penjemputan', [PenjemputanAnakController::class, 'store'])
+        ->name('penjemputan.store');
+
+    Route::get('penjemputan/{id}', [PenjemputanAnakController::class, 'show'])
+    ->name('penjemputan.show');
 
         // --- System Management ---
         Route::model('management_user', User::class);
@@ -137,9 +155,11 @@ Route::middleware(['auth', 'role:admin'])
         });
     });
 
+
 // --- Role Placeholders (Kosong) ---
 Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')->group(function () {});
 Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->group(function () {});
 Route::middleware(['auth', 'role:kabid'])->prefix('kabid')->name('kabid.')->group(function () {});
 Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(function () {});
 Route::middleware(['auth', 'role:ketua_tim'])->prefix('ketua_tim')->name('ketua_tim.')->group(function () {});
+
