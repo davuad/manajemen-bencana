@@ -12,7 +12,7 @@
                 </p>
             </div>
 
-                <a href="{{ route('management_distribusi.paket_bantuan.index') }}"
+                <a href="{{ route('admin.management_distribusi.paket_bantuan.index') }}"
                     class="flex items-center gap-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg">
                     <x-heroicon-o-arrow-left class="w-5 h-5" />
                     Kembali
@@ -61,7 +61,7 @@
             <h2 class="text-xl font-bold">Daftar Detail Isi Paket Bantuan</h2>
 
             <div class="flex gap-3 items-center">
-                <form method="GET" action="{{ route('management_distribusi.detail_paket.index') }}" class="flex gap-2">
+                <form method="GET" action="{{ route('admin.management_distribusi.detail_paket.index') }}" class="flex gap-2">
                     <input type="hidden" name="paket_bantuan_id" value="{{ $paket_bantuan->id }}">
 
                     <input type="text" name="search" value="{{ request('search') }}"
@@ -70,7 +70,7 @@
                     <button type="submit" class="hidden">Cari</button>
                 </form>
 
-                <a href="{{ route('management_distribusi.detail_paket.create', ['paket_bantuan_id' => $paket_bantuan->id]) }}"
+                <a href="{{ route('admin.management_distribusi.detail_paket.create', ['paket_bantuan_id' => $paket_bantuan->id]) }}"
                     class="bg-indigo-800 hover:bg-indigo-900 text-white px-4 py-2 rounded-lg inline-flex items-center gap-2">
                     <span class="text-lg font-bold">+</span>
                     Tambah Barang
@@ -99,7 +99,7 @@
                             <td class="p-4">{{ $item->barang->satuan ?? '-' }}</td>
                             <td class="p-4">
                                 <div class="flex gap-2">
-                                    <a href="{{ route('management_distribusi.detail_paket.edit', $item->id) }}"
+                                    <a href="{{ route('admin.management_distribusi.detail_paket.edit', $item->id) }}"
                                         class="bg-yellow-400 hover:bg-yellow-500 text-white px-3 py-2 rounded-lg inline-flex items-center gap-1">
                                         <x-heroicon-o-pencil-square class="w-4 h-4" />
                                         Edit
@@ -176,7 +176,7 @@
 
             document.getElementById('namaBarang').innerText = `"${nama}"`;
 
-            let url = "{{ route('management_distribusi.detail_paket.destroy', ':id') }}";
+            let url = "{{ route('admin.management_distribusi.detail_paket.destroy', ':id') }}";
             url = url.replace(':id', id);
 
             document.getElementById('deleteForm').action = url;

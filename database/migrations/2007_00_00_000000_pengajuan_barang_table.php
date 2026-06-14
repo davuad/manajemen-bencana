@@ -11,7 +11,36 @@ return new class extends Migration
      */
     public function up(): void
     {
-        //
+        Schema::create('pengajuan_barang', function (Blueprint $table) {
+            $table->id();
+
+            $table->foreignId('bencana_id')->constrained('bencana')->cascadeOnDelete();
+            $table->unsignedBigInteger('pegawai_id');
+
+            $table->foreign('pegawai_id')
+                ->references('id_pegawai')
+                ->on('pegawai')
+                ->cascadeOnDelete();
+
+            $table->date('tgl_pengajuan');
+            $table->enum('status_pengajuan', ['pending', 'disetujui', 'ditolak']);
+
+            $table->foreignId('created_by')->nullable()->constrained('user')->nullOnDelete(); 
+            $table->foreignId('updated_by')->nullable()->constrained('user')->nullOnDelete();
+
+            $table->unsignedBigInteger('acc_ketua_id')->nullable();
+
+            $table->foreign('acc_ketua_id')
+                ->references('id_pegawai')
+                ->on('pegawai')
+                ->nullOnDelete();
+
+            $table->date('tgl_persetujuan')->nullable();
+            $table->text('keterangan')->nullable();
+            $table->string('catatan')->nullable();
+
+            $table->timestamps();
+        });
     }
 
     /**
@@ -19,6 +48,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        //
+        Schema::dropIfExists('pengajuan_barang');
     }
 };

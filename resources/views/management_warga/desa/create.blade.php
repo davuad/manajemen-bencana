@@ -18,7 +18,7 @@
             </div>
 
             <div class="px-6 py-6 md:px-8 md:py-8">
-                <form action="{{ route('desa.store') }}" method="POST" class="space-y-8">
+                <form action="{{ route('admin.desa.store') }}" method="POST" class="space-y-8">
                     @csrf
 
                     <div class="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-x-10 md:gap-y-7">
@@ -27,14 +27,9 @@
                             <label for="nama_desa" class="mb-2 block text-sm font-medium text-gray-700">
                                 Nama Desa
                             </label>
-                            <input
-                                type="text"
-                                id="nama_desa"
-                                name="nama_desa"
-                                value="{{ old('nama_desa') }}"
+                            <input type="text" id="nama_desa" name="nama_desa" value="{{ old('nama_desa') }}"
                                 placeholder="Masukkan nama desa"
-                                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100"
-                            >
+                                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100">
                             @error('nama_desa')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -45,14 +40,9 @@
                             <label for="nama_kades" class="mb-2 block text-sm font-medium text-gray-700">
                                 Nama Kepala Desa
                             </label>
-                            <input
-                                type="text"
-                                id="nama_kades"
-                                name="nama_kades"
-                                value="{{ old('nama_kades') }}"
+                            <input type="text" id="nama_kades" name="nama_kades" value="{{ old('nama_kades') }}"
                                 placeholder="Masukkan nama kepala desa"
-                                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100"
-                            >
+                                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100">
                             @error('nama_kades')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -63,14 +53,9 @@
                             <label for="kecamatan" class="mb-2 block text-sm font-medium text-gray-700">
                                 Kecamatan
                             </label>
-                            <input
-                                type="text"
-                                id="kecamatan"
-                                name="kecamatan"
-                                value="{{ old('kecamatan') }}"
+                            <input type="text" id="kecamatan" name="kecamatan" value="{{ old('kecamatan') }}"
                                 placeholder="Masukkan kecamatan"
-                                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100"
-                            >
+                                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100">
                             @error('kecamatan')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -81,14 +66,9 @@
                             <label for="kontak_kades" class="mb-2 block text-sm font-medium text-gray-700">
                                 Kontak Kepala Desa
                             </label>
-                            <input
-                                type="text"
-                                id="kontak_kades"
-                                name="kontak_kades"
-                                value="{{ old('kontak_kades') }}"
+                            <input type="text" id="kontak_kades" name="kontak_kades" value="{{ old('kontak_kades') }}"
                                 placeholder="Masukkan kontak kepala desa"
-                                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100"
-                            >
+                                class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100">
                             @error('kontak_kades')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>
                             @enderror
@@ -97,17 +77,13 @@
 
                     {{-- Actions --}}
                     <div class="flex flex-col-reverse gap-3 border-t border-gray-100 pt-6 sm:flex-row sm:justify-end">
-                        <a
-                            href="{{ route('desa.index') }}"
-                            class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-                        >
+                        <a href="{{ route('admin.desa.index') }}"
+                            class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-5 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
                             Batal
                         </a>
 
-                        <button
-                            type="submit"
-                            class="inline-flex items-center justify-center rounded-xl bg-indigo-700 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-800"
-                        >
+                        <button type="submit"
+                            class="inline-flex items-center justify-center rounded-xl bg-indigo-700 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-800">
                             Simpan
                         </button>
                     </div>

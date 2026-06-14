@@ -13,10 +13,12 @@ class JadwalController extends Controller
     public function index(Request $request)
     {
         // 1. Ambil daftar tahun unik dari database untuk pilihan filter
-        $tahunTersedia = JadwalLayanan::selectRaw('YEAR(tanggal_layanan) as tahun')
-                            ->distinct()
-                            ->orderBy('tahun', 'desc')
-                            ->pluck('tahun');
+        $tahunTersedia = JadwalLayanan::select('tanggal_layanan')
+            ->pluck('tanggal_layanan')
+            ->map(fn($date) => \Carbon\Carbon::parse($date)->year)
+            ->unique()
+            ->sortDesc()
+            ->values();
 
         // 2. Inisialisasi query dengan Eager Loading
         $query = JadwalLayanan::with(['pegawai', 'bencana.desa', 'bencana.kategori']);
@@ -52,7 +54,7 @@ class JadwalController extends Controller
     {
         $request->validate([
             'bencana_id' => 'required|exists:bencana,id',
-            'pegawai_id' => 'required|exists:pegawai,id',
+            'pegawai_id' => 'required|exists:pegawai,id_pegawai',
             'tanggal_layanan' => 'required|date',
             'jam_mulai' => 'required',
             'jam_selesai' => 'required|after:jam_mulai',
@@ -64,7 +66,7 @@ class JadwalController extends Controller
         ]);
 
         JadwalLayanan::create($request->all());
-        return redirect('/jadwal')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('admin.jadwal.index')->with('success', 'Data berhasil ditambahkan');
     }
 
     public function edit(string $id)
@@ -79,7 +81,7 @@ class JadwalController extends Controller
     {
         $request->validate([
             'bencana_id' => 'required|exists:bencana,id',
-            'pegawai_id' => 'required|exists:pegawai,id',
+            'pegawai_id' => 'required|exists:pegawai,id_pegawai',
             'tanggal_layanan' => 'required|date',
             'jam_mulai' => 'required',
             'jam_selesai' => 'required|after:jam_mulai',
@@ -91,14 +93,14 @@ class JadwalController extends Controller
 
         $jadwal = JadwalLayanan::findOrFail($id);
         $jadwal->update($request->all());
-        return redirect('/jadwal')->with('success', 'Data berhasil diupdate');
+        return redirect()->route('admin.jadwal.index')->with('success', 'Data berhasil diupdate');
     }
 
     public function destroy(string $id)
     {
         $jadwal = JadwalLayanan::findOrFail($id);
         $jadwal->delete();
-        return redirect()->route('jadwal.index')->with('success', 'Data berhasil dihapus');
+        return redirect()->route('admin.jadwal.index')->with('success', 'Data berhasil dihapus');
     }
 
     public function cetak_pdf(Request $request)

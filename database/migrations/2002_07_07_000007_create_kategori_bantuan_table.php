@@ -13,7 +13,7 @@ return new class extends Migration
             Schema::create('kategori_bantuan', function (Blueprint $table) {
                 $table->id();
 
-                $table->unsignedBigInteger('id_sumber');
+                $table->string('id_sumber', 10);
 
                 $table->string('nama_kategori', 50);
                 $table->string('keterangan', 150)->nullable();
@@ -22,8 +22,8 @@ return new class extends Migration
 
                 // RELASI
                 $table->foreign('id_sumber')
-                      ->references('id')
-                      ->on('sumber')
+                      ->references('id_sumber')
+                      ->on('sumber_barang_masuk')
                       ->onDelete('cascade');
             });
 

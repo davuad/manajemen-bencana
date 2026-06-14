@@ -10,7 +10,7 @@
         </div>
 
         {{-- Alert --}}
-        @if(session('success'))
+        @if (session('success'))
             <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
                 {{ session('success') }}
             </div>
@@ -19,7 +19,8 @@
         {{-- Card --}}
         <div class="overflow-hidden rounded-2xl bg-white shadow-sm border border-gray-100">
             {{-- Header --}}
-            <div class="flex flex-col gap-4 border-b border-gray-100 px-6 py-5 lg:flex-row lg:items-start lg:justify-between">
+            <div
+                class="flex flex-col gap-4 border-b border-gray-100 px-6 py-5 lg:flex-row lg:items-start lg:justify-between">
                 <div>
                     <h2 class="text-xl font-bold uppercase tracking-wide text-gray-900">
                         Data Desa
@@ -30,8 +31,8 @@
                 </div>
 
                 <div>
-                    <a href="{{ route('desa.create') }}"
-                       class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-800">
+                    <a href="{{ route('admin.desa.create') }}"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-800">
                         <span>+</span>
                         Tambah Data Desa
                     </a>
@@ -40,24 +41,19 @@
 
             {{-- Filter --}}
             <div class="border-b border-gray-100 px-6 py-5">
-                <form action="{{ route('desa.index') }}" method="GET" class="grid grid-cols-1 gap-3 xl:grid-cols-12">
+                <form action="{{ route('admin.desa.index') }}" method="GET"
+                    class="grid grid-cols-1 gap-3 xl:grid-cols-12">
                     {{-- Search --}}
                     <div class="xl:col-span-5">
-                        <input
-                            type="text"
-                            name="search"
-                            value="{{ request('search') }}"
+                        <input type="text" name="search" value="{{ request('search') }}"
                             placeholder="Cari berdasarkan Nama, Kecamatan, atau Kepala Desa"
-                            class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
-                        >
+                            class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100">
                     </div>
 
                     {{-- Filter Desa --}}
                     <div class="xl:col-span-2">
-                        <select
-                            name="desa"
-                            class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
-                        >
+                        <select name="desa"
+                            class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100">
                             <option value="">Semua Desa</option>
                             @foreach ($listDesa as $namaDesa)
                                 <option value="{{ $namaDesa }}" {{ request('desa') == $namaDesa ? 'selected' : '' }}>
@@ -69,13 +65,12 @@
 
                     {{-- Filter Kecamatan --}}
                     <div class="xl:col-span-2">
-                        <select
-                            name="kecamatan"
-                            class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
-                        >
+                        <select name="kecamatan"
+                            class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100">
                             <option value="">Semua Kecamatan</option>
                             @foreach ($listKecamatan as $namaKecamatan)
-                                <option value="{{ $namaKecamatan }}" {{ request('kecamatan') == $namaKecamatan ? 'selected' : '' }}>
+                                <option value="{{ $namaKecamatan }}"
+                                    {{ request('kecamatan') == $namaKecamatan ? 'selected' : '' }}>
                                     {{ $namaKecamatan }}
                                 </option>
                             @endforeach
@@ -84,15 +79,13 @@
 
                     {{-- Buttons --}}
                     <div class="xl:col-span-3 flex flex-col gap-3 sm:flex-row xl:justify-end">
-                        <button
-                            type="submit"
-                            class="inline-flex items-center justify-center rounded-xl bg-indigo-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-800"
-                        >
+                        <button type="submit"
+                            class="inline-flex items-center justify-center rounded-xl bg-indigo-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-800">
                             Filter
                         </button>
 
-                        <a href="{{ route('desa.index') }}"
-                           class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
+                        <a href="{{ route('admin.desa.index') }}"
+                            class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
                             Reset
                         </a>
                     </div>
@@ -115,10 +108,8 @@
 
                     <tbody class="divide-y divide-gray-100 bg-white">
                         @forelse ($desa as $item)
-                            <tr
-                                class="cursor-pointer transition hover:bg-gray-50"
-                                data-url="{{ route('desa.detail', $item->id) }}"
-                            >
+                            <tr class="cursor-pointer transition hover:bg-gray-50"
+                                data-url="{{ route('admin.desa.detail', $item->id) }}">
                                 <td class="px-6 py-4 text-sm text-gray-700">
                                     {{ ($desa->currentPage() - 1) * $desa->perPage() + $loop->iteration }}.
                                 </td>
@@ -136,19 +127,16 @@
                                 </td>
                                 <td class="aksi-cell px-6 py-4 text-center">
                                     <div class="flex items-center justify-center gap-2">
-                                        <a href="{{ route('desa.edit', $item->id) }}"
-                                           class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-600 transition hover:bg-blue-50"
-                                           title="Edit">
+                                        <a href="{{ route('admin.desa.edit', $item->id) }}"
+                                            class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-600 transition hover:bg-blue-50"
+                                            title="Edit">
                                             ✏️
                                         </a>
 
-                                        <button
-                                            type="button"
+                                        <button type="button"
                                             class="delete-btn inline-flex h-9 w-9 items-center justify-center rounded-lg text-red-600 transition hover:bg-red-50"
-                                            title="Hapus"
-                                            data-url="{{ route('desa.delete', $item->id) }}"
-                                            data-nama="{{ $item->nama_desa }}"
-                                        >
+                                            title="Hapus" data-url="{{ route('admin.desa.delete', $item->id) }}"
+                                            data-nama="{{ $item->nama_desa }}">
                                             🗑️
                                         </button>
                                     </div>
@@ -166,7 +154,8 @@
             </div>
 
             {{-- Footer --}}
-            <div class="flex flex-col gap-4 border-t border-gray-100 px-6 py-4 text-sm text-gray-500 md:flex-row md:items-center md:justify-between">
+            <div
+                class="flex flex-col gap-4 border-t border-gray-100 px-6 py-4 text-sm text-gray-500 md:flex-row md:items-center md:justify-between">
                 <div>
                     @if ($desa->total() > 0)
                         Menampilkan {{ $desa->firstItem() }}-{{ $desa->lastItem() }} dari {{ $desa->total() }} data
@@ -187,9 +176,8 @@
         <div class="w-full max-w-md rounded-2xl bg-white shadow-xl">
             <div class="flex items-center justify-between border-b border-gray-100 px-6 py-4">
                 <h3 class="text-lg font-semibold text-gray-900">Hapus Data Desa</h3>
-                <button type="button"
-                        onclick="closeDeleteModal()"
-                        class="text-2xl leading-none text-gray-400 hover:text-gray-600">
+                <button type="button" onclick="closeDeleteModal()"
+                    class="text-2xl leading-none text-gray-400 hover:text-gray-600">
                     &times;
                 </button>
             </div>
@@ -201,15 +189,14 @@
             </div>
 
             <div class="flex justify-end gap-3 px-6 pb-6">
-                <button type="button"
-                        onclick="closeDeleteModal()"
-                        class="rounded-xl border border-gray-200 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200">
+                <button type="button" onclick="closeDeleteModal()"
+                    class="rounded-xl border border-gray-200 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200">
                     Batal
                 </button>
 
                 <form id="deleteForm" method="GET">
                     <button type="submit"
-                            class="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">
+                        class="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">
                         Hapus
                     </button>
                 </form>
