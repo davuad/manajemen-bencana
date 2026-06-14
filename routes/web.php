@@ -21,6 +21,10 @@ use App\Http\Controllers\BencanaController;
 use App\Http\Controllers\GudangController;
 use App\Http\Controllers\KategoriBantuanController;
 use App\Http\Controllers\StokGudangController;
+use App\Http\Controllers\JenisBarangController;
+use App\Http\Controllers\SumberBarangMasukController;
+use App\Http\Controllers\BarangController;
+use App\Http\Controllers\BarangMasukController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -95,6 +99,11 @@ Route::middleware('auth')->group(function () {
     Route::resource('gudang', GudangController::class);
     Route::resource('kategori_bantuan', KategoriBantuanController::class);
     Route::resource('stok_gudang', StokGudangController::class);
+
+    Route::resource('jenis-barang', JenisBarangController::class);
+    Route::resource('sumber-barang', SumberBarangMasukController::class);
+    Route::resource('barang', BarangController::class);
+    Route::resource('barang-masuk', BarangMasukController::class);
 });
 
 require __DIR__ . '/auth.php';

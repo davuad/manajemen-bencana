@@ -21,15 +21,74 @@
             </a>
         @endrole
 
-        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
-            <span><x-heroicon-o-exclamation-triangle class="w-5 h-5" /></span>
-            <span x-show="sidebarOpen" x-transition>Pengaduan Bencana</span>
-        </a>
+        <!-- ================= GUDANG LOGISTIK ================= -->
+        <div
+            x-data="{ openMenuGudang: {{ request()->routeIs('gudang.*')
+                || request()->routeIs('stok_gudang.*')
+                || request()->routeIs('jenis-barang.*')
+                || request()->routeIs('barang.*')
+                || request()->routeIs('sumber-barang.*')
+                || request()->routeIs('barang-masuk.*')
+                ? 'true' : 'false' }} }"
+            class="rounded"
+        >
 
-        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
-            <span><x-heroicon-o-archive-box class="w-5 h-5" /></span>
-            <span x-show="sidebarOpen" x-transition>Gudang Logistik</span>
-        </a>
+            <div
+                @click="openMenuGudang = !openMenuGudang"
+                class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
+                :class="openMenuGudang ? 'bg-orange-500' : 'hover:bg-blue-800'"
+            >
+                <span>
+                    <x-heroicon-o-archive-box class="w-5 h-5" />
+                </span>
+
+                <span x-show="sidebarOpen" x-transition>
+                    Gudang Logistik
+                </span>
+            </div>
+
+            <div
+                x-show="openMenuGudang"
+                x-transition
+                class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2"
+            >
+
+                <a href="{{ route('gudang.index') }}"
+                class="block px-3 py-2 text-sm rounded hover:bg-blue-700">
+                    Data Gudang
+                </a>
+
+                <a href="{{ route('stok_gudang.index') }}"
+                class="block px-3 py-2 text-sm rounded hover:bg-blue-700">
+                    Stok Gudang
+                </a>
+
+                <a href="{{ route('jenis-barang.index') }}"
+                class="block px-3 py-2 text-sm rounded transition-all duration-200
+                {{ request()->routeIs('barang.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                    Jenis Barang
+                </a>
+
+                <a href="{{ route('barang.index') }}"
+                class="block px-3 py-2 text-sm rounded transition-all duration-200
+                {{ request()->routeIs('barang.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                    Data Barang
+                </a>
+
+                <a href="{{ route('sumber-barang.index') }}"
+                class="block px-3 py-2 text-sm rounded transition-all duration-200
+                {{ request()->routeIs('barang.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                    Sumber Barang
+                </a>
+
+                <a href="{{ route('barang-masuk.index') }}"
+                class="block px-3 py-2 text-sm rounded transition-all duration-200
+                {{ request()->routeIs('barang.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                    Barang Masuk
+                </a>
+
+            </div>
+        </div>
 
         {{-- <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
             <span><x-heroicon-o-truck class="w-5 h-5" /></span>
@@ -71,32 +130,6 @@
                 Kategori Bantuan
             </span>
         </a>
-
-        <!-- DATA GUDANG -->
-        <a href="{{ route('gudang.index') }}"
-            class="flex items-center gap-3 px-3 py-2 rounded 
-            {{ request()->routeIs('gudang.*') ? 'bg-blue-700' : 'hover:bg-blue-800' }}">
-
-                <x-heroicon-o-building-storefront class="w-5 h-5" />
-
-                <span x-show="sidebarOpen">
-                    Data Gudang
-                </span>
-            </a>
-
-            <!-- STOK GUDANG -->
-                <a href="{{ route('stok_gudang.index') }}"
-                    class="flex items-center gap-3 px-3 py-2 rounded 
-                    {{ request()->routeIs('stok.*') ? 'bg-blue-700' : 'hover:bg-blue-800' }}">
-
-                    <span>
-                        <x-heroicon-o-archive-box-arrow-down class="w-5 h-5" />
-                    </span>
-
-                    <span x-show="sidebarOpen">
-                        Stok Gudang
-                    </span>
-                </a>
 
                   <div 
     x-data="{ openMenu: {{ request()->routeIs('desa.*') || request()->routeIs('warga.*') ? 'true' : 'false' }} }"
