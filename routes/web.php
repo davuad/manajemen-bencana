@@ -167,25 +167,31 @@ Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')
     });
 });
 Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->group(function () {
-    Route::get('/posko', [PoskoController::class, 'index'])
-        ->name('posko.index');
+    Route::prefix('management-posko')->name('management_posko.')->group(function () {
+        Route::get('/posko', [PoskoController::class, 'index'])
+            ->name('posko.index');
 
-    Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
-        ->name('dapur_umum.index');
+        Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
+            ->name('dapur_umum.index');
+    });
 });
 Route::middleware(['auth', 'role:kabid'])->prefix('kabid')->name('kabid.')->group(function () {
-    Route::get('/posko', [PoskoController::class, 'index'])
-        ->name('posko.index');
+    Route::prefix('management-posko')->name('management_posko.')->group(function () {
+        Route::get('/posko', [PoskoController::class, 'index'])
+            ->name('posko.index');
 
-    Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
-        ->name('dapur_umum.index');
+        Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
+            ->name('dapur_umum.index');
+    });
 });
 Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(function () {
-    Route::get('/posko', [PoskoController::class, 'index'])
-        ->name('posko.index');
+    Route::prefix('management-posko')->name('management_posko.')->group(function () {
+        Route::get('/posko', [PoskoController::class, 'index'])
+            ->name('posko.index');
 
-    Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
-        ->name('dapur_umum.index');
+        Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
+            ->name('dapur_umum.index');
+    });
 });
 Route::middleware(['auth', 'role:ketua_tim'])->prefix('ketua_tim')->name('ketua_tim.')->group(function () {});
 
