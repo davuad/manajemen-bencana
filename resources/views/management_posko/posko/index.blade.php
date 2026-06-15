@@ -11,12 +11,12 @@
                     Kelola informasi titik posko darurat bencana
                 </p>
             </div>
-
-            <a href="{{ route('admin.management_posko.posko.create') }}"
-                class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
-                + Tambah Data Posko
-            </a>
-
+            @role('admin')
+                <a href="{{ route('admin.management_posko.posko.create') }}"
+                    class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
+                    + Tambah Data Posko
+                </a>
+            @endrole
         </div>
 
         <form method="GET" action="{{ route('admin.management_posko.posko.index') }}">
@@ -56,7 +56,9 @@
                         <th class="text-left">Lokasi</th>
                         <th class="text-left">Tanggal</th>
                         <th class="text-left pl-4">Status</th>
+                        @role('admin')
                         <th class="text-left">Aksi</th>
+                        @endrole
                     </tr>
                 </thead>
 
@@ -84,6 +86,7 @@
                                 @endif
                             </td>
 
+                            @role('admin')
                             <td class="flex gap-1 py-4">
                                 <a href="{{ route('admin.management_posko.posko.edit', $p->id) }}" class="text-blue-500">
                                     <x-heroicon-o-pencil-square class="w-5 h-5" />
@@ -94,6 +97,7 @@
                                     <x-heroicon-o-trash class="w-5 h-5" />
                                 </button>
                             </td>
+                            @endrole
                         </tr>
                     @empty
                         <tr>
