@@ -159,6 +159,42 @@
             </div>
         </div>
 
+        <!-- ================= MANAGEMENT BARANG ================= -->
+
+          <div x-data="{ openMenuManagementBarang: {{ request()->routeIs('management_barang.*') ? 'true' : 'false' }} }" class="rounded">
+            <div @click="openMenuManagementBarang = !openMenuManagementBarang"
+                class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
+                :class="openMenuManagementBarang
+                    ?
+                    'bg-orange-500' :
+                    'hover:bg-blue-800'">
+                <span>
+                    <x-heroicon-o-truck class="w-5 h-5" />
+                </span>
+                <span x-show="sidebarOpen" x-transition>
+                    Manajemen Barang
+                </span>
+            </div>
+
+            <div x-show="openMenuManagementBarang" x-transition class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
+
+                <a href="{{ route('management_barang.petugas.index') }}"
+                    class="block px-3 py-2 text-sm rounded {{ request()->routeIs('management_barang.petugas.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                    Petugas
+                </a>
+                <a href="{{ route('management_barang.pengambilan.index') }}"
+                    class="block px-3 py-2 text-sm rounded {{ request()->routeIs('management_barang.pengambilan.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                    Pengambilan Barang
+                </a>
+                <a href="{{ route('management_barang.pengembalian.index') }}"
+                    class="block px-3 py-2 text-sm rounded {{ request()->routeIs('management_barang.pengembalian.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                    Pengembalian Barang
+                </a>
+
+
+            </div>
+        </div>
+
         <!-- ================= MANAGEMEN DISTRIBUSI (BARU) ================= -->
         <div x-data="{ openMenuDistribusi: {{ request()->routeIs('management_distribusi.*') ? 'true' : 'false' }} }" class="rounded">
             <div @click="openMenuDistribusi = !openMenuDistribusi"

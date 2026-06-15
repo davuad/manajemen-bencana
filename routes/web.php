@@ -24,6 +24,9 @@ use App\Http\Controllers\KategoriBantuanController;
 use App\Http\Controllers\KebutuhanHarianController;
 use App\Http\Controllers\PoskoController;
 use App\Http\Controllers\StokGudangController;
+use App\Http\Controllers\PetugasController;
+use App\Http\Controllers\PengambilanController;
+use App\Http\Controllers\PengembalianController;
 use App\Models\User;
 
 // --- Public Routes ---
@@ -135,6 +138,13 @@ Route::middleware(['auth', 'role:admin'])
             Route::resource('pegawai', PegawaiController::class);
             Route::resource('relawan', RelawanController::class);
         });
+
+        // --- Management Barang ---
+        Route::prefix('management-barang')->name('management_barang.')->group(function () {
+            Route::resource('petugas', PetugasController::class);
+            Route::resource('pengambilan', PengambilanController::class);
+            Route::resource('pengembalian', PengembalianController::class);
+});
     });
 
 // --- Role Placeholders (Kosong) ---

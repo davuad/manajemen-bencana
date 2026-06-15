@@ -26,7 +26,7 @@
         </div>
     @endif
 
-    <form action="{{ route('manajemen_barang.pengambilan.store') }}"
+    <form action="{{ route('management_barang.pengambilan.store') }}"
           method="POST">
 
         @csrf
@@ -252,7 +252,7 @@
 
             </button>
 
-            <a href="{{ route('manajemen_barang.pengambilan.index') }}"
+            <a href="{{ route('management_barang.pengambilan.index') }}"
                class="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg">
 
                 Kembali
