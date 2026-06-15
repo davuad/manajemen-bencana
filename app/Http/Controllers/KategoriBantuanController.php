@@ -36,7 +36,7 @@ class KategoriBantuanController extends Controller
 
         KategoriBantuan::create($request->all());
 
-        return redirect()->route('kategori_bantuan.index');
+        return redirect()->route('admin.kategori_bantuan.index');
     }
 
     public function edit($id)
@@ -52,13 +52,13 @@ class KategoriBantuanController extends Controller
         $kategori = KategoriBantuan::findOrFail($id);
         $kategori->update($request->all());
 
-        return redirect()->route('kategori_bantuan.index');
+        return redirect()->route('admin.kategori_bantuan.index');
     }
 
     public function destroy($id)
     {
         KategoriBantuan::findOrFail($id)->delete();
 
-        return redirect()->route('kategori_bantuan.index');
+        return redirect()->route('admin.kategori_bantuan.index');
     }
 }

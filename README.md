@@ -65,7 +65,11 @@ resources/views/components/
     - Password: `admin123`  
       _(Atau buat akun baru via form register)_
 
-8. **Jalankan server**
+8. **bikin strorage link (untuk akses file upload)**
+    ```bash
+    php artisan storage:link
+    ```
+9. **Jalankan server**
     ```bash
     php artisan serve
     ```

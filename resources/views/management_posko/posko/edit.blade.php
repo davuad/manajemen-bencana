@@ -9,7 +9,7 @@
     </div>
 
     <div class="bg-white rounded-xl p-5 m-3 mt-5">
-        <form action="{{ route('management_posko.posko.update', $posko->id) }}" method="POST" class="space-y-6">
+        <form action="{{ route('admin.management_posko.posko.update', $posko->id) }}" method="POST" class="space-y-6">
             @csrf
             @method('PUT')
 
@@ -79,9 +79,8 @@
                 <label>Nama Bencana *</label>
                 <select name="bencana_id" class="w-full border rounded-lg p-3">
                     <option value="">Pilih Nama Bencana</option>
-                    @foreach($bencana as $b)
-                        <option value="{{ $b->id }}"
-                            {{ $posko->bencana_id == $b->id ? 'selected' : '' }}>
+                    @foreach ($bencana as $b)
+                        <option value="{{ $b->id }}" {{ $posko->bencana_id == $b->id ? 'selected' : '' }}>
                             {{ $b->nama_bencana }}
                         </option>
                     @endforeach
@@ -94,7 +93,8 @@
                 <select name="pengaduan_bencana_id" class="w-full border rounded-lg p-3">
                     <option value="">Pilih Laporan</option>
                     @foreach ($pengaduan as $p)
-                        <option value="{{ $p->id }}" {{ $posko->pengaduan_bencana_id == $p->id ? 'selected' : '' }}>
+                        <option value="{{ $p->id }}"
+                            {{ $posko->pengaduan_bencana_id == $p->id ? 'selected' : '' }}>
                             {{ $p->deskripsi }}
                         </option>
                     @endforeach
@@ -109,7 +109,7 @@
 
             <!-- Button -->
             <div class="flex justify-end gap-3">
-                <a href="{{ route('management_posko.posko.index') }}" class="px-4 py-2 bg-gray-300 rounded-lg">
+                <a href="{{ route('admin.management_posko.posko.index') }}" class="px-4 py-2 bg-gray-300 rounded-lg">
                     Batal
                 </a>
 

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 class PegawaiController extends Controller
 {
     // menampilkan data pegawai
+ elyza
    public function index()
 {
     $pegawai = Pegawai::all();
@@ -19,6 +20,19 @@ class PegawaiController extends Controller
 {
     return view('management_pegawai.create');
 }
+
+    public function index()
+    {
+        $pegawai = Pegawai::all();
+        return view('management_pegawai.pegawai.index', compact('pegawai'));
+    }
+
+    // menampilkan form tambah pegawai
+    public function create()
+    {
+        return view('management_pegawai.pegawai.create');
+    }
+ main
 
     // menyimpan data pegawai
     public function store(Request $request)
@@ -44,10 +58,18 @@ class PegawaiController extends Controller
 
     // menampilkan form edit
     public function edit($id)
+elyza
 {
     $pegawai = Pegawai::findOrFail($id);
     return view('management_pegawai.edit', compact('pegawai'));
 }
+
+    {
+        $pegawai = Pegawai::findOrFail($id);
+        return view('management_pegawai.pegawai.edit', compact('pegawai'));
+    }
+
+main
     // update data pegawai
     public function update(Request $request, $id)
 {

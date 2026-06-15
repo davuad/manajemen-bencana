@@ -15,7 +15,12 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('bencana_id')->constrained('bencana')->cascadeOnDelete();
-            $table->foreignId('pegawai_id')->constrained('pegawai')->cascadeOnDelete();
+            $table->unsignedBigInteger('pegawai_id');
+
+            $table->foreign('pegawai_id')
+                ->references('id_pegawai')
+                ->on('pegawai')
+                ->cascadeOnDelete();
 
             $table->date('tgl_pengajuan');
             $table->enum('status_pengajuan', ['pending', 'disetujui', 'ditolak']);
@@ -23,9 +28,11 @@ return new class extends Migration
             $table->foreignId('created_by')->nullable()->constrained('user')->nullOnDelete(); 
             $table->foreignId('updated_by')->nullable()->constrained('user')->nullOnDelete();
 
-            $table->foreignId('acc_ketua_id')
-                ->nullable()
-                ->constrained('pegawai', 'id')
+            $table->unsignedBigInteger('acc_ketua_id')->nullable();
+
+            $table->foreign('acc_ketua_id')
+                ->references('id_pegawai')
+                ->on('pegawai')
                 ->nullOnDelete();
 
             $table->date('tgl_persetujuan')->nullable();

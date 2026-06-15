@@ -64,7 +64,7 @@ class PoskoController extends Controller
         ]);
 
 
-        return redirect()->route('management_posko.posko.index')
+        return redirect()->route('admin.management_posko.posko.index')
             ->with('success', 'Data posko berhasil ditambahkan');
     }
 
@@ -89,7 +89,7 @@ class PoskoController extends Controller
             'lokasi' => 'required',
             'status' => 'required|in:aktif,tidak aktif'
         ]);
-        
+
         $posko = Posko::findOrFail($id);
 
         $posko->update([
@@ -102,7 +102,7 @@ class PoskoController extends Controller
             'status' => $request->status
         ]);
 
-        return redirect()->route('management_posko.posko.index')
+        return redirect()->route('admin.management_posko.posko.index')
             ->with('success', 'Data posko berhasil diperbarui');
     }
 
@@ -111,7 +111,7 @@ class PoskoController extends Controller
         $posko = Posko::findOrFail($id);
         $posko->delete();
 
-        return redirect()->route('management_posko.posko.index')
+        return redirect()->route('admin.management_posko.posko.index')
             ->with('success', 'Data posko berhasil dihapus');
     }
 }

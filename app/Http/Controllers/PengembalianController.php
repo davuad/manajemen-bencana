@@ -34,7 +34,7 @@ class PengembalianController extends Controller
 
         $data = $query->latest()->get();
 
-        return view('manajemen_barang.pengembalian.index', compact('data'));
+        return view('management_barang.pengembalian.index', compact('data'));
     }
 
 public function create()
@@ -49,7 +49,7 @@ public function create()
         ->get();
 
     return view(
-        'manajemen_barang.pengembalian.create',
+        'management_barang.pengembalian.create',
         compact('pengambilan')
     );
 }
@@ -172,7 +172,7 @@ public function store(Request $request)
     }
 
     return redirect()
-        ->route('manajemen_barang.pengembalian.index')
+        ->route('management_barang.pengembalian.index')
         ->with(
             'success',
             'Data pengembalian berhasil disimpan'
@@ -225,7 +225,7 @@ public function getPengambilan($id)
         });
 
         return view(
-            'manajemen_barang.pengembalian.edit',
+            'management_barang.pengembalian.edit',
             compact('data', 'pengambilan')
         );
     }
@@ -324,7 +324,7 @@ public function getPengambilan($id)
         }
 
         return redirect()
-            ->route('manajemen_barang.pengembalian.index')
+            ->route('management_barang.pengembalian.index')
             ->with('success', 'Data pengembalian berhasil diupdate');
     }
     public function show($id)
@@ -337,7 +337,7 @@ public function getPengambilan($id)
         ])->findOrFail($id);
 
         return view(
-            'manajemen_barang.pengembalian.show',
+            'management_barang.pengembalian.show',
             compact('data')
         );
     }
@@ -360,7 +360,7 @@ public function getPengambilan($id)
             ->delete();
 
         return redirect()
-            ->route('manajemen_barang.pengembalian.index')
+            ->route('management_barang.pengembalian.index')
             ->with('success', 'Data pengembalian berhasil dihapus.');
     }
     

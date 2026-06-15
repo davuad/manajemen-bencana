@@ -19,7 +19,7 @@
             </div>
         @endif
 
-        <form action="{{ route('management_distribusi.detail_paket.store') }}" method="POST" class="space-y-6">
+        <form action="{{ route('admin.management_distribusi.detail_paket.store') }}" method="POST" class="space-y-6">
             @csrf
 
             <input type="hidden" name="paket_bantuan_id" value="{{ $paket_bantuan->id }}">
@@ -69,7 +69,7 @@
             </div>
 
             <div class="flex justify-end gap-3">
-                <a href="{{ route('management_distribusi.detail_paket.index', ['paket_bantuan_id' => $paket_bantuan->id]) }}"
+                <a href="{{ route('admin.management_distribusi.detail_paket.index', ['paket_bantuan_id' => $paket_bantuan->id]) }}"
                     class="px-4 py-2 bg-gray-300 rounded-lg">
                     Batal
                 </a>

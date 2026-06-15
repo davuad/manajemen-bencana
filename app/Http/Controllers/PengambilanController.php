@@ -82,7 +82,7 @@ class PengambilanController extends Controller
             });
 
         return view(
-            'manajemen_barang.pengambilan.index',
+            'management_barang.pengambilan.index',
             compact('data')
         );
     }
@@ -100,7 +100,7 @@ class PengambilanController extends Controller
         $posko   = Posko::all();
 
         return view(
-            'manajemen_barang.pengambilan.create',
+            'management_barang.pengambilan.create',
             compact(
                 'barang',
                 'bencana',
@@ -194,7 +194,7 @@ class PengambilanController extends Controller
 
         return redirect()
             ->route(
-                'manajemen_barang.pengambilan.index'
+                'management_barang.pengambilan.index'
             )
             ->with(
                 'success',
@@ -217,7 +217,7 @@ class PengambilanController extends Controller
         $posko = Posko::all();
 
         return view(
-            'manajemen_barang.pengambilan.edit',
+            'management_barang.pengambilan.edit',
             compact(
                 'data',
                 'barang',
@@ -395,7 +395,7 @@ class PengambilanController extends Controller
 
         return redirect()
             ->route(
-                'manajemen_barang.pengambilan.index'
+                'management_barang.pengambilan.index'
             )
             ->with(
                 'success',
@@ -456,7 +456,7 @@ class PengambilanController extends Controller
 
         return redirect()
             ->route(
-                'manajemen_barang.pengambilan.index'
+                'management_barang.pengambilan.index'
             )
             ->with(
                 'success',
@@ -474,7 +474,7 @@ class PengambilanController extends Controller
         ])->findOrFail($id);
 
         return view(
-            'manajemen_barang.pengambilan.show',
+            'management_barang.pengambilan.show',
             compact('data')
         );
     }

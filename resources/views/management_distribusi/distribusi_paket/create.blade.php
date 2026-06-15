@@ -26,7 +26,7 @@
             </div>
         @endif
 
-        <form action="{{ route('management_distribusi.distribusi_paket.store') }}" method="POST">
+        <form action="{{ route('admin.management_distribusi.distribusi_paket.store') }}" method="POST">
             @csrf
 
             <input type="hidden" name="warga_terdampak_id" value="{{ $warga->id }}">
@@ -120,7 +120,7 @@
 
             {{-- Tombol --}}
             <div class="flex items-center justify-end gap-3">
-                <a href="{{ route('management_distribusi.distribusi_paket.index') }}"
+                <a href="{{ route('admin.management_distribusi.distribusi_paket.index') }}"
                     class="flex items-center gap-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg">
                     <x-heroicon-o-arrow-left class="w-5 h-5" />Kembali
                 </a>

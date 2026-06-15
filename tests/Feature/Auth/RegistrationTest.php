@@ -18,11 +18,15 @@ class RegistrationTest extends TestCase
 
     public function test_new_users_can_register(): void
     {
+        $this->seed(\Database\Seeders\RolePermissionSeeder::class);
+
         $response = $this->post('/register', [
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+            'nama' => 'Test User',
+            'nik' => '9876543210987654',
+            'email' => 'test2@example.com',
             'password' => 'password',
             'password_confirmation' => 'password',
+            'role' => 'relawan',
         ]);
 
         $this->assertAuthenticated();
