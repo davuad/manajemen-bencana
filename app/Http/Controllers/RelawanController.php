@@ -7,17 +7,16 @@ use Illuminate\Http\Request;
 
 class RelawanController extends Controller
 {
-    public function index()
-    {
-        $relawan = Relawan::all();
-        return view('management_pegawai.relawan.index', compact('relawan'));
-    }
+   public function index()
+{
+    $relawan = Relawan::all();
+    return view('management_relawan.index', compact('relawan'));
+}
 
-    public function create()
-    {
-        return view('management_pegawai.relawan.create');
-    }
-
+public function create()
+{
+    return view('management_relawan.create');
+}
     public function store(Request $request)
     {
         $request->validate([
@@ -40,10 +39,10 @@ class RelawanController extends Controller
     }
 
     public function edit($id)
-    {
-        $relawan = Relawan::findOrFail($id);
-        return view('management_pegawai.relawan.edit', compact('relawan'));
-    }
+{
+    $relawan = Relawan::findOrFail($id);
+    return view('management_relawan.edit', compact('relawan'));
+}
 
     public function update(Request $request, $id)
     {
