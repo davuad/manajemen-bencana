@@ -217,4 +217,213 @@ class PengaduanBencanaController extends Controller
         $pengaduan->delete();
         return redirect('/admin/pengaduan')->with('success', 'Data pengaduan beserta seluruh lampiran fotonya berhasil dihapus secara permanen.');
     }
+
+    // =====================================
+    // KABID - DATA PENGADUAN
+    // =====================================
+
+    public function kabidIndex(Request $request)
+    {
+        $query = PengaduanBencana::with([
+            'user',
+            'kategori',
+            'foto',
+            'kebutuhan'
+        ]);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('desa', 'like', "%{$search}%")
+                ->orWhere('deskripsi', 'like', "%{$search}%")
+                ->orWhereHas('user', function ($u) use ($search) {
+                        $u->where('nama', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status_pengaduan', $request->status);
+        }
+
+        $data = $query->latest()->get();
+
+        return view(
+            'pengaduan_bencana.kabid.index',
+            compact('data')
+        );
+    }
+
+    // =====================================
+    // DETAIL PENGADUAN
+    // =====================================
+
+    public function kabidDetail($id)
+    {
+        $data = PengaduanBencana::with([
+            'user',
+            'kategori',
+            'foto',
+            'kebutuhan'
+        ])->findOrFail($id);
+
+        return view(
+            'pengaduan_bencana.kabid.detail',
+            compact('data')
+        );
+    }
+
+    // =====================================
+    // FORM VERIFIKASI
+    // =====================================
+
+    public function verifikasi($id)
+    {
+        $data = PengaduanBencana::with([
+            'user',
+            'kategori',
+            'foto',
+            'kebutuhan'
+        ])->findOrFail($id);
+
+        return view(
+            'pengaduan_bencana.kabid.verifikasi',
+            compact('data')
+        );
+    }
+
+    // =====================================
+    // SIMPAN VERIFIKASI
+    // =====================================
+
+    public function simpanVerifikasi(Request $request, $id)
+    {
+        $request->validate([
+            'status_pengaduan' => 'required',
+        ]);
+
+        $pengaduan = PengaduanBencana::findOrFail($id);
+
+        $pengaduan->update([
+            'status_pengaduan' => $request->status_pengaduan,
+            'keterangan_verifikasi' => $request->keterangan_verifikasi,
+        ]);
+
+        if ($pengaduan->kebutuhan) {
+
+            $pengaduan->kebutuhan->update([
+                'dapur_umum' => $request->dapur_umum ?? 'Tidak',
+                'psikososial' => $request->psikososial ?? 'Tidak',
+                'logistik_rentan' => $request->logistik_rentan ?? 'Tidak',
+                'logistik_makanan' => $request->logistik_makanan ?? 'Tidak',
+                'logistik_penampungan' => $request->logistik_penampungan ?? 'Tidak',
+                'keterangan' => $request->keterangan_kebutuhan,
+            ]);
+
+        }
+
+        return redirect()
+            ->route('kabid.pengaduan.index')
+            ->with('success', 'Verifikasi berhasil disimpan');
+    }
+
+    // =====================================
+    // KETUA TIM - MONITORING
+    // =====================================
+
+    public function ketuaTimIndex(Request $request)
+    {
+        $query = PengaduanBencana::with([
+            'user',
+            'kategori',
+            'foto',
+            'kebutuhan'
+        ]);
+
+        // Cari
+        if ($request->filled('search')) {
+
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+
+                $q->where('desa', 'like', "%{$search}%")
+                ->orWhere('deskripsi', 'like', "%{$search}%")
+                ->orWhereHas('user', function ($u) use ($search) {
+
+                        $u->where('nama', 'like', "%{$search}%");
+
+                });
+
+            });
+        }
+
+        // Filter Status
+        if ($request->filled('status')) {
+
+            $query->where(
+                'status_pengaduan',
+                $request->status
+            );
+
+        } else {
+
+            $query->whereIn('status_pengaduan', [
+                'DITANGANI',
+                'SELESAI'
+            ]);
+
+        }
+
+        $data = $query->latest()->get();
+
+        return view(
+            'pengaduan_bencana.ketua_tim.index',
+            compact('data')
+        );
+    }
+    // =====================================
+    // FORM SELESAI
+    // =====================================
+
+    public function formSelesai($id)
+    {
+        $data = PengaduanBencana::with([
+            'user',
+            'kategori',
+            'foto',
+            'kebutuhan'
+        ])->findOrFail($id);
+
+        return view(
+            'pengaduan_bencana.ketua_tim.selesai',
+            compact('data')
+        );
+    }
+
+    // =====================================
+    // SIMPAN PENYELESAIAN
+    // =====================================
+
+    public function simpanSelesai(Request $request, $id)
+    {
+        $request->validate([
+            'tanggal_selesai' => 'required|date'
+        ]);
+
+        $pengaduan = PengaduanBencana::findOrFail($id);
+
+        $pengaduan->update([
+            'status_pengaduan' => 'SELESAI',
+            'tanggal_selesai' => $request->tanggal_selesai
+        ]);
+
+        return redirect()
+            ->route('ketua_tim.pengaduan.index')
+            ->with(
+                'success',
+                'Pengaduan berhasil diselesaikan'
+            );
+    }
 }

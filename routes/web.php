@@ -234,15 +234,41 @@ Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->grou
             ->name('dapur_umum.index');
     });
 });
-Route::middleware(['auth', 'role:kabid'])->prefix('kabid')->name('kabid.')->group(function () {
-    Route::prefix('management-posko')->name('management_posko.')->group(function () {
-        Route::get('/posko', [PoskoController::class, 'index'])
-            ->name('posko.index');
+Route::middleware(['auth', 'role:kabid'])
+    ->prefix('kabid')
+    ->name('kabid.')
+    ->group(function () {
 
-        Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
-            ->name('dapur_umum.index');
-    });
+        // =====================
+        // MANAGEMENT POSKO
+        // =====================
+        Route::prefix('management-posko')
+            ->name('management_posko.')
+            ->group(function () {
+
+                Route::get('/posko', [PoskoController::class, 'index'])
+                    ->name('posko.index');
+
+                Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
+                    ->name('dapur_umum.index');
+            });
+
+        // =====================
+        // PENGADUAN BENCANA
+        // =====================
+        Route::get('/pengaduan',
+            [PengaduanBencanaController::class, 'kabidIndex'])
+            ->name('pengaduan.index');
+
+        Route::get('/pengaduan/{id}/verifikasi',
+            [PengaduanBencanaController::class, 'verifikasi'])
+            ->name('pengaduan.verifikasi');
+
+        Route::put('/pengaduan/{id}/verifikasi',
+            [PengaduanBencanaController::class, 'simpanVerifikasi'])
+            ->name('pengaduan.simpan');
 });
+
 Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(function () {
     Route::prefix('management-posko')->name('management_posko.')->group(function () {
         Route::get('/posko', [PoskoController::class, 'index'])
@@ -253,3 +279,4 @@ Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(f
     });
 });
 Route::middleware(['auth', 'role:ketua_tim'])->prefix('ketua_tim')->name('ketua_tim.')->group(function () {});
+
