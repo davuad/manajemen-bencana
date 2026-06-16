@@ -54,19 +54,19 @@ Route::middleware(['auth', 'role:admin'])
     ->name('admin.')
     ->group(function () {
 
-    Route::resource('anak_terpisah', AnakTerpisahController::class);
+        Route::resource('anak_terpisah', AnakTerpisahController::class);
 
-    Route::get('penjemputan', [PenjemputanAnakController::class, 'index'])
-        ->name('penjemputan.index');
+        Route::get('penjemputan', [PenjemputanAnakController::class, 'index'])
+            ->name('penjemputan.index');
 
-    Route::get('penjemputan/{anak_id}/jemput', [PenjemputanAnakController::class, 'formJemput'])
-        ->name('penjemputan.jemput');
+        Route::get('penjemputan/{anak_id}/jemput', [PenjemputanAnakController::class, 'formJemput'])
+            ->name('penjemputan.jemput');
 
-    Route::post('penjemputan', [PenjemputanAnakController::class, 'store'])
-        ->name('penjemputan.store');
+        Route::post('penjemputan', [PenjemputanAnakController::class, 'store'])
+            ->name('penjemputan.store');
 
-    Route::get('penjemputan/{id}', [PenjemputanAnakController::class, 'show'])
-    ->name('penjemputan.show');
+        Route::get('penjemputan/{id}', [PenjemputanAnakController::class, 'show'])
+            ->name('penjemputan.show');
 
         // --- System Management ---
         Route::model('management_user', User::class);
@@ -165,7 +165,56 @@ Route::middleware(['auth', 'role:admin'])
 });
     });
 
+// =========================================================================
+// --- FITUR JADWAL LAYANAN PASCA BENCANA (MANDIRI / POLOSAN DI LUAR) ---
+// =========================================================================
 
+// 1. ROUTE JADWAL ADMIN (BISA CRUD + CETAK)
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+    Route::get('/jadwal/create', [JadwalController::class, 'create'])->name('jadwal.create');
+    Route::post('/jadwal', [JadwalController::class, 'store'])->name('jadwal.store');
+    Route::get('/jadwal/{id}/edit', [JadwalController::class, 'edit'])->name('jadwal.edit');
+    Route::put('/jadwal/{id}', [JadwalController::class, 'update'])->name('jadwal.update');
+    Route::delete('/jadwal/{id}', [JadwalController::class, 'destroy'])->name('jadwal.destroy');
+    Route::get('/jadwal/cetak-pdf', [JadwalController::class, 'cetak_pdf'])->name('jadwal.cetak');
+});
+
+// 2. ROUTE JADWAL KABID (BISA LIHAT + CETAK)
+Route::prefix('kabid')->name('kabid.')->group(function () {
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+    Route::get('/jadwal/cetak-pdf', [JadwalController::class, 'cetak_pdf'])->name('jadwal.cetak');
+});
+
+// 3. ROUTE JADWAL RELAWAN (HANYA LIHAT)
+Route::prefix('relawan')->name('relawan.')->group(function () {
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+});
+
+// 4. ROUTE JADWAL KADUS (HANYA LIHAT)
+Route::prefix('kadus')->name('kadus.')->group(function () {
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+});
+
+// 5. ROUTE JADWAL DESA (HANYA LIHAT)
+Route::prefix('desa')->name('desa.')->group(function () {
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+});
+
+// 6. ROUTE JADWAL KETUA TIM (HANYA LIHAT)
+Route::prefix('ketua_tim')->name('ketua_tim.')->group(function () {
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+});
+
+// 7. ROUTE JADWAL PETUGAS (HANYA LIHAT)
+Route::prefix('petugas')->name('petugas.')->group(function () {
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+});
+
+// 8. ROUTE JADWAL PEGAWAI (HANYA LIHAT)
+Route::prefix('pegawai')->name('pegawai.')->group(function () {
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+});
 // --- Role Placeholders (Kosong) ---
 Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')->group(function () {
     Route::prefix('management-posko')->name('management_posko.')->group(function () {
@@ -204,4 +253,3 @@ Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(f
     });
 });
 Route::middleware(['auth', 'role:ketua_tim'])->prefix('ketua_tim')->name('ketua_tim.')->group(function () {});
-
