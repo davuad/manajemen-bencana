@@ -278,5 +278,26 @@ Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(f
             ->name('dapur_umum.index');
     });
 });
-Route::middleware(['auth', 'role:ketua_tim'])->prefix('ketua_tim')->name('ketua_tim.')->group(function () {});
+
+Route::middleware(['auth', 'role:ketua_tim'])
+    ->prefix('ketua_tim')
+    ->name('ketua_tim.')
+    ->group(function () {
+
+        Route::get(
+            '/pengaduan',
+            [PengaduanBencanaController::class, 'ketuaTimIndex']
+        )->name('pengaduan.index');
+
+        Route::get(
+            '/pengaduan/{id}/selesai',
+            [PengaduanBencanaController::class, 'formSelesai']
+        )->name('pengaduan.selesai');
+
+        Route::put(
+            '/pengaduan/{id}/selesai',
+            [PengaduanBencanaController::class, 'simpanSelesai']
+        )->name('pengaduan.simpan');
+
+});
 
