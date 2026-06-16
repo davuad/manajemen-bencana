@@ -4,7 +4,7 @@
 <div class="container">
     <h3>Tambah Detail Distribusi</h3>
 
-    <form action="{{ route('detail_distribusi.store') }}" method="POST">
+    <form action="{{ route('admin.management_distribusi.detail_distribusi.store') }}" method="POST">
         @csrf
 
         <div class="mb-3">

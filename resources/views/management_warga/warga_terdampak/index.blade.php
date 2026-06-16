@@ -10,7 +10,7 @@
         </div>
 
         {{-- Alert --}}
-        @if(session('success'))
+        @if (session('success'))
             <div class="rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
                 {{ session('success') }}
             </div>
@@ -19,7 +19,8 @@
         {{-- Card --}}
         <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
             {{-- Header --}}
-            <div class="flex flex-col gap-4 border-b border-gray-100 px-6 py-5 lg:flex-row lg:items-start lg:justify-between">
+            <div
+                class="flex flex-col gap-4 border-b border-gray-100 px-6 py-5 lg:flex-row lg:items-start lg:justify-between">
                 <div>
                     <h2 class="text-xl font-bold uppercase tracking-wide text-gray-900">
                         Data Warga Terdampak
@@ -30,8 +31,8 @@
                 </div>
 
                 <div>
-                    <a href="{{ route('warga.create') }}"
-                       class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-800">
+                    <a href="{{ route('admin.warga.create') }}"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-800">
                         <span>+</span>
                         Tambah Data Warga Terdampak
                     </a>
@@ -40,27 +41,23 @@
 
             {{-- Filter --}}
             <div class="border-b border-gray-100 px-6 py-5">
-                <form action="{{ route('warga.index') }}" method="GET" class="grid grid-cols-1 gap-3 xl:grid-cols-12">
+                <form action="{{ route('admin.warga.index') }}" method="GET"
+                    class="grid grid-cols-1 gap-3 xl:grid-cols-12">
                     {{-- Search --}}
                     <div class="xl:col-span-4">
-                        <input
-                            type="text"
-                            name="search"
-                            value="{{ request('search') }}"
+                        <input type="text" name="search" value="{{ request('search') }}"
                             placeholder="Cari berdasarkan No KK, Nama, NIK, atau Alamat"
-                            class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
-                        >
+                            class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100">
                     </div>
 
                     {{-- Filter Desa --}}
                     <div class="xl:col-span-2">
-                        <select
-                            name="desa"
-                            class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
-                        >
+                        <select name="desa"
+                            class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100">
                             <option value="">Semua Desa</option>
                             @foreach ($listDesa as $itemDesa)
-                                <option value="{{ $itemDesa->id }}" {{ request('desa') == $itemDesa->id ? 'selected' : '' }}>
+                                <option value="{{ $itemDesa->id }}"
+                                    {{ request('desa') == $itemDesa->id ? 'selected' : '' }}>
                                     {{ $itemDesa->nama_desa }}
                                 </option>
                             @endforeach
@@ -69,13 +66,12 @@
 
                     {{-- Filter Bencana (Diperbarui dari Kategori) --}}
                     <div class="xl:col-span-2">
-                        <select
-                            name="bencana"
-                            class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
-                        >
+                        <select name="bencana"
+                            class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100">
                             <option value="">Semua Bencana</option>
                             @foreach ($listBencana as $itemBencana)
-                                <option value="{{ $itemBencana->id }}" {{ request('bencana') == $itemBencana->id ? 'selected' : '' }}>
+                                <option value="{{ $itemBencana->id }}"
+                                    {{ request('bencana') == $itemBencana->id ? 'selected' : '' }}>
                                     {{ $itemBencana->nama_bencana }}
                                 </option>
                             @endforeach
@@ -84,13 +80,12 @@
 
                     {{-- Filter Status --}}
                     <div class="xl:col-span-2">
-                        <select
-                            name="status_penyaluran"
-                            class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
-                        >
+                        <select name="status_penyaluran"
+                            class="w-full rounded-xl border border-gray-200 bg-gray-50 px-4 py-2.5 text-sm text-gray-700 outline-none transition focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100">
                             <option value="">Semua Status</option>
                             @foreach ($listStatus as $status)
-                                <option value="{{ $status }}" {{ request('status_penyaluran') == $status ? 'selected' : '' }}>
+                                <option value="{{ $status }}"
+                                    {{ request('status_penyaluran') == $status ? 'selected' : '' }}>
                                     {{ $status }}
                                 </option>
                             @endforeach
@@ -99,15 +94,13 @@
 
                     {{-- Buttons --}}
                     <div class="xl:col-span-2 flex flex-col gap-3 sm:flex-row xl:justify-end">
-                        <button
-                            type="submit"
-                            class="inline-flex items-center justify-center rounded-xl bg-indigo-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-800 w-full"
-                        >
+                        <button type="submit"
+                            class="inline-flex items-center justify-center rounded-xl bg-indigo-700 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-800 w-full">
                             Filter
                         </button>
 
-                        <a href="{{ route('warga.index') }}"
-                           class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 w-full">
+                        <a href="{{ route('admin.warga.index') }}"
+                            class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 w-full">
                             Reset
                         </a>
                     </div>
@@ -133,10 +126,8 @@
 
                     <tbody class="divide-y divide-gray-100 bg-white">
                         @forelse ($warga as $item)
-                            <tr
-                                class="cursor-pointer transition hover:bg-gray-50"
-                                data-url="{{ route('warga.detail', $item->id) }}"
-                            >
+                            <tr class="cursor-pointer transition hover:bg-gray-50"
+                                data-url="{{ route('admin.warga.detail', $item->id) }}">
                                 <td class="px-4 py-4 text-sm text-gray-700">
                                     {{ ($warga->currentPage() - 1) * $warga->perPage() + $loop->iteration }}.
                                 </td>
@@ -161,50 +152,43 @@
                                 </td>
                                 <td class="px-4 py-4 text-sm text-gray-700" onclick="event.stopPropagation()">
                                     @if ($item->status_penyaluran == 'Belum diproses')
-                                        <button
-                                            type="button"
+                                        <button type="button"
                                             class="status-btn inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-600 transition hover:bg-red-200"
-                                            data-url="{{ route('warga.ubahStatus', $item->id) }}"
-                                            data-nama="{{ $item->nama_kepala_keluarga }}"
-                                            data-next="Proses Penyaluran"
-                                        >
+                                            data-url="{{ route('admin.warga.ubahStatus', $item->id) }}"
+                                            data-nama="{{ $item->nama_kepala_keluarga }}" data-next="Proses Penyaluran">
                                             Belum Diproses
                                         </button>
                                     @elseif ($item->status_penyaluran == 'Proses Penyaluran')
-                                        <button
-                                            type="button"
+                                        <button type="button"
                                             class="status-btn inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-600 transition hover:bg-blue-200"
-                                            data-url="{{ route('warga.ubahStatus', $item->id) }}"
-                                            data-nama="{{ $item->nama_kepala_keluarga }}"
-                                            data-next="Sudah Disalurkan"
-                                        >
+                                            data-url="{{ route('admin.warga.ubahStatus', $item->id) }}"
+                                            data-nama="{{ $item->nama_kepala_keluarga }}" data-next="Sudah Disalurkan">
                                             Proses Penyaluran
                                         </button>
                                     @elseif ($item->status_penyaluran == 'Sudah disalurkan')
-                                        <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-600">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-600">
                                             Sudah Disalurkan
                                         </span>
                                     @else
-                                        <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
+                                        <span
+                                            class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
                                             {{ $item->status_penyaluran }}
                                         </span>
                                     @endif
                                 </td>
                                 <td class="aksi-cell px-4 py-4 text-center" onclick="event.stopPropagation()">
                                     <div class="flex items-center justify-center gap-2">
-                                        <a href="{{ route('warga.edit', $item->id) }}"
-                                           class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-600 transition hover:bg-blue-50"
-                                           title="Edit">
+                                        <a href="{{ route('admin.warga.edit', $item->id) }}"
+                                            class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-600 transition hover:bg-blue-50"
+                                            title="Edit">
                                             ✏️
                                         </a>
 
-                                        <button
-                                            type="button"
+                                        <button type="button"
                                             class="delete-btn inline-flex h-9 w-9 items-center justify-center rounded-lg text-red-600 transition hover:bg-red-50"
-                                            title="Hapus"
-                                            data-url="{{ route('warga.delete', $item->id) }}"
-                                            data-nama="{{ $item->nama_kepala_keluarga }}"
-                                        >
+                                            title="Hapus" data-url="{{ route('admin.warga.delete', $item->id) }}"
+                                            data-nama="{{ $item->nama_kepala_keluarga }}">
                                             🗑️
                                         </button>
                                     </div>
@@ -222,7 +206,8 @@
             </div>
 
             {{-- Footer --}}
-            <div class="flex flex-col gap-4 border-t border-gray-100 px-6 py-4 text-sm text-gray-500 md:flex-row md:items-center md:justify-between">
+            <div
+                class="flex flex-col gap-4 border-t border-gray-100 px-6 py-4 text-sm text-gray-500 md:flex-row md:items-center md:justify-between">
                 <div>
                     @if ($warga->total() > 0)
                         Menampilkan {{ $warga->firstItem() }}-{{ $warga->lastItem() }} dari {{ $warga->total() }} data
@@ -243,9 +228,8 @@
         <div class="w-full max-w-md rounded-2xl bg-white shadow-xl">
             <div class="flex items-center justify-between border-b border-gray-100 px-6 py-4">
                 <h3 class="text-lg font-semibold text-gray-900">Hapus Data Warga Terdampak</h3>
-                <button type="button"
-                        onclick="closeDeleteModal()"
-                        class="text-2xl leading-none text-gray-400 hover:text-gray-600">
+                <button type="button" onclick="closeDeleteModal()"
+                    class="text-2xl leading-none text-gray-400 hover:text-gray-600">
                     &times;
                 </button>
             </div>
@@ -257,15 +241,14 @@
             </div>
 
             <div class="flex justify-end gap-3 px-6 pb-6">
-                <button type="button"
-                        onclick="closeDeleteModal()"
-                        class="rounded-xl border border-gray-200 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200">
+                <button type="button" onclick="closeDeleteModal()"
+                    class="rounded-xl border border-gray-200 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200">
                     Batal
                 </button>
 
                 <form id="deleteForm" method="GET">
                     <button type="submit"
-                            class="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">
+                        class="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">
                         Hapus
                     </button>
                 </form>
@@ -278,9 +261,8 @@
         <div class="w-full max-w-md rounded-2xl bg-white shadow-xl">
             <div class="flex items-center justify-between border-b border-gray-100 px-6 py-4">
                 <h3 class="text-lg font-semibold text-gray-900">Ubah Status Penyaluran</h3>
-                <button type="button"
-                        onclick="closeStatusModal()"
-                        class="text-2xl leading-none text-gray-400 hover:text-gray-600">
+                <button type="button" onclick="closeStatusModal()"
+                    class="text-2xl leading-none text-gray-400 hover:text-gray-600">
                     &times;
                 </button>
             </div>
@@ -293,16 +275,15 @@
             </div>
 
             <div class="flex justify-end gap-3 px-6 pb-6">
-                <button type="button"
-                        onclick="closeStatusModal()"
-                        class="rounded-xl border border-gray-200 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200">
+                <button type="button" onclick="closeStatusModal()"
+                    class="rounded-xl border border-gray-200 bg-gray-100 px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-200">
                     Batal
                 </button>
 
                 <form id="statusForm" method="POST">
                     @csrf
                     <button type="submit"
-                            class="rounded-xl bg-indigo-700 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-800">
+                        class="rounded-xl bg-indigo-700 px-4 py-2 text-sm font-medium text-white hover:bg-indigo-800">
                         Ya, Ubah Data
                     </button>
                 </form>

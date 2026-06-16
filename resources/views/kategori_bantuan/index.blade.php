@@ -1,118 +1,111 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="bg-white rounded-xl shadow p-6">
 
-<div class="bg-white rounded-xl shadow p-6">
+        {{-- HEADER --}}
+        <div class="flex justify-between items-center mb-6">
 
-    {{-- HEADER --}}
-    <div class="flex justify-between items-center mb-6">
+            <div>
+                <h2 class="text-xl font-bold">KATEGORI BANTUAN</h2>
+                <p class="text-gray-500 text-sm">
+                    Data kategori bantuan berdasarkan sumber
+                </p>
+            </div>
 
-        <div>
-            <h2 class="text-xl font-bold">KATEGORI BANTUAN</h2>
-            <p class="text-gray-500 text-sm">
-                Data kategori bantuan berdasarkan sumber
-            </p>
-        </div>
-
-        <a href="{{ route('kategori_bantuan.create') }}" 
-           class="bg-indigo-700 text-white px-4 py-2 rounded-lg">
-            + Tambah Kategori
-        </a>
-
-    </div>
-
-    {{-- SEARCH --}}
-    <form method="GET">
-        <div class="flex gap-4 mb-6">
-
-            <input type="text"
-                name="search"
-                value="{{ request('search') }}"
-                placeholder="Cari kategori bantuan..."
-                class="flex-1 border rounded-lg px-4 py-2">
-
-            <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
-                Cari
-            </button>
+            <a href="{{ route('admin.kategori_bantuan.create') }}" class="bg-indigo-700 text-white px-4 py-2 rounded-lg">
+                + Tambah Kategori
+            </a>
 
         </div>
-    </form>
 
-    {{-- TABLE --}}
-    <div class="overflow-x-auto">
+        {{-- SEARCH --}}
+        <form method="GET">
+            <div class="flex gap-4 mb-6">
 
-        <table class="w-full text-sm">
+                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kategori bantuan..."
+                    class="flex-1 border rounded-lg px-4 py-2">
 
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="p-3 text-center">No</th>
-                    <th class="text-center">Sumber</th>
-                    <th class="text-center">Nama Kategori</th>
-                    <th class="text-center">Keterangan</th>
-                    <th class="text-left">Aksi</th>
-                </tr>
-            </thead>
+                <button class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
+                    Cari
+                </button>
 
-            <tbody>
-                @forelse($kategori as $key => $k)
-                <tr class="border-t hover:bg-gray-50">
+            </div>
+        </form>
 
-                    <td class="p-3 text-center">
-                        {{ $kategori->firstItem() + $key }}
-                    </td>
+        {{-- TABLE --}}
+        <div class="overflow-x-auto">
 
-                    <td class="text-center font-medium">
-                        {{ $k->sumber->nama_sumber ?? '-' }}
-                    </td>
+            <table class="w-full text-sm">
 
-                    <td class="text-center">
-                        {{ $k->nama_kategori }}
-                    </td>
+                <thead class="bg-gray-100">
+                    <tr>
+                        <th class="p-3 text-center">No</th>
+                        <th class="text-center">Sumber</th>
+                        <th class="text-center">Nama Kategori</th>
+                        <th class="text-center">Keterangan</th>
+                        <th class="text-left">Aksi</th>
+                    </tr>
+                </thead>
 
-                    <td class="text-center">
-                        {{ $k->keterangan }}
-                    </td>
+                <tbody>
+                    @forelse($kategori as $key => $k)
+                        <tr class="border-t hover:bg-gray-50">
 
-                    <td class="flex gap-2 py-3">
+                            <td class="p-3 text-center">
+                                {{ $kategori->firstItem() + $key }}
+                            </td>
 
-                        {{-- EDIT --}}
-                        <a href="{{ route('kategori_bantuan.edit', $k->id) }}"
-                           class="text-blue-500">
-                            ✏️
-                        </a>
+                            <td class="text-center font-medium">
+                                {{ $k->sumber->nama_sumber ?? '-' }}
+                            </td>
 
-                        {{-- DELETE --}}
-                        <form action="{{ route('kategori_bantuan.destroy', $k->id) }}" method="POST"
-                              onsubmit="return confirm('Yakin hapus data?')">
-                            @csrf
-                            @method('DELETE')
+                            <td class="text-center">
+                                {{ $k->nama_kategori }}
+                            </td>
 
-                            <button class="text-red-500">
-                                🗑️
-                            </button>
-                        </form>
+                            <td class="text-center">
+                                {{ $k->keterangan }}
+                            </td>
 
-                    </td>
+                            <td class="flex gap-2 py-3">
 
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="5" class="text-center p-4 text-gray-500">
-                        Data kategori bantuan belum ada
-                    </td>
-                </tr>
-                @endforelse
-            </tbody>
+                                {{-- EDIT --}}
+                                <a href="{{ route('admin.kategori_bantuan.edit', $k->id) }}" class="text-blue-500">
+                                    ✏️
+                                </a>
 
-        </table>
+                                {{-- DELETE --}}
+                                <form action="{{ route('admin.kategori_bantuan.destroy', $k->id) }}" method="POST"
+                                    onsubmit="return confirm('Yakin hapus data?')">
+                                    @csrf
+                                    @method('DELETE')
+
+                                    <button class="text-red-500">
+                                        🗑️
+                                    </button>
+                                </form>
+
+                            </td>
+
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="5" class="text-center p-4 text-gray-500">
+                                Data kategori bantuan belum ada
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {{-- PAGINATION --}}
+        <div class="mt-6">
+            {{ $kategori->withQueryString()->links() }}
+        </div>
 
     </div>
-
-    {{-- PAGINATION --}}
-    <div class="mt-6">
-        {{ $kategori->withQueryString()->links() }}
-    </div>
-
-</div>
-
 @endsection

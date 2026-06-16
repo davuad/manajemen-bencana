@@ -4,7 +4,7 @@
 <div class="container">
     <h3>Data Detail Distribusi</h3>
 
-    <a href="{{ route('detail_distribusi.create') }}" class="btn btn-primary mb-3">Tambah Detail</a>
+    <a href="{{ route('admin.management_distribusi.detail_distribusi.create') }}" class="btn btn-primary mb-3">Tambah Detail</a>
 
     <table class="table table-bordered">
         <thead>
@@ -28,7 +28,7 @@
                 <td>{{ $item->satuan }}</td>
                 <td>{{ $item->keterangan }}</td>
                 <td>
-                    <form action="{{ route('detail_distribusi.destroy', $item->id) }}" method="POST">
+                    <form action="{{ route('admin.management_distribusi.detail_distribusi.destroy', $item->id) }}" method="POST">
                         @csrf
                         @method('DELETE')
                         <button class="btn btn-danger btn-sm">Hapus</button>

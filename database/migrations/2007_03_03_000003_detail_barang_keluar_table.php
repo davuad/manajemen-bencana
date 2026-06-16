@@ -12,7 +12,12 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('barang_keluar_id')->constrained('barang_keluar')->cascadeOnDelete();
-            $table->foreignId('barang_id')->constrained('barang')->cascadeOnDelete();
+            $table->string('barang_id', 10);
+
+            $table->foreign('barang_id')
+                ->references('id_barang')
+                ->on('barang')
+                ->cascadeOnDelete();
 
             $table->integer('jumlah');
             $table->integer('jumlah_keluar')->nullable();

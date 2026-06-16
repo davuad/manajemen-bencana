@@ -10,14 +10,14 @@
             <p class="text-sm text-gray-500">Kelola data distribusi bantuan</p>
         </div>
 
-        <a href="{{ route('management_distribusi.distribusi.create') }}"
+        <a href="{{ route('admin.management_distribusi.distribusi.create') }}"
            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow">
             + Tambah
         </a>
     </div>
 
     <!-- SEARCH -->
-    <form method="GET" action="{{ route('management_distribusi.distribusi.index') }}">
+    <form method="GET" action="{{ route('admin.management_distribusi.distribusi.index') }}">
         <div class="flex gap-4 mb-6">
             <input 
                 type="text"
@@ -134,12 +134,12 @@
                         <td class="p-3">
                             <div class="flex gap-2 justify-center">
 
-                                <a href="{{ route('management_distribusi.distribusi.show', $item->id) }}"
+                                <a href="{{ route('admin.management_distribusi.distribusi.show', $item->id) }}"
                                    class="p-2 bg-blue-100 text-blue-700 rounded">
                                     👁
                                 </a>
 
-                                <a href="{{ route('management_distribusi.distribusi.edit', $item->id) }}"
+                                <a href="{{ route('admin.management_distribusi.distribusi.edit', $item->id) }}"
                                    class="p-2 bg-yellow-100 text-yellow-700 rounded">
                                     ✏
                                 </a>
@@ -201,7 +201,7 @@
 <script>
 function openModal(id) {
     document.getElementById('deleteForm').action =
-        "/management-distribusi/distribusi/" + id;
+        "/admin/management-distribusi/distribusi/" + id;
 
     document.getElementById('deleteModal').classList.remove('hidden');
     document.getElementById('deleteModal').classList.add('flex');

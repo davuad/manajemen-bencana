@@ -1,81 +1,83 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="bg-white rounded-xl shadow p-6 m-3 mt-5">
+        
+        {{-- Header Section --}}
+        <div class="mb-6 border-b pb-4">
+            <h2 class="text-xl font-bold text-gray-800">Edit Jadwal Layanan</h2>
+            <p class="text-gray-500 text-sm">
+                Perbarui data jadwal layanan untuk penanganan pasca bencana
+            </p>
+        </div>
 
-<div class="bg-white rounded-xl shadow p-6 m-3 mt-5">
+        {{-- Error Alert --}}
+        @if ($errors->any())
+            <div class="mb-6 bg-red-50 text-red-600 p-4 rounded-lg border border-red-100 text-sm">
+                <div class="font-bold mb-1">Terjadi kesalahan:</div>
+                <ul class="list-disc list-inside">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
-    <div class="mb-6 border-b pb-4">
-        <h2 class="text-xl font-bold text-gray-800">Edit Jadwal Layanan</h2>
-        <p class="text-gray-500 text-sm">
-            Perbarui data jadwal layanan untuk penanganan pasca bencana
-        </p>
-    </div>
+        <form action="{{ route('admin.jadwal.update', $jadwal->id) }}" method="POST" class="space-y-6">
+            @csrf
+            @method('PUT')
 
-    {{-- Error Alert --}}
-    @if ($errors->any())
-    <div class="mb-6 bg-red-50 text-red-600 p-4 rounded-lg border border-red-100 text-sm">
-        <div class="font-bold mb-1">Terjadi kesalahan:</div>
-        <ul class="list-disc list-inside">
-            @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-            @endforeach
-        </ul>
-    </div>
-    @endif
-
-    <form action="{{ route('jadwal.update', $jadwal->id) }}" method="POST" class="space-y-6">
-        @csrf
-        @method('PUT')
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-
-            {{-- Kolom Kiri --}}
-            <div class="space-y-4">
+            {{-- ================================================================= --}}
+            {{-- BAGIAN GRID 2 KOLOM (Untuk Bencana, Pegawai, Jam Mulai & Selesai)  --}}
+            {{-- ================================================================= --}}
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
                     <label class="block text-sm font-semibold mb-1 text-gray-700">Bencana *</label>
-                    <select name="bencana_id" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <select name="bencana_id"
+                        class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none">
                         <option value="">Pilih Kejadian Bencana</option>
-                        @foreach($bencanas as $bencana)
-                        <option value="{{ $bencana->id }}" {{ old('bencana_id') == $bencana->id ? 'selected' : '' }}>
-                            {{-- Format: Nama Bencana - Desa - Tahun --}}
-                            {{ $bencana->nama_bencana }} -
-                            {{ $bencana->desa->nama_desa ?? 'Desa Tidak Ditemukan' }} -
-                            {{ \Carbon\Carbon::parse($bencana->tanggal)->format('Y') }}
-                        </option>
+                        @foreach ($bencanas as $bencana)
+                            <option value="{{ $bencana->id }}"
+                                {{ old('bencana_id', $jadwal->bencana_id) == $bencana->id ? 'selected' : '' }}>
+                                {{ $bencana->nama_bencana }} -
+                                {{ $bencana->desa->nama_desa ?? 'Desa Tidak Ditemukan' }} -
+                                {{ \Carbon\Carbon::parse($bencana->tanggal)->format('Y') }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
 
                 <div>
                     <label class="block text-sm font-semibold mb-1 text-gray-700">Pegawai Penanggung Jawab *</label>
-                    <select name="pegawai_id" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <select name="pegawai_id"
+                        class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none">
                         <option value="">Pilih Pegawai</option>
-                        @foreach($pegawais as $p)
-                        <option value="{{ $p->id }}"
-                            {{ old('pegawai_id', $jadwal->pegawai_id) == $p->id ? 'selected' : '' }}>
-                            {{ $p->nama_pegawai }}
-                        </option>
+                        @foreach ($pegawais as $p)
+                            <option value="{{ $p->id_pegawai }}"
+                                {{ old('pegawai_id', $jadwal->pegawai_id) == $p->id_pegawai ? 'selected' : '' }}>
+                                {{ $p->nama_pegawai }}
+                            </option>
                         @endforeach
                     </select>
                 </div>
 
                 <div>
                     <label class="block text-sm font-semibold mb-1 text-gray-700">Jam Mulai *</label>
-                    <input type="time" name="jam_mulai"
-                        value="{{ old('jam_mulai', $jadwal->jam_mulai) }}"
+                    <input type="time" name="jam_mulai" value="{{ old('jam_mulai', $jadwal->jam_mulai) }}"
                         class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none">
                 </div>
 
                 <div>
                     <label class="block text-sm font-semibold mb-1 text-gray-700">Jam Selesai *</label>
-                    <input type="time" name="jam_selesai"
-                        value="{{ old('jam_selesai', $jadwal->jam_selesai) }}"
+                    <input type="time" name="jam_selesai" value="{{ old('jam_selesai', $jadwal->jam_selesai) }}"
                         class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none">
                 </div>
             </div>
 
-            {{-- Kolom Kanan --}}
-            <div class="space-y-4">
+            {{-- ================================================================= --}}
+            {{-- BAGIAN VERTIKAL MELEBAR (Full Width Sesuai Gambar image_ed09c7.png) --}}
+            {{-- ================================================================= --}}
+            <div class="space-y-6">
                 <div>
                     <label class="block text-sm font-semibold mb-1 text-gray-700">Tanggal Layanan *</label>
                     <input type="date" name="tanggal_layanan"
@@ -93,50 +95,47 @@
 
                 <div>
                     <label class="block text-sm font-semibold mb-1 text-gray-700">Sasaran *</label>
-                    <input type="text" name="sarana"
-                        value="{{ old('sarana', $jadwal->sarana) }}"
+                    <input type="text" name="sarana" value="{{ old('sarana', $jadwal->sarana) }}"
                         class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none"
-                        placeholder="Contoh: Perempuan, Anak-anak">
+                        placeholder="Contoh: Perempuan, Anak Anak, Umum">
                 </div>
 
-                {{-- DROPDOWN STATUS LAYANAN (Update Tugas Baru) --}}
                 <div>
                     <label class="block text-sm font-semibold mb-1 text-gray-700">Status Layanan *</label>
-                    <select name="status" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none">
+                    <select name="status"
+                        class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none">
                         <option value="dijadwalkan" {{ old('status', $jadwal->status) == 'dijadwalkan' ? 'selected' : '' }}>Dijadwalkan</option>
                         <option value="selesai" {{ old('status', $jadwal->status) == 'selesai' ? 'selected' : '' }}>Selesai</option>
                     </select>
                 </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-1 text-gray-700">Petugas Kesehatan *</label>
+                    <input type="text" name="petugas_lapangan"
+                        value="{{ old('petugas_lapangan', $jadwal->petugas_lapangan) }}"
+                        class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none"
+                        placeholder="Masukkan nama petugas kesehatan di lapangan">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-semibold mb-1 text-gray-700">Lokasi Layanan *</label>
+                    <textarea name="lokasi_layanan" class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none"
+                        rows="3" placeholder="Masukkan detail lokasi layanan">{{ old('lokasi_layanan', $jadwal->lokasi_layanan) }}</textarea>
+                </div>
             </div>
 
-        </div>
+            {{-- Tombol Aksi di Pojok Kanan Bawah Dalam Kotak Putih --}}
+            <div class="flex justify-end gap-3 border-t pt-5">
+                <a href="{{ route('admin.jadwal.index') }}"
+                    class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-semibold text-sm flex items-center">
+                    Batal
+                </a>
 
-        <div>
-            <label class="block text-sm font-semibold mb-1 text-gray-700">Petugas Lapangan *</label>
-            <input type="text" name="petugas_lapangan"
-                value="{{ old('petugas_lapangan', $jadwal->petugas_lapangan) }}"
-                class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none">
-        </div>
-
-        <div>
-            <label class="block text-sm font-semibold mb-1 text-gray-700">Lokasi Detail Layanan *</label>
-            <textarea name="lokasi_layanan"
-                class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none"
-                rows="3">{{ old('lokasi_layanan', $jadwal->lokasi_layanan) }}</textarea>
-        </div>
-
-        <div class="flex justify-end gap-3 border-t pt-5">
-            <a href="{{ route('jadwal.index') }}"
-                class="px-5 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-semibold text-sm">
-                Batal
-            </a>
-
-            <button type="submit"
-                class="px-8 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow-sm font-semibold text-sm">
-                Simpan Perubahan
-            </button>
-        </div>
-    </form>
-</div>
-
+                <button type="submit"
+                    class="px-8 py-2.5 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition shadow-sm font-semibold text-sm">
+                    Simpan Perubahan
+                </button>
+            </div>
+        </form>
+    </div>
 @endsection

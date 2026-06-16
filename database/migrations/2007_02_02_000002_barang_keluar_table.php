@@ -13,7 +13,12 @@ return new class extends Migration
 
             $table->foreignId('gudang_id')->constrained('gudang')->cascadeOnDelete();
             $table->foreignId('pengajuan_barang_id')->constrained('pengajuan_barang')->cascadeOnDelete();
-            $table->foreignId('petugas_gudang_id')->constrained('pegawai')->cascadeOnDelete();
+            $table->unsignedBigInteger('petugas_gudang_id');
+
+            $table->foreign('petugas_gudang_id')
+                ->references('id_pegawai')
+                ->on('pegawai')
+                ->cascadeOnDelete();
             $table->foreignId('updated_by')->nullable()->constrained('user')->nullOnDelete();
 
             $table->date('tgl_keluar');

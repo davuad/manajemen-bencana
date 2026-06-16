@@ -102,7 +102,7 @@ class DistribusiController extends Controller
 
             DB::commit();
 
-            return redirect()->route('management_distribusi.distribusi.index')
+            return redirect()->route('admin.management_distribusi.distribusi.index')
                 ->with('success', 'Data berhasil ditambahkan');
 
         } catch (\Exception $e) {

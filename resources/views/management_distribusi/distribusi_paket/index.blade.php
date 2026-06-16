@@ -13,7 +13,7 @@
         <div class="bg-white rounded-xl shadow p-6">
 
 
-            <form method="GET" action="{{ route('management_distribusi.distribusi_paket.index') }}">
+            <form method="GET" action="{{ route('admin.management_distribusi.distribusi_paket.index') }}">
                 <div class="flex flex-wrap gap-4">
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari No. KK / Nama..."
                         class="flex-1 min-w-[250px] border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
@@ -32,7 +32,7 @@
                         Filter
                     </button>
 
-                    <a href="{{ route('management_distribusi.distribusi_paket.index') }}"
+                    <a href="{{ route('admin.management_distribusi.distribusi_paket.index') }}"
                         class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
                         Reset
                     </a>
@@ -131,7 +131,7 @@
 
                                 <td class="p-3 text-center">
                                     @if ($item->status_penyaluran == 'Belum diproses')
-                                        <a href="{{ route('management_distribusi.distribusi_paket.create', ['warga_id' => $item->id]) }}"
+                                        <a href="{{ route('admin.management_distribusi.distribusi_paket.create', ['warga_id' => $item->id]) }}"
                                             class="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg text-xs hover:bg-slate-700">
                                             <x-heroicon-o-truck class="w-4 h-4" />
                                             <span>Distribusi Bantuan</span>
@@ -233,7 +233,7 @@
                                     <div class="flex justify-center items-center gap-2">
 
                                         {{-- DETAIL --}}
-                                        <a href="{{ route('management_distribusi.distribusi_paket.show', $item->id) }}"
+                                        <a href="{{ route('admin.management_distribusi.distribusi_paket.show', $item->id) }}"
                                             class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-md text-xs">
                                             <x-heroicon-o-eye class="w-4 h-4" />
                                             Detail
@@ -242,7 +242,7 @@
                                         {{-- SELESAI --}}
                                         @if ($item->status_distribusi == 'Proses Penyaluran')
                                             <form
-                                                action="{{ route('management_distribusi.distribusi_paket.selesai', $item->id) }}"
+                                                action="{{ route('admin.management_distribusi.distribusi_paket.selesai', $item->id) }}"
                                                 method="POST">
                                                 @csrf
                                                 @method('PATCH')
