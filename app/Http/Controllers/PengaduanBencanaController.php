@@ -112,7 +112,7 @@ class PengaduanBencanaController extends Controller
             }
         }
 
-        return redirect('/pengaduan')->with('success', 'Data berhasil ditambahkan');
+        return redirect('/admin/pengaduan')->with('success', 'Data berhasil ditambahkan');
     }
 
         public function update(Request $request, $id)
@@ -158,7 +158,7 @@ class PengaduanBencanaController extends Controller
             ]
         );
 
-        return redirect('/pengaduan')->with('success', 'Data berhasil diupdate');
+        return redirect('/admin/pengaduan')->with('success', 'Data berhasil diupdate');
     }
 
     public function show($id)
@@ -198,7 +198,7 @@ class PengaduanBencanaController extends Controller
 
         $foto->delete();
 
-        return redirect('/pengaduan' )
+        return redirect('/admin/pengaduan' )
             ->with('success', 'Foto berhasil dihapus');
     }
 
@@ -215,6 +215,6 @@ class PengaduanBencanaController extends Controller
         FotoPengaduan::where('pengaduan_bencana_id', $id)->delete();
         KebutuhanPengaduan::where('pengaduan_bencana_id', $id)->delete();
         $pengaduan->delete();
-        return redirect('/pengaduan')->with('success', 'Data pengaduan beserta seluruh lampiran fotonya berhasil dihapus secara permanen.');
+        return redirect('/admin/pengaduan')->with('success', 'Data pengaduan beserta seluruh lampiran fotonya berhasil dihapus secara permanen.');
     }
 }

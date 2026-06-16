@@ -74,8 +74,8 @@ Route::middleware(['auth', 'role:admin'])
 
         // --- Pengaduan Bencana ---
         Route::get('/pengaduan', [PengaduanBencanaController::class, 'index'])->name('pengaduan_bencana.index');
-        Route::get('/pengaduan/create', [PengaduanBencanaController::class, 'create']);
-        Route::post('/pengaduan/store', [PengaduanBencanaController::class, 'store']);
+        Route::get('/pengaduan/create', [PengaduanBencanaController::class, 'create'])->name('pengaduan_bencana.create');
+        Route::post('/pengaduan/store', [PengaduanBencanaController::class, 'store'])->name('pengaduan_bencana.store');
         Route::get('/pengaduan/{id}', [PengaduanBencanaController::class, 'show']);
         Route::put('/pengaduan/{id}', [PengaduanBencanaController::class, 'update']);
         Route::delete('/pengaduan/{id}', [PengaduanBencanaController::class, 'destroy']);

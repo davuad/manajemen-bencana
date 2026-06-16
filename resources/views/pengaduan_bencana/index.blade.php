@@ -18,7 +18,7 @@
             </p>
         </div>
 
-        <a href="/pengaduan/create"
+        <a href="{{ route('admin.pengaduan_bencana.create') }}"
            class="bg-indigo-700 hover:bg-indigo-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium shadow-sm transition duration-200">
 
             + Tambah Pengaduan
@@ -203,12 +203,6 @@
 
                         </div>
 
-                        <div class="text-xs text-gray-400 mt-1">
-
-                            {{ $d->created_at->format('d M Y') }}
-
-                        </div>
-
                     </td>
 
                     {{-- LOKASI --}}
@@ -243,7 +237,7 @@
 
                         @if($d->foto->count() > 0)
 
-                            <a href="/foto/{{ $d->foto[0]->id }}"
+                            <a href="/admin/foto/{{ $d->foto[0]->id }}"
                                class="inline-flex items-center gap-1 text-indigo-600 hover:text-indigo-800 font-medium">
 
                                 📷 {{ $d->foto->count() }} Foto
@@ -267,7 +261,7 @@
 
                         @if($d->kebutuhan)
 
-                            <a href="/kebutuhan/{{ $d->kebutuhan->id }}"
+                            <a href="/admin/kebutuhan/{{ $d->kebutuhan->id }}"
                                class="inline-flex items-center gap-1 text-cyan-600 hover:text-cyan-800 font-medium">
 
                                 📦 Lihat
@@ -286,58 +280,63 @@
 
                     </td>
 
-                    {{-- STATUS --}}
+                   {{-- STATUS --}}
                     <td class="px-4 py-4 text-center">
 
                         @if($d->status_pengaduan == 'BELUM_DITANGANI')
 
                             <span class="bg-gray-200 text-gray-700 text-xs px-3 py-1 rounded-full font-medium">
-
                                 Belum Ditangani
-
                             </span>
 
                         @elseif($d->status_pengaduan == 'DITANGANI')
 
                             <span class="bg-yellow-100 text-yellow-700 text-xs px-3 py-1 rounded-full font-medium">
-
                                 Ditangani
-
                             </span>
 
                         @elseif($d->status_pengaduan == 'SELESAI')
 
                             <span class="bg-green-100 text-green-700 text-xs px-3 py-1 rounded-full font-medium">
-
                                 Selesai
-
                             </span>
 
                         @else
 
                             <span class="bg-red-100 text-red-700 text-xs px-3 py-1 rounded-full font-medium">
-
                                 Ditolak
-
                             </span>
 
                         @endif
 
-                    </td>
+                        <div class="text-xs text-gray-500 mt-2">
 
+                            @if($d->tanggal_selesai)
+
+                                {{ \Carbon\Carbon::parse($d->tanggal_selesai)->format('d M Y') }}
+
+                            @else
+
+                                -
+
+                            @endif
+
+                        </div>
+
+                    </td>
                     {{-- AKSI --}}
                     <td class="px-4 py-4">
 
                         <div class="flex justify-center gap-2">
 
-                            <a href="/pengaduan/{{ $d->id }}"
+                            <a href="/admin/pengaduan/{{ $d->id }}"
                                class="bg-blue-100 hover:bg-blue-200 text-blue-700 px-3 py-1.5 rounded-lg text-xs transition">
 
                                 Edit
 
                             </a>
 
-                            <form action="/pengaduan/{{ $d->id }}"
+                            <form action="/admin/pengaduan/{{ $d->id }}"
                                   method="POST">
 
                                 @csrf
