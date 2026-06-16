@@ -54,19 +54,19 @@ Route::middleware(['auth', 'role:admin'])
     ->name('admin.')
     ->group(function () {
 
-    Route::resource('anak_terpisah', AnakTerpisahController::class);
+        Route::resource('anak_terpisah', AnakTerpisahController::class);
 
-    Route::get('penjemputan', [PenjemputanAnakController::class, 'index'])
-        ->name('penjemputan.index');
+        Route::get('penjemputan', [PenjemputanAnakController::class, 'index'])
+            ->name('penjemputan.index');
 
-    Route::get('penjemputan/{anak_id}/jemput', [PenjemputanAnakController::class, 'formJemput'])
-        ->name('penjemputan.jemput');
+        Route::get('penjemputan/{anak_id}/jemput', [PenjemputanAnakController::class, 'formJemput'])
+            ->name('penjemputan.jemput');
 
-    Route::post('penjemputan', [PenjemputanAnakController::class, 'store'])
-        ->name('penjemputan.store');
+        Route::post('penjemputan', [PenjemputanAnakController::class, 'store'])
+            ->name('penjemputan.store');
 
-    Route::get('penjemputan/{id}', [PenjemputanAnakController::class, 'show'])
-    ->name('penjemputan.show');
+        Route::get('penjemputan/{id}', [PenjemputanAnakController::class, 'show'])
+            ->name('penjemputan.show');
 
         // --- System Management ---
         Route::model('management_user', User::class);
@@ -162,7 +162,7 @@ Route::middleware(['auth', 'role:admin'])
             Route::resource('petugas', PetugasController::class);
             Route::resource('pengambilan', PengambilanController::class);
             Route::resource('pengembalian', PengembalianController::class);
-});
+        });
     });
 
 
@@ -205,3 +205,22 @@ Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(f
 });
 Route::middleware(['auth', 'role:ketua_tim'])->prefix('ketua_tim')->name('ketua_tim.')->group(function () {});
 
+
+// --- Role Placeholders (Kosong) ---
+Route::middleware(['auth'])->prefix('pegawai')->name('pegawai.')->group(function () {
+    Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
+        Route::resource('paket_bantuan', PaketBantuanController::class);
+        Route::resource('detail_paket', DetailPaketController::class);
+        Route::resource('distribusi_paket', DistribusiPaketController::class);
+        Route::patch('distribusi_paket/{id}/selesai', [DistribusiPaketController::class, 'selesai'])->name('distribusi_paket.selesai');
+        Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
+    });
+});
+
+Route::middleware(['auth'])->prefix('petugas')->name('petugas.')->group(function () {
+    Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
+        Route::get('distribusi_paket', [DistribusiPaketController::class, 'index'])->name('distribusi_paket.index');
+        Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
+        Route::patch('distribusi_paket/{id}/selesai', [DistribusiPaketController::class, 'selesai'])->name('distribusi_paket.selesai');
+    });
+});
