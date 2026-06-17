@@ -17,7 +17,7 @@
             </p>
         </div>
 
-        <a href="{{ route('manajemen_barang.pengambilan.create') }}"
+        <a href="{{ route('management_barang.pengambilan.create') }}"
            class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
 
             + Tambah Pengambilan
@@ -28,7 +28,7 @@
 
     {{-- Search --}}
     <form method="GET"
-          action="{{ route('manajemen_barang.pengambilan.index') }}">
+          action="{{ route('management_barang.pengambilan.index') }}">
 
         <div class="flex gap-4 mb-6">
 
@@ -190,7 +190,7 @@
                         <div class="flex justify-center gap-3">
 
                             {{-- Detail --}}
-                            <a href="{{ route('manajemen_barang.pengambilan.show', $item->id) }}"
+                            <a href="{{ route('management_barang.pengambilan.show', $item->id) }}"
                                class="text-green-600 hover:text-green-800">
 
                                 🔍
@@ -198,7 +198,7 @@
                             </a>
 
                             {{-- Edit --}}
-                            <a href="{{ route('manajemen_barang.pengambilan.edit', $item->id) }}"
+                            <a href="{{ route('management_barang.pengambilan.edit', $item->id) }}"
                                class="text-blue-500 hover:text-blue-700">
 
                                 ✏️
@@ -208,7 +208,7 @@
                             {{-- Batal --}}
                             @if($item->status != 'Dibatalkan')
 
-                            <form action="{{ route('manajemen_barang.pengambilan.batal', $item->id) }}"
+                            <form action="{{ route('management_barang.pengambilan.batal', $item->id) }}"
                                   method="POST"
                                   onsubmit="return confirm('Yakin dibatalkan?')">
 
