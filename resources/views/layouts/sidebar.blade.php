@@ -21,11 +21,73 @@
         </a>
         @endrole
 
-        <a href="{{ route('admin.pengaduan_bencana.index') }}"
+{{-- PENGADUAN BENCANA --}}
+
+@if(auth()->user()->hasRole('admin'))
+
+    <a href="{{ route('admin.pengaduan_bencana.index') }}"
+        class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
+
+        <span>
+            <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
+        </span>
+
+        <span x-show="sidebarOpen">
+            Pengaduan Bencana
+        </span>
+
+    </a>
+
+@elseif(auth()->user()->hasRole('kabid'))
+
+    <a href="{{ route('kabid.pengaduan.index') }}"
+        class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
+
+        <span>
+            <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
+        </span>
+
+        <span x-show="sidebarOpen">
+            Verifikasi Pengaduan
+        </span>
+
+    </a>
+
+    @elseif(auth()->user()->hasRole('ketua_tim'))
+
+        <a href="{{ route('ketua_tim.pengaduan.index') }}"
             class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
-            <span><x-heroicon-o-exclamation-triangle class="w-5 h-5" /></span>
-            <span x-show="sidebarOpen" x-transition>Pengaduan Bencana</span>
+
+            <span>
+                <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
+            </span>
+
+            <span x-show="sidebarOpen">
+                Monitoring Pengaduan
+            </span>
+
         </a>
+
+    @elseif(
+        auth()->user()->hasRole('relawan') ||
+        auth()->user()->hasRole('kadus') ||
+        auth()->user()->hasRole('desa')
+    )
+
+        <a href="{{ route('user.pengaduan.index') }}"
+            class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
+
+            <span>
+                <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
+            </span>
+
+            <span x-show="sidebarOpen">
+                Pengaduan Saya
+            </span>
+
+        </a>
+
+    @endif
 
         <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
             <span><x-heroicon-o-archive-box class="w-5 h-5" /></span>
@@ -290,15 +352,15 @@
 
             <div x-show="openMenuManagementBarang" x-transition class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
 
-                <a href="{{ route('management_barang.petugas.index') }}"
+                {{-- <a href="{{ route('management_barang.petugas.index') }}" --}}
                     class="block px-3 py-2 text-sm rounded {{ request()->routeIs('management_barang.petugas.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
                     Petugas
                 </a>
-                <a href="{{ route('management_barang.pengambilan.index') }}"
+                {{-- <a href="{{ route('management_barang.pengambilan.index') }}" --}}
                     class="block px-3 py-2 text-sm rounded {{ request()->routeIs('management_barang.pengambilan.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
                     Pengambilan Barang
                 </a>
-                <a href="{{ route('management_barang.pengembalian.index') }}"
+                {{-- <a href="{{ route('management_barang.pengembalian.index') }}" --}}
                     class="block px-3 py-2 text-sm rounded {{ request()->routeIs('management_barang.pengembalian.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
                     Pengembalian Barang
                 </a>
