@@ -36,7 +36,7 @@ class UserController extends Controller
         $roles = Role::where('name', '!=', 'admin')->get();
         $users = $query->paginate(10)->appends($request->query());
 
-        return view('manajemen_pengguna.index', compact('users', 'roles'));
+        return view('management_user.index', compact('users', 'roles'));
     }
 
     /**
@@ -45,7 +45,7 @@ class UserController extends Controller
     public function create()
     {
         $roles = Role::all();
-        return view('manajemen_pengguna.create', compact('roles'));
+        return view('management_user.create', compact('roles'));
     }
 
     /**
@@ -85,7 +85,7 @@ class UserController extends Controller
 
         $user->assignRole($validated['role']);
 
-        return redirect()->route('admin.manajemen_user.index')->with('success', 'User berhasil ditambahkan');
+        return redirect()->route('admin.management_user.index')->with('success', 'User berhasil ditambahkan');
     }
 
     /**
@@ -93,7 +93,7 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return view('manajemen_pengguna.show', compact('user'));
+        return view('management_user.show', compact('user'));
     }
 
     /**
@@ -103,14 +103,14 @@ class UserController extends Controller
     {
         // Cegah edit user dengan role admin
         if ($user->hasRole('admin')) {
-            return redirect()->route('admin.manajemen_user.index')
+            return redirect()->route('admin.management_user.index')
                 ->with('error', 'Anda tidak dapat mengedit user admin');
         }
 
         $roles = Role::all();
         $userRole = $user->roles->first();
 
-        return view('manajemen_pengguna.edit', compact('user', 'roles', 'userRole'));
+        return view('management_user.edit', compact('user', 'roles', 'userRole'));
     }
 
     /**
@@ -159,7 +159,7 @@ class UserController extends Controller
 
         $user->syncRoles($validated['role']);
 
-        return redirect()->route('admin.manajemen_user.index')->with('success', 'User berhasil diperbarui');
+        return redirect()->route('admin.management_user.index')->with('success', 'User berhasil diperbarui');
     }
 
     /**
@@ -168,12 +168,12 @@ class UserController extends Controller
     public function destroy(User $user)
     {
         if ($user->hasRole('admin')) {
-            return redirect()->route('admin.manajemen_user.index')
+            return redirect()->route('admin.management_user.index')
                 ->with('error', 'Anda tidak dapat menghapus user admin');
         }
 
         $user->delete();
-        return redirect()->route('admin.manajemen_user.index')
+        return redirect()->route('admin.management_user.index')
             ->with('success', 'User berhasil dihapus');
     }
 }

@@ -34,8 +34,8 @@ class KategoriBencanaController extends Controller
 
         KategoriBencana::create($request->all());
 
-        return redirect()->route('kategori_bencana.index')
-                         ->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('admin.kategori_bencana.index')
+            ->with('success', 'Data berhasil ditambahkan');
     }
 
     public function edit($id)
@@ -54,8 +54,8 @@ class KategoriBencanaController extends Controller
         $kategori = KategoriBencana::findOrFail($id);
         $kategori->update($request->all());
 
-        return redirect()->route('kategori_bencana.index')
-                         ->with('success', 'Data berhasil diupdate');
+        return redirect()->route('admin.kategori_bencana.index')
+            ->with('success', 'Data berhasil diupdate');
     }
 
     public function destroy($id)
@@ -63,7 +63,7 @@ class KategoriBencanaController extends Controller
         $kategori = KategoriBencana::findOrFail($id);
         $kategori->delete();
 
-        return redirect()->route('kategori_bencana.index')
-                         ->with('success', 'Data berhasil dihapus');
+        return redirect()->route('admin.kategori_bencana.index')
+            ->with('success', 'Data berhasil dihapus');
     }
 }

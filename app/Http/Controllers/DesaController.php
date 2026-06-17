@@ -76,7 +76,7 @@ class DesaController extends Controller
             'kontak_kades' => $request->kontak_kades,
         ]);
 
-        return redirect()->route('desa.index')->with('success', 'Data desa berhasil ditambahkan.');
+        return redirect()->route('admin.desa.index')->with('success', 'Data desa berhasil ditambahkan.');
     }
 
     public function detail($id)
@@ -111,20 +111,20 @@ class DesaController extends Controller
             'kontak_kades' => $request->kontak_kades,
         ]);
 
-        return redirect()->route('desa.index')->with('success', 'Data desa berhasil diupdate.');
+        return redirect()->route('admin.desa.index')->with('success', 'Data desa berhasil diupdate.');
     }
 
     public function delete($id)
-{
-    // Gunakan find(), jangan findOrFail() supaya tidak memicu 404 otomatis
-    $desa = Desa::find($id);
+    {
+        // Gunakan find(), jangan findOrFail() supaya tidak memicu 404 otomatis
+        $desa = Desa::find($id);
 
-    if ($desa) {
-        $desa->delete();
-        return redirect()->route('desa.index')->with('success', 'Data desa berhasil dihapus.');
+        if ($desa) {
+            $desa->delete();
+            return redirect()->route('admin.desa.index')->with('success', 'Data desa berhasil dihapus.');
+        }
+
+        // Jika data sudah tidak ada (terhapus), langsung balikkan ke index dengan aman
+        return redirect()->route('admin.desa.index')->with('success', 'Data desa sudah berhasil dihapus.');
     }
-
-    // Jika data sudah tidak ada (terhapus), langsung balikkan ke index dengan aman
-    return redirect()->route('desa.index')->with('success', 'Data desa sudah berhasil dihapus.');
-}
 }

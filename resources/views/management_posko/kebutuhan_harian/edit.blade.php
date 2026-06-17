@@ -4,20 +4,20 @@
     <div class="mx-3">
         <h2 class="text-xl font-bold">Edit Data Kebutuhan Harian</h2>
         <p class="text-gray-500 text-sm">
-           Perbarui data kebutuhan harian untuk memastikan perhitungan konsumsi tetap akurat
+            Perbarui data kebutuhan harian untuk memastikan perhitungan konsumsi tetap akurat
         </p>
     </div>
 
     <div class="bg-white rounded-xl p-5 m-3 mt-5">
-        <form action="{{ route('management_posko.kebutuhan_harian.update', $kebutuhan->id) }}" method="POST" class="space-y-6">
+        <form action="{{ route('admin.management_posko.kebutuhan_harian.update', $kebutuhan->id) }}" method="POST"
+            class="space-y-6">
             @csrf
             @method('PUT')
 
             <!-- Tanggal -->
             <div>
                 <label class="block font-medium">Tanggal *</label>
-                <input type="date" name="tanggal"
-                    value="{{ old('tanggal', $kebutuhan->tanggal) }}"
+                <input type="date" name="tanggal" value="{{ old('tanggal', $kebutuhan->tanggal) }}"
                     class="w-full border rounded-lg p-3">
             </div>
 
@@ -26,9 +26,8 @@
                 <label class="block font-medium">Dapur *</label>
                 <select name="dapur_umum_id" class="w-full border rounded-lg p-3">
                     <option value="">Pilih Dapur</option>
-                    @foreach($dapur as $d)
-                        <option value="{{ $d->id }}"
-                            {{ $kebutuhan->dapur_umum_id == $d->id ? 'selected' : '' }}>
+                    @foreach ($dapur as $d)
+                        <option value="{{ $d->id }}" {{ $kebutuhan->dapur_umum_id == $d->id ? 'selected' : '' }}>
                             {{ $d->nama_dapur_umum }}
                         </option>
                     @endforeach
@@ -39,34 +38,29 @@
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <label>Jumlah Warga *</label>
-                    <input type="number" name="jumlah_warga"
-                        value="{{ old('jumlah_warga', $kebutuhan->jumlah_warga) }}"
-                        class="w-full border rounded-lg p-3"
-                        placeholder="Masukkan jumlah warga">
+                    <input type="number" name="jumlah_warga" value="{{ old('jumlah_warga', $kebutuhan->jumlah_warga) }}"
+                        class="w-full border rounded-lg p-3" placeholder="Masukkan jumlah warga">
                 </div>
 
                 <div>
                     <label>Porsi per Orang *</label>
                     <input type="number" name="porsi_per_orang"
                         value="{{ old('porsi_per_orang', $kebutuhan->porsi_per_orang) }}"
-                        class="w-full border rounded-lg p-3"
-                        placeholder="Masukkan porsi per orang">
+                        class="w-full border rounded-lg p-3" placeholder="Masukkan porsi per orang">
                 </div>
             </div>
 
             <!-- Total Porsi (AUTO) -->
             <div>
                 <label>Total Porsi (Otomatis)</label>
-                <input type="number" name="total_porsi"
-                    value="{{ old('total_porsi', $kebutuhan->total_porsi) }}"
-                    class="w-full border rounded-lg p-3 bg-gray-100"
-                    readonly>
+                <input type="number" name="total_porsi" value="{{ old('total_porsi', $kebutuhan->total_porsi) }}"
+                    class="w-full border rounded-lg p-3 bg-gray-100" readonly>
             </div>
 
             <!-- Button -->
             <div class="flex justify-end gap-3">
-                <a href="{{ route('management_posko.kebutuhan_harian.index') }}"
-                   class="px-4 py-2 bg-gray-300 rounded-lg">
+                <a href="{{ route('admin.management_posko.kebutuhan_harian.index', $kebutuhan->dapur_umum_id) }}"
+                    class="px-4 py-2 bg-gray-300 rounded-lg">
                     Batal
                 </a>
 
@@ -75,7 +69,7 @@
                 </button>
             </div>
         </form>
-    </div> 
+    </div>
 
     <!-- Script Auto Hitung -->
     <script>
@@ -95,5 +89,4 @@
         // hitung saat halaman pertama kali load
         document.addEventListener('DOMContentLoaded', hitungTotal);
     </script>
-
 @endsection

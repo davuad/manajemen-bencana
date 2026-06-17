@@ -49,7 +49,7 @@ class DapurUmumController extends Controller
 
         DapurUmum::create($validated);
 
-        return redirect()->route('management_posko.dapur_umum.index');
+        return redirect()->route('admin.management_posko.dapur_umum.index');
     }
 
     public function edit($id)
@@ -73,7 +73,7 @@ class DapurUmumController extends Controller
         $dapur = DapurUmum::findOrFail($id);
         $dapur->update($validated);
 
-        return redirect()->route('management_posko.dapur_umum.index')
+        return redirect()->route('admin.management_posko.dapur_umum.index')
             ->with('success', 'Data dapur umum berhasil diupdate');
     }
 
@@ -82,7 +82,7 @@ class DapurUmumController extends Controller
         $dapur = DapurUmum::findOrFail($id);
         $dapur->delete();
 
-        return redirect()->route('management_posko.dapur_umum.index')
+        return redirect()->route('admin.management_posko.dapur_umum.index')
             ->with('success', 'Data dapur umum berhasil dihapus');
     }
 }

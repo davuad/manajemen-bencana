@@ -14,15 +14,14 @@ return new class extends Migration
         Schema::create('pengaduan_bencana', function (Blueprint $table) {
             $table->id();
 
-            $table->unsignedInteger('id_kategori');
-            $table->unsignedInteger('id_user');
+            $table->foreignId('user_id')->constrained('user');
+            $table->foreignId('kategori_id')->constrained('kategori_bencana');
 
             $table->text('desa');
             $table->text('deskripsi');
 
             $table->string('status_pengaduan', 30)->default('BELUM_DITANGANI');
             $table->text('keterangan_verifikasi')->nullable();
-
             $table->dateTime('tanggal_selesai')->nullable();
 
             $table->timestamps();

@@ -12,7 +12,8 @@
         {{-- Card --}}
         <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
             {{-- Header --}}
-            <div class="flex flex-col gap-4 border-b border-gray-100 px-6 py-5 lg:flex-row lg:items-start lg:justify-between">
+            <div
+                class="flex flex-col gap-4 border-b border-gray-100 px-6 py-5 lg:flex-row lg:items-start lg:justify-between">
                 <div>
                     <h2 class="text-2xl font-bold text-gray-900">
                         Detail Data Desa
@@ -23,17 +24,13 @@
                 </div>
 
                 <div class="flex flex-col gap-3 sm:flex-row">
-                    <a
-                        href="{{ route('desa.index') }}"
-                        class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50"
-                    >
+                    <a href="{{ route('admin.desa.index') }}"
+                        class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
                         Kembali
                     </a>
 
-                    <a
-                        href="{{ route('desa.edit', $desa->id) }}"
-                        class="inline-flex items-center justify-center rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-orange-600"
-                    >
+                    <a href="{{ route('admin.desa.edit', $desa->id) }}"
+                        class="inline-flex items-center justify-center rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-orange-600">
                         Edit Data
                     </a>
                 </div>
@@ -88,7 +85,8 @@
                         <h3 class="text-base font-semibold text-gray-900">Status Data</h3>
 
                         <div class="mt-5">
-                            <span class="inline-flex rounded-full bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-700">
+                            <span
+                                class="inline-flex rounded-full bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-700">
                                 Data Desa Aktif
                             </span>
                         </div>

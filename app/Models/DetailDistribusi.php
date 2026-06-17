@@ -11,19 +11,17 @@ class DetailDistribusi extends Model
     protected $fillable = [
         'distribusi_id',
         'barang_keluar_id',
-        'jumlah',
+        'jumlah_kirim',
         'satuan',
-        'keterangan'
     ];
-
-    // RELASI
-    public function distribusi()
-    {
-        return $this->belongsTo(Distribusi::class, 'distribusi_id');
-    }
 
     public function barangKeluar()
     {
         return $this->belongsTo(BarangKeluar::class, 'barang_keluar_id');
+    }
+
+    public function distribusi()
+    {
+        return $this->belongsTo(Distribusi::class);
     }
 }

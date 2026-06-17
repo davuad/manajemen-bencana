@@ -37,7 +37,7 @@ class DetailDistribusiController extends Controller
 
         DetailDistribusi::create($data);
 
-        return redirect()->route('detail_distribusi.index')
+        return redirect()->route('admin.management_distribusi.detail_distribusi.index')
                          ->with('success', 'Data detail berhasil ditambahkan');
     }
 
@@ -58,7 +58,7 @@ class DetailDistribusiController extends Controller
         $detail = DetailDistribusi::findOrFail($id);
         $detail->update($request->all());
 
-        return redirect()->route('detail_distribusi.index')
+        return redirect()->route('admin.management_distribusi.detail_distribusi.index')
                          ->with('success', 'Data berhasil diupdate');
     }
 
@@ -68,7 +68,7 @@ class DetailDistribusiController extends Controller
         $detail = DetailDistribusi::findOrFail($id);
         $detail->delete();
 
-        return redirect()->route('detail_distribusi.index')
+        return redirect()->route('admin.management_distribusi.ddetail_distribusi.index')
                          ->with('success', 'Data berhasil dihapus');
     }
 }
