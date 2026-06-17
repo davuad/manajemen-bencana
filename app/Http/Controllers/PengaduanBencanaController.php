@@ -9,18 +9,21 @@ use App\Models\KebutuhanPengaduan;
 use App\Models\PengaduanBencana;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 
 class PengaduanBencanaController extends Controller
     {
     public function boot()
-        {
-            View::composer('*', function ($view) {
-                $user = User::with('role')->first(); // sementara ambil user pertama
-                $view->with('user', $user);
-            });
-        }
+    {
+        View::composer('*', function ($view) {
 
+            $user = Auth::user();
+
+            $view->with('user', $user);
+        });
+    }
+    
     public function index(Request $request)
     {
         $query = PengaduanBencana::with([
@@ -426,4 +429,138 @@ class PengaduanBencanaController extends Controller
                 'Pengaduan berhasil diselesaikan'
             );
     }
+    // =====================================
+// USER (RELAWAN / KADUS / DESA)
+// =====================================
+
+public function userIndex(Request $request)
+{
+    $query = PengaduanBencana::with([
+        'user',
+        'kategori',
+        'foto',
+        'kebutuhan'
+    ])
+    ->where('user_id', Auth::id());
+
+    if ($request->filled('search')) {
+
+        $search = $request->search;
+
+        $query->where(function ($q) use ($search) {
+
+            $q->where('desa', 'like', "%{$search}%")
+              ->orWhere('deskripsi', 'like', "%{$search}%");
+
+        });
+    }
+
+    if ($request->filled('status')) {
+
+        $query->where(
+            'status_pengaduan',
+            $request->status
+        );
+    }
+
+    $data = $query->latest()->get();
+
+    return view(
+        'pengaduan_bencana.user.index',
+        compact('data')
+    );
+}
+
+// =====================================
+// FORM TAMBAH PENGADUAN USER
+// =====================================
+
+public function userCreate()
+{
+    $kategori = KategoriBencana::all();
+
+    return view(
+        'pengaduan_bencana.user.create',
+        compact('kategori')
+    );
+}
+
+// =====================================
+// SIMPAN PENGADUAN USER
+// =====================================
+
+public function userStore(Request $request)
+{
+    $request->validate([
+        'kategori_id' => 'required',
+        'desa' => 'required',
+        'deskripsi' => 'required',
+        'foto.*' => 'image|mimes:jpg,jpeg,png|max:5120'
+    ]);
+
+    $pengaduan = PengaduanBencana::create([
+        'user_id' => Auth::id(),
+        'kategori_id' => $request->kategori_id,
+        'desa' => $request->desa,
+        'deskripsi' => $request->deskripsi,
+        'status_pengaduan' => 'BELUM_DITANGANI'
+    ]);
+
+    KebutuhanPengaduan::create([
+        'pengaduan_bencana_id' => $pengaduan->id,
+        'dapur_umum' => 'Tidak',
+        'psikososial' => 'Tidak',
+        'logistik_rentan' => 'Tidak',
+        'logistik_makanan' => 'Tidak',
+        'logistik_penampungan' => 'Tidak',
+        'keterangan' => null
+    ]);
+
+    if ($request->hasFile('foto')) {
+
+        foreach ($request->file('foto') as $file) {
+
+            $nama = time().'_'.uniqid().'_'.$file->getClientOriginalName();
+
+            $file->move(
+                public_path('foto'),
+                $nama
+            );
+
+            FotoPengaduan::create([
+                'pengaduan_bencana_id' => $pengaduan->id,
+                'file_foto' => $nama,
+                'keterangan' => $request->keterangan
+            ]);
+        }
+    }
+
+    return redirect()
+        ->route('user.pengaduan.index')
+        ->with(
+            'success',
+            'Pengaduan berhasil dikirim'
+        );
+}
+
+// =====================================
+// DETAIL PENGADUAN USER
+// =====================================
+
+public function showUser($id)
+{
+    $data = PengaduanBencana::with([
+        'user',
+        'kategori',
+        'foto',
+        'kebutuhan'
+    ])
+    ->where('user_id', Auth::id())
+    ->findOrFail($id);
+
+    return view(
+        'pengaduan_bencana.user.show',
+        compact('data')
+    );
+}
 }

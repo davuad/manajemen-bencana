@@ -298,6 +298,27 @@ Route::middleware(['auth', 'role:ketua_tim'])
             '/pengaduan/{id}/selesai',
             [PengaduanBencanaController::class, 'simpanSelesai']
         )->name('pengaduan.simpan');
+});
 
+Route::middleware(['auth', 'role:relawan|kadus|desa'])
+    ->prefix('user')
+    ->name('user.')
+    ->group(function () {
+
+        Route::get('/pengaduan',
+            [PengaduanBencanaController::class, 'userIndex'])
+            ->name('pengaduan.index');
+
+        Route::get('/pengaduan/create',
+            [PengaduanBencanaController::class, 'userCreate'])
+            ->name('pengaduan.create');
+
+        Route::post('/pengaduan/store',
+            [PengaduanBencanaController::class, 'userStore'])
+            ->name('pengaduan.store');
+
+        Route::get('/pengaduan/{id}',
+            [PengaduanBencanaController::class, 'showUser'])
+            ->name('pengaduan.show');
 });
 
