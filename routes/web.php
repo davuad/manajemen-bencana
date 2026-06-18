@@ -37,8 +37,8 @@ use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\PengambilanController;
 use App\Http\Controllers\PengembalianController;
 use App\Models\User;
-use App\Http\Controllers\PengajuanBarangController;
-use App\Http\Controllers\BarangKeluarController;
+use App\Http\Controllers\LaporanController;
+
 
 // --- Public Routes ---
 Route::get('/', function () {
@@ -118,7 +118,7 @@ Route::middleware(['auth', 'role:admin'])
         Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
             Route::resource('distribusi', DistribusiController::class);
             Route::resource('detail_distribusi', DetailDistribusiController::class);
-            Route::get('penerima_distribusi',[PenerimaDistribusiController::class, 'index'])->name('penerima.index');
+            Route::get('penerima_distribusi', [PenerimaDistribusiController::class, 'index'])->name('penerima.index');
 
             Route::get(
                 'penerima_distribusi/create',
@@ -205,27 +205,14 @@ Route::middleware(['auth', 'role:admin'])
             Route::resource('petugas', PetugasController::class);
             Route::resource('pengambilan', PengambilanController::class);
             Route::resource('pengembalian', PengembalianController::class);
-});
+        });
 
-        // --- Pengajuan Barang - Barang Keluar ---
-        Route::prefix('distribusi_bantuan')->name('distribusi_bantuan.')->group(function () {
-        Route::resource('pengajuan-barang', PengajuanBarangController::class)->names('pengajuan');
-        Route::post('pengajuan/import-excel', [App\Http\Controllers\PengajuanBarangController::class, 'importExcel'])
-         ->name('pengajuan.import');
-     
-        Route::post('pengajuan/preview-import', [App\Http\Controllers\PengajuanBarangController::class, 'previewImport'])->name('pengajuan.preview_import');
-     
-        Route::post('pengajuan/store-import', [App\Http\Controllers\PengajuanBarangController::class, 'storeImport'])->name('pengajuan.store_import');
+        Route::prefix('laporan')->name('laporan.')->group(function () {
 
-
-        Route::resource('barang-keluar', BarangKeluarController::class)->names('barang_keluar');
-        Route::put('barang-keluar/{id}/selesaikan', [BarangKeluarController::class, 'selesaikan'])
-        ->name('barang_keluar.selesaikan');
-        
-        Route::get('pengajuan/detail-json/{id}', [App\Http\Controllers\BarangKeluarController::class, 'getDetailPengajuan'])->name('pengajuan.detail_json');
-        Route::get('distribusi_bantuan/pengajuan/detail-json/{id}', [App\Http\Controllers\BarangKeluarController::class, 'getDetailPengajuan'])->name('pengajuan.detail_json');
-    });
-        
+            Route::get('/', [LaporanController::class, 'index'])->name('index');
+            Route::get('/pdf', [LaporanController::class, 'pdf'])->name('pdf');
+            Route::get('/{id}/pdf', [LaporanController::class, 'pdfDetail'])->name('pdf.detail');
+        });
     });
 
 // =========================================================================
@@ -301,7 +288,6 @@ Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->grou
         Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
             ->name('dapur_umum.index');
     });
-
 });
 Route::middleware(['auth', 'role:kabid'])
     ->prefix('kabid')
@@ -325,18 +311,24 @@ Route::middleware(['auth', 'role:kabid'])
         // =====================
         // PENGADUAN BENCANA
         // =====================
-        Route::get('/pengaduan',
-            [PengaduanBencanaController::class, 'kabidIndex'])
+        Route::get(
+            '/pengaduan',
+            [PengaduanBencanaController::class, 'kabidIndex']
+        )
             ->name('pengaduan.index');
 
-        Route::get('/pengaduan/{id}/verifikasi',
-            [PengaduanBencanaController::class, 'verifikasi'])
+        Route::get(
+            '/pengaduan/{id}/verifikasi',
+            [PengaduanBencanaController::class, 'verifikasi']
+        )
             ->name('pengaduan.verifikasi');
 
-        Route::put('/pengaduan/{id}/verifikasi',
-            [PengaduanBencanaController::class, 'simpanVerifikasi'])
+        Route::put(
+            '/pengaduan/{id}/verifikasi',
+            [PengaduanBencanaController::class, 'simpanVerifikasi']
+        )
             ->name('pengaduan.simpan');
-});
+    });
 
 Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(function () {
     Route::prefix('management-posko')->name('management_posko.')->group(function () {
@@ -366,29 +358,52 @@ Route::middleware(['auth', 'role:ketua_tim'])
             '/pengaduan/{id}/selesai',
             [PengaduanBencanaController::class, 'simpanSelesai']
         )->name('pengaduan.simpan');
-});
+    });
 
 Route::middleware(['auth', 'role:relawan|kadus|desa'])
     ->prefix('user')
     ->name('user.')
     ->group(function () {
 
-        Route::get('/pengaduan',
-            [PengaduanBencanaController::class, 'userIndex'])
+        Route::get(
+            '/pengaduan',
+            [PengaduanBencanaController::class, 'userIndex']
+        )
             ->name('pengaduan.index');
 
-        Route::get('/pengaduan/create',
-            [PengaduanBencanaController::class, 'userCreate'])
+        Route::get(
+            '/pengaduan/create',
+            [PengaduanBencanaController::class, 'userCreate']
+        )
             ->name('pengaduan.create');
 
-        Route::post('/pengaduan/store',
-            [PengaduanBencanaController::class, 'userStore'])
+        Route::post(
+            '/pengaduan/store',
+            [PengaduanBencanaController::class, 'userStore']
+        )
             ->name('pengaduan.store');
-        Route::get('/pengaduan/{id}',
-            [PengaduanBencanaController::class, 'showUser'])
+        Route::get(
+            '/pengaduan/{id}',
+            [PengaduanBencanaController::class, 'showUser']
+        )
             ->name('pengaduan.show');
-});
+    });
 
+// ROUTE LAPORAN KABID (BISA LIHAT + CETAK PDF)
+Route::prefix('kabid')->name('kabid.')->group(function () {
+
+    Route::prefix('laporan')->name('laporan.')->group(function () {
+
+        Route::get('/', [LaporanController::class, 'index'])
+            ->name('index');
+
+        Route::get('/pdf', [LaporanController::class, 'pdf'])
+            ->name('pdf');
+
+        Route::get('/{id}/pdf', [LaporanController::class, 'pdfDetail'])
+            ->name('pdf.detail');
+    });
+});
 // Route::middleware([
 //     'auth',
 //     'role:admin|relawan'
@@ -398,4 +413,3 @@ Route::middleware(['auth', 'role:relawan|kadus|desa'])
 
 //         Route::resource('posko', PoskoController::class);
 //     });
-
