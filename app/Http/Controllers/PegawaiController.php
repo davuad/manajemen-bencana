@@ -8,17 +8,17 @@ use Illuminate\Http\Request;
 class PegawaiController extends Controller
 {
     // menampilkan data pegawai
-    public function index()
-    {
-        $pegawai = Pegawai::all();
-        return view('management_pegawai.index', compact('pegawai'));
-    }
+   public function index()
+{
+    $pegawai = Pegawai::all();
+    return view('management_pegawai.index', compact('pegawai'));
+}
 
     // menampilkan form tambah pegawai
     public function create()
-    {
-        return view('management_pegawai.create');
-    }
+{
+    return view('management_pegawai.create');
+}
 
     // menyimpan data pegawai
     public function store(Request $request)
