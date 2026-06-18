@@ -2,42 +2,41 @@
 
 
 use App\Http\Controllers\AnakTerpisahController;
+use App\Http\Controllers\BAController;
+use App\Http\Controllers\BarangController;
+use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\BencanaController;
-
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\PengaduanBencanaController;
 use App\Http\Controllers\DapurUmumController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\DetailDistribusiController;
-use App\Http\Controllers\PenerimaDistribusiController;
 use App\Http\Controllers\DetailPaketController;
 use App\Http\Controllers\DistribusiController;
 use App\Http\Controllers\DistribusiPaketController;
-use App\Http\Controllers\PaketBantuanController;
-use App\Http\Controllers\KorbanController;
-use App\Http\Controllers\WargaTerdampakController;
-use App\Http\Controllers\PegawaiController;
-use App\Http\Controllers\RelawanController;
-use App\Http\Controllers\JadwalController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\KategoriBencanaController;
 use App\Http\Controllers\GudangController;
-use App\Http\Controllers\KategoriBantuanController;
-use App\Http\Controllers\PenjemputanAnakController;
-use App\Http\Controllers\KebutuhanHarianController;
-use App\Http\Controllers\PoskoController;
-use App\Http\Controllers\StokGudangController;
+use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\JenisBarangController;
-use App\Http\Controllers\SumberBarangMasukController;
-use App\Http\Controllers\BarangController;
-use App\Http\Controllers\BarangMasukController;
-
-use App\Http\Controllers\PetugasController;
+use App\Http\Controllers\KategoriBantuanController;
+use App\Http\Controllers\KategoriBencanaController;
+use App\Http\Controllers\KebutuhanHarianController;
+use App\Http\Controllers\KorbanController;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\PaketBantuanController;
+use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\PenerimaDistribusiController;
+use App\Http\Controllers\PengaduanBencanaController;
 use App\Http\Controllers\PengambilanController;
 use App\Http\Controllers\PengembalianController;
+use App\Http\Controllers\PenjemputanAnakController;
+use App\Http\Controllers\PetugasController;
+use App\Http\Controllers\PoskoController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RelawanController;
+use App\Http\Controllers\StokGudangController;
+use App\Http\Controllers\SumberBarangMasukController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\WargaTerdampakController;
 use App\Models\User;
-use App\Http\Controllers\LaporanController;
+use Illuminate\Support\Facades\Route;
 
 
 // --- Public Routes ---
@@ -396,3 +395,46 @@ Route::middleware([
 
         Route::resource('posko', PoskoController::class);
     });
+
+// Relawan
+Route::middleware(['auth','role:relawan'])
+    ->prefix('relawan')
+    ->name('relawan.')
+    ->group(function () {
+        Route::get('/pengaduan', [PengaduanBencanaController::class,'userIndex'])->name('pengaduan.index');
+        Route::get('/pengaduan/create', [PengaduanBencanaController::class,'userCreate'])->name('pengaduan.create');
+        Route::post('/pengaduan/store', [PengaduanBencanaController::class,'userStore'])->name('pengaduan.store');
+        Route::get('/pengaduan/{id}', [PengaduanBencanaController::class,'showUser'])->name('pengaduan.show');
+    });
+
+// Kadus
+Route::middleware(['auth','role:kadus'])
+    ->prefix('kadus')
+    ->name('kadus.')
+    ->group(function () {
+        Route::get('/pengaduan', [PengaduanBencanaController::class,'userIndex'])->name('pengaduan.index');
+        Route::get('/pengaduan/create', [PengaduanBencanaController::class,'userCreate'])->name('pengaduan.create');
+        Route::post('/pengaduan/store', [PengaduanBencanaController::class,'userStore'])->name('pengaduan.store');
+        Route::get('/pengaduan/{id}', [PengaduanBencanaController::class,'showUser'])->name('pengaduan.show');
+    });
+
+// Desa
+Route::middleware(['auth','role:desa'])
+    ->prefix('desa')
+    ->name('desa.')
+    ->group(function () {
+        Route::get('/pengaduan', [PengaduanBencanaController::class,'userIndex'])->name('pengaduan.index');
+        Route::get('/pengaduan/create', [PengaduanBencanaController::class,'userCreate'])->name('pengaduan.create');
+        Route::post('/pengaduan/store', [PengaduanBencanaController::class,'userStore'])->name('pengaduan.store');
+        Route::get('/pengaduan/{id}', [PengaduanBencanaController::class,'showUser'])->name('pengaduan.show');
+    });
+
+    Route::get(
+    '/admin/management-distribusi/berita-acara/{id}',
+    [BAController::class, 'cetak']
+)->name('admin.management_distribusi.berita_acara.cetak');
+
+Route::get(
+    '/admin/management-distribusi/berita-acara/{id}/download',
+    [BAController::class,'download']
+)->name('admin.management_distribusi.berita_acara.download');

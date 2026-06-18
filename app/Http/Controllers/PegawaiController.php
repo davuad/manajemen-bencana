@@ -39,7 +39,8 @@ class PegawaiController extends Controller
             'status_aktif' => $request->status_aktif,
         ]);
 
-        return redirect('/pegawai')->with('success', 'data berhasil ditambah');
+       return redirect()->route('admin.management_pegawai.pegawai.index')
+    ->with('success', 'data berhasil ditambah');
     }
 
     // menampilkan form edit
@@ -72,7 +73,8 @@ class PegawaiController extends Controller
             'status_aktif' => $request->status_aktif,
         ]);
 
-        return redirect('/pegawai')->with('success', 'data berhasil diupdate');
+        return redirect()->route('admin.management_pegawai.pegawai.index')
+    ->with('success', 'data berhasil diupdate');
     }
 
     // hapus data
@@ -80,6 +82,7 @@ class PegawaiController extends Controller
     {
         Pegawai::findOrFail($id)->delete();
 
-        return redirect('/pegawai')->with('success', 'data berhasil dihapus');
+        return redirect()->route('admin.management_pegawai.pegawai.index')
+    ->with('success', 'data berhasil dihapus');
     }
 }

@@ -11,7 +11,7 @@
         </p>
     </div>
 
-    <form action="{{ url('/pegawai') }}" method="POST" class="space-y-4">
+   <form action="{{ route('admin.management_pegawai.pegawai.store') }}" method="POST" class="space-y-4">
         @csrf
 
         <!-- Nama Pegawai -->
@@ -89,7 +89,7 @@
                 Simpan
             </button>
 
-            <a href="{{ url('/pegawai') }}"
+             <a href="{{ route('admin.management_pegawai.pegawai.index') }}"
                class="bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300">
                 Kembali
             </a>
