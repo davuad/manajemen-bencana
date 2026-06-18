@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 class PegawaiController extends Controller
 {
     // menampilkan data pegawai
- elyza
    public function index()
 {
     $pegawai = Pegawai::all();
@@ -20,19 +19,6 @@ class PegawaiController extends Controller
 {
     return view('management_pegawai.create');
 }
-
-    public function index()
-    {
-        $pegawai = Pegawai::all();
-        return view('management_pegawai.pegawai.index', compact('pegawai'));
-    }
-
-    // menampilkan form tambah pegawai
-    public function create()
-    {
-        return view('management_pegawai.pegawai.create');
-    }
- main
 
     // menyimpan data pegawai
     public function store(Request $request)
@@ -50,7 +36,7 @@ class PegawaiController extends Controller
             'jabatan' => $request->jabatan,
             'no_hp' => $request->no_hp,
             'alamat' => $request->alamat,
-             'status_aktif' => $request->status_aktif,
+            'status_aktif' => $request->status_aktif,
         ]);
 
         return redirect('/pegawai')->with('success', 'data berhasil ditambah');
@@ -58,43 +44,34 @@ class PegawaiController extends Controller
 
     // menampilkan form edit
     public function edit($id)
-elyza
-{
-    $pegawai = Pegawai::findOrFail($id);
-    return view('management_pegawai.edit', compact('pegawai'));
-}
-
     {
         $pegawai = Pegawai::findOrFail($id);
-        return view('management_pegawai.pegawai.edit', compact('pegawai'));
+        return view('management_pegawai.edit', compact('pegawai'));
     }
 
-main
     // update data pegawai
     public function update(Request $request, $id)
-{
-    $request->validate([
-        'nama_pegawai' => 'required',
-        'jabatan' => 'required',
-        'no_hp' => 'required',
-        'alamat' => 'required',
-        'status_aktif' => 'required',
-    ]);
+    {
+        $request->validate([
+            'nama_pegawai' => 'required',
+            'jabatan' => 'required',
+            'no_hp' => 'required',
+            'alamat' => 'required',
+            'status_aktif' => 'required',
+        ]);
 
-    $pegawai = Pegawai::findOrFail($id);
+        $pegawai = Pegawai::findOrFail($id);
 
-    $pegawai->update([
-        'nama_pegawai' => $request->nama_pegawai,
-        'jabatan' => $request->jabatan,
-        'no_hp' => $request->no_hp,
-        'alamat' => $request->alamat,
-        'status_aktif' => $request->status_aktif,
-    ]);
+        $pegawai->update([
+            'nama_pegawai' => $request->nama_pegawai,
+            'jabatan' => $request->jabatan,
+            'no_hp' => $request->no_hp,
+            'alamat' => $request->alamat,
+            'status_aktif' => $request->status_aktif,
+        ]);
 
-    return redirect('/pegawai')->with('success', 'data berhasil diupdate');
-}
-
-        
+        return redirect('/pegawai')->with('success', 'data berhasil diupdate');
+    }
 
     // hapus data
     public function destroy($id)

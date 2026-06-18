@@ -24,7 +24,7 @@ class PengaduanBencana extends Model
     // RELASI
     public function poskos()
     {
-        return $this->hasMany(Posko::class, 'pengaduan_id');
+        return $this->hasMany(Posko::class, 'pengaduan_bencana_id');
     }
         // relasi ke user
     public function user()
