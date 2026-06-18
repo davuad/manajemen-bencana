@@ -11,7 +11,7 @@
         </p>
     </div>
 
-    <form action="{{ url('/relawan') }}" method="POST" class="space-y-4">
+<form action="{{ route('admin.management_pegawai.relawan.store') }}" method="POST" class="space-y-4">
         @csrf
 
         <!-- Nama Relawan -->
@@ -85,8 +85,8 @@
                 Simpan
             </button>
 
-            <a href="{{ url('/relawan') }}"
-               class="bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300">
+           <a href="{{ route('admin.management_pegawai.relawan.index') }}"
+   class="bg-gray-200 px-4 py-2 rounded-lg hover:bg-gray-300">
                 Kembali
             </a>
         </div>
