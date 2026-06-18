@@ -8,7 +8,7 @@
 <div class="mx-3 flex justify-between items-center mb-5">
     <div>
         <h2 class="text-xl font-bold text-gray-800">Catat Pengeluaran Barang</h2>
-        <p class="text-sm text-gray-500">Otorisasi distribusi logistik berdasarkan data pengajuan riil.</p>
+        <p class="text-sm text-gray-500">Otorisasi pengeluaran barang logistik berdasarkan data pengajuan riil.</p>
     </div>
     <a href="{{ route('distribusi_bantuan.barang_keluar.index') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-300 transition">&larr; Kembali</a>
 </div>
@@ -169,7 +169,7 @@
                     <div class="mt-8 flex justify-end">
                         <button type="submit" class="bg-indigo-600 text-white px-12 py-4 rounded-2xl font-black text-sm shadow-xl hover:bg-indigo-700 transition uppercase tracking-widest flex items-center gap-3">
                             <x-heroicon-o-check-circle class="w-6 h-6"/>
-                            Simpan Distribusi
+                            Simpan Barang Keluar
                         </button>
                     </div>
                 </div>
@@ -186,7 +186,7 @@
         </div>
         <h3 class="text-2xl font-bold text-gray-900 uppercase tracking-tight">Proses Pengeluaran?</h3>
         <p class="text-sm text-gray-500 mt-2 leading-relaxed px-4">
-            Data distribusi akan disimpan dengan status <b>DIPROSES</b>. Pastikan stok dan realisasi jumlah sudah diverifikasi.
+            Data Barang Keluar akan disimpan dengan status <b>DIPROSES</b>. Pastikan stok dan realisasi jumlah sudah diverifikasi.
         </p>
         <div class="flex flex-col gap-2 mt-8">
             <button type="button" onclick="submitMainForm()" class="w-full py-3 rounded-xl bg-indigo-600 text-white font-black shadow-lg hover:bg-indigo-700 transition uppercase tracking-widest text-[10px]">Ya, Simpan Sekarang</button>
