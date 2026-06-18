@@ -483,7 +483,7 @@
                 <span><x-heroicon-o-clock class="w-5 h-5" /></span>
                 <span x-show="sidebarOpen" x-transition>Jadwal Layanan Pasca Bencana</span>
             </a>
-        @elseif(auth()->user()->hasRole('ketua tim'))
+        @elseif(auth()->user()->hasRole('ketua_tim'))
             <a href="{{ route('ketua_tim.jadwal.index') }}"
                 class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
                 {{ request()->routeIs('ketua_tim.jadwal.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">

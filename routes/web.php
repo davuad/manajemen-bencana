@@ -214,57 +214,6 @@ Route::middleware(['auth', 'role:admin'])
             Route::get('/{id}/pdf', [LaporanController::class, 'pdfDetail'])->name('pdf.detail');
         });
     });
-
-// =========================================================================
-// --- FITUR JADWAL LAYANAN PASCA BENCANA (MANDIRI / POLOSAN DI LUAR) ---
-// =========================================================================
-
-// 1. ROUTE JADWAL ADMIN (BISA CRUD + CETAK)
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
-    Route::get('/jadwal/create', [JadwalController::class, 'create'])->name('jadwal.create');
-    Route::post('/jadwal', [JadwalController::class, 'store'])->name('jadwal.store');
-    Route::get('/jadwal/{id}/edit', [JadwalController::class, 'edit'])->name('jadwal.edit');
-    Route::put('/jadwal/{id}', [JadwalController::class, 'update'])->name('jadwal.update');
-    Route::delete('/jadwal/{id}', [JadwalController::class, 'destroy'])->name('jadwal.destroy');
-    Route::get('/jadwal/cetak-pdf', [JadwalController::class, 'cetak_pdf'])->name('jadwal.cetak');
-});
-
-// 2. ROUTE JADWAL KABID (BISA LIHAT + CETAK)
-Route::prefix('kabid')->name('kabid.')->group(function () {
-    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
-    Route::get('/jadwal/cetak-pdf', [JadwalController::class, 'cetak_pdf'])->name('jadwal.cetak');
-});
-
-// 3. ROUTE JADWAL RELAWAN (HANYA LIHAT)
-Route::prefix('relawan')->name('relawan.')->group(function () {
-    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
-});
-
-// 4. ROUTE JADWAL KADUS (HANYA LIHAT)
-Route::prefix('kadus')->name('kadus.')->group(function () {
-    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
-});
-
-// 5. ROUTE JADWAL DESA (HANYA LIHAT)
-Route::prefix('desa')->name('desa.')->group(function () {
-    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
-});
-
-// 6. ROUTE JADWAL KETUA TIM (HANYA LIHAT)
-Route::prefix('ketua_tim')->name('ketua_tim.')->group(function () {
-    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
-});
-
-// 7. ROUTE JADWAL PETUGAS (HANYA LIHAT)
-Route::prefix('petugas')->name('petugas.')->group(function () {
-    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
-});
-
-// 8. ROUTE JADWAL PEGAWAI (HANYA LIHAT)
-Route::prefix('pegawai')->name('pegawai.')->group(function () {
-    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
-});
 // --- Role Placeholders (Kosong) ---
 Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')->group(function () {
     Route::prefix('management-posko')->name('management_posko.')->group(function () {
@@ -278,6 +227,9 @@ Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')
     Route::prefix('kebutuhan_harian')->name('kebutuhan_harian.')->group(function () {
         Route::get('/{dapur}', [KebutuhanHarianController::class, 'index'])->name('kebutuhan_harian.index');
     });
+
+    // --- Jadwal Layanan  ---
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 });
 
 Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->group(function () {
@@ -288,6 +240,8 @@ Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->grou
         Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
             ->name('dapur_umum.index');
     });
+    // --- Jadwal Layanan  ---
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 });
 Route::middleware(['auth', 'role:kabid'])
     ->prefix('kabid')
@@ -327,7 +281,14 @@ Route::middleware(['auth', 'role:kabid'])
             '/pengaduan/{id}/verifikasi',
             [PengaduanBencanaController::class, 'simpanVerifikasi']
         )
-            ->name('pengaduan.simpan');
+            ->name('pengaduan.simpan')
+        ;
+
+        // =====================
+        // JADWAL LAYANAN 
+        // =====================
+        Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+        Route::get('/jadwal/cetak-pdf', [JadwalController::class, 'cetak_pdf'])->name('jadwal.cetak');
     });
 
 Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(function () {
@@ -338,6 +299,9 @@ Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(f
         Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
             ->name('dapur_umum.index');
     });
+
+    // --- Jadwal Layanan  ---
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 });
 Route::middleware(['auth', 'role:ketua_tim'])
     ->prefix('ketua_tim')
@@ -358,6 +322,9 @@ Route::middleware(['auth', 'role:ketua_tim'])
             '/pengaduan/{id}/selesai',
             [PengaduanBencanaController::class, 'simpanSelesai']
         )->name('pengaduan.simpan');
+
+        //Lihat Jadwal Layanan Pasca Bencana
+        Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
     });
 
 Route::middleware(['auth', 'role:relawan|kadus|desa'])
@@ -387,6 +354,9 @@ Route::middleware(['auth', 'role:relawan|kadus|desa'])
             [PengaduanBencanaController::class, 'showUser']
         )
             ->name('pengaduan.show');
+
+        //Lihat Jadwal Layanan Pasca Bencana
+        Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
     });
 
 // ROUTE LAPORAN KABID (BISA LIHAT + CETAK PDF)
