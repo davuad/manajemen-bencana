@@ -2,9 +2,6 @@
 
 namespace App\Models;
 
-use App\Models\DetailPaket;
-use App\Models\JenisBarang;
-use App\Models\StokGudang;
 use Illuminate\Database\Eloquent\Model;
 
 class Barang extends Model
@@ -30,15 +27,5 @@ class Barang extends Model
     public function jenis()
     {
         return $this->belongsTo(JenisBarang::class, 'id_jenis_barang');
-    }
-
-    public function detailPaket()
-    {
-        return $this->hasMany(DetailPaket::class, 'barang_id', 'id_barang');
-    }
-
-    public function stokGudang()
-    {
-        return $this->hasMany(StokGudang::class, 'barang_id', 'id_barang');
     }
 }

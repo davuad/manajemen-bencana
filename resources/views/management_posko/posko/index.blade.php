@@ -11,15 +11,15 @@
                     Kelola informasi titik posko darurat bencana
                 </p>
             </div>
-
-            <a href="{{ route('admin.management_posko.posko.create') }}"
-                class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
-                + Tambah Data Posko
-            </a>
-
+            @hasanyrole('admin|pegawai|petugas')
+                <a href="{{ route('management_posko.posko.create') }}"
+                    class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
+                    + Tambah Data Posko
+                </a>
+            @endhasanyrole
         </div>
 
-        <form method="GET" action="{{ route('admin.management_posko.posko.index') }}">
+        <form method="GET" action="{{ route('management_posko.posko.index') }}">
             <div class="flex gap-4 mb-6">
 
                 <input type="text" name="search" value="{{ request('search') }}"
@@ -56,7 +56,9 @@
                         <th class="text-left">Lokasi</th>
                         <th class="text-left">Tanggal</th>
                         <th class="text-left pl-4">Status</th>
-                        <th class="text-left">Aksi</th>
+                        @hasanyrole('admin|pegawai|petugas')
+                            <th class="text-left">Aksi</th>
+                        @endhasanyrole
                     </tr>
                 </thead>
 
@@ -83,9 +85,10 @@
                                     </span>
                                 @endif
                             </td>
-
+                            @hasanyrole('admin|pegawai|petugas')
                             <td class="flex gap-1 py-4">
-                                <a href="{{ route('admin.management_posko.posko.edit', $p->id) }}" class="text-blue-500">
+                                <a href="{{ route('management_posko.posko.edit', $p->id) }}"
+                                    class="text-blue-500">
                                     <x-heroicon-o-pencil-square class="w-5 h-5" />
                                 </a>
 
@@ -94,6 +97,7 @@
                                     <x-heroicon-o-trash class="w-5 h-5" />
                                 </button>
                             </td>
+                            @endhasanyrole
                         </tr>
                     @empty
                         <tr>
@@ -172,7 +176,7 @@
             document.getElementById('namaPosko').innerText = `"${nama}"`;
 
             // route delete posko
-            let url = "{{ route('admin.management_posko.posko.destroy', ':id') }}";
+            let url = "{{ route('management_posko.posko.destroy', ':id') }}";
             url = url.replace(':id', id);
 
             document.getElementById('deleteForm').action = url;

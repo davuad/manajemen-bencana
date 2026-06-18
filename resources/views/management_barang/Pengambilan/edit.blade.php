@@ -36,7 +36,7 @@
     @endif
 
     {{-- Form --}}
-    <form action="{{ route('manajemen_barang.pengambilan.update', $data->id) }}"
+    <form action="{{ route('management_barang.pengambilan.update', $data->id) }}"
           method="POST"
           class="space-y-8">
 
@@ -332,7 +332,7 @@
         {{-- Button --}}
         <div class="flex justify-between">
 
-            <a href="{{ route('manajemen_barang.pengambilan.index') }}"
+            <a href="{{ route('management_barang.pengambilan.index') }}"
                class="px-5 py-2 bg-gray-300 rounded-lg">
 
                 Kembali

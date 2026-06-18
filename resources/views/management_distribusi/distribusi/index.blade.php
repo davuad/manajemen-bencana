@@ -17,18 +17,34 @@
     </div>
 
     <!-- SEARCH -->
-    <form method="GET" action="{{ route('admin.management_distribusi.distribusi.index') }}">
-        <div class="flex gap-4 mb-6">
-            <input 
-                type="text"
-                id="search"
-                name="search"
-                value="{{ request('search') }}" 
-                placeholder="Cari distribusi..."
-                class="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-            >
-        </div>
-    </form>
+<form method="GET"
+      action="{{ route('admin.management_distribusi.distribusi.index') }}"
+      id="searchForm">
+
+    <div class="flex gap-4 mb-6">
+
+        <input
+            type="text"
+            id="search"
+            name="search"
+            value="{{ request('search') }}"
+            placeholder="Cari bencana, posko, desa, kategori..."
+            class="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500">
+
+        <button type="submit"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg">
+            Cari
+        </button>
+
+        @if(request('search'))
+            <a href="{{ route('admin.management_distribusi.distribusi.index') }}"
+               class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded-lg">
+                Reset
+            </a>
+        @endif
+
+    </div>
+</form>
 
     <!-- TABLE -->
     <div class="bg-white shadow-md rounded-xl p-4">
@@ -148,6 +164,13 @@
                                     class="p-2 bg-red-100 text-red-600 rounded">
                                     🗑
                                 </button>
+
+                                <a href="{{ route('admin.management_distribusi.berita_acara.cetak', $item->id) }}"
+                                target="_blank"
+                                class="p-2 bg-green-100 text-green-700 rounded"
+                                title="Cetak Berita Acara">
+                                    📄
+                                </a>
 
                             </div>
                         </td>

@@ -21,6 +21,7 @@
             <div class="px-6 py-6 md:px-8 md:py-8">
                 <form action="{{ route('admin.warga.update', $warga->id) }}" method="POST" class="space-y-8">
                     @csrf
+                    @method('PUT')
 
                     <div class="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-x-8 md:gap-y-7">
                         {{-- No KK --}}

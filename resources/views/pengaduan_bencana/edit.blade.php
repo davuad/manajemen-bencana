@@ -18,7 +18,7 @@
             </p>
         </div>
 
-        <a href="/pengaduan"
+        <a href="/admin/pengaduan"
            class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-5 py-2.5 rounded-xl text-sm font-medium transition">
 
             Kembali
@@ -27,7 +27,7 @@
 
     </div>
 
-    <form action="/pengaduan/{{ $data->id }}"
+    <form action="/admin/pengaduan/{{ $data->id }}"
           method="POST"
           enctype="multipart/form-data">
 
@@ -332,7 +332,7 @@
         {{-- BUTTON --}}
         <div class="flex justify-end gap-3">
 
-            <a href="/pengaduan"
+            <a href="/admin/pengaduan"
                class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-5 py-2.5 rounded-xl text-sm font-medium transition">
 
                 Batal
