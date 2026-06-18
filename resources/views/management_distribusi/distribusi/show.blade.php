@@ -16,14 +16,14 @@
         <div>
             <label>Bencana</label>
             <input type="text"
-                value="{{ $distribusi->bencana->nama_bencana ?? '-' }}"
+                value="{{ optional($distribusi->bencana)->nama_bencana ?? '-' }}"
                 class="w-full border rounded-lg p-3 bg-gray-100" readonly>
         </div>
 
         <div>
             <label>Posko</label>
             <input type="text"
-                value="{{ $distribusi->posko->nama_posko ?? '-' }}"
+                value="{{ optional($distribusi->posko)->nama_posko ?? '-' }}"
                 class="w-full border rounded-lg p-3 bg-gray-100" readonly>
         </div>
 
@@ -41,7 +41,6 @@
                 class="w-full border rounded-lg p-3 bg-gray-100" readonly>
         </div>
 
-        <!-- ✅ DESA (SAMA SEPERTI EDIT - SAFE RELATION) -->
         <div>
             <label>Desa Posko</label>
             <input type="text"
@@ -78,7 +77,6 @@
                 class="w-full border rounded-lg p-3 bg-gray-100" readonly>
         </div>
 
-        <!-- ✅ STATUS (DISAMAKAN DENGAN EDIT - SELECT STYLE) -->
         <div>
             <label>Status</label>
             <select class="w-full border rounded-lg p-3 bg-gray-100" disabled>
@@ -95,7 +93,8 @@
         <label>Keterangan</label>
         <textarea
             class="w-full border rounded-lg p-3 bg-gray-100"
-            rows="3" readonly>{{ $distribusi->keterangan }}</textarea>
+            rows="3"
+            readonly>{{ $distribusi->keterangan }}</textarea>
     </div>
 
     <!-- ================= DETAIL BARANG ================= -->
@@ -114,42 +113,41 @@
             </thead>
 
             <tbody>
-    @forelse($distribusi->detailDistribusis as $detail)
 
-        @php
-            $detailBarang = optional($detail->barangKeluar)
-                ->detailBarangKeluar
-                ->first();
-        @endphp
+            @forelse($distribusi->detailDistribusis as $detail)
 
-        <tr class="hover:bg-gray-50">
+                <tr>
 
-            <td class="border p-3">
-                {{ $detailBarang?->barang?->nama_barang ?? '-' }}
-            </td>
+                    <td class="border p-3">
+                        {{ optional(optional($detail->detailBarangKeluar)->barang)->nama_barang ?? '-' }}
+                    </td>
 
-            <td class="border p-3 text-center">
-                {{ $detailBarang?->jumlah_keluar ?? 0 }}
-            </td>
+                    <td class="border p-3 text-center">
+                        {{ optional($detail->detailBarangKeluar)->jumlah_keluar ?? 0 }}
+                    </td>
 
-            <td class="border p-3 text-center">
-                {{ $detail->jumlah_kirim }}
-            </td>
+                    <td class="border p-3 text-center">
+                        {{ $detail->jumlah_kirim }}
+                    </td>
 
-            <td class="border p-3 text-center">
-                {{ $detailBarang?->barang?->satuan ?? ($detail->satuan ?? '-') }}
-            </td>
+                    <td class="border p-3 text-center">
+                        {{ optional(optional($detail->detailBarangKeluar)->barang)->satuan ?? $detail->satuan }}
+                    </td>
 
-        </tr>
+                </tr>
 
-    @empty
-        <tr>
-            <td colspan="4" class="border p-3 text-center text-gray-500">
-                Tidak ada data
-            </td>
-        </tr>
-    @endforelse
-</tbody>
+            @empty
+
+                <tr>
+                    <td colspan="4" class="border p-4 text-center text-gray-500">
+                        Tidak ada data
+                    </td>
+                </tr>
+
+            @endforelse
+
+            </tbody>
+
         </table>
 
     </div>
