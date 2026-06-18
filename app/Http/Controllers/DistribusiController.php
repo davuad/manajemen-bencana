@@ -10,6 +10,7 @@ use App\Models\Distribusi;
 use App\Models\Posko;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DistribusiController extends Controller
 {
