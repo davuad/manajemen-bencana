@@ -90,7 +90,7 @@ Route::middleware(['auth', 'role:admin'])
 
         // --- Management Posko ---
         Route::prefix('management-posko')->name('management_posko.')->group(function () {
-            Route::resource('posko', PoskoController::class);
+            // Route::resource('posko', PoskoController::class);
             Route::resource('dapur_umum', DapurUmumController::class);
 
             Route::prefix('kebutuhan_harian')->name('kebutuhan_harian.')->group(function () {
@@ -260,6 +260,10 @@ Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')
         Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
             ->name('dapur_umum.index');
     });
+
+    Route::prefix('kebutuhan_harian')->name('kebutuhan_harian.')->group(function () {
+        Route::get('/{dapur}', [KebutuhanHarianController::class, 'index'])->name('kebutuhan_harian.index');
+    });
 });
 
 Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->group(function () {
@@ -353,8 +357,18 @@ Route::middleware(['auth', 'role:relawan|kadus|desa'])
         Route::post('/pengaduan/store',
             [PengaduanBencanaController::class, 'userStore'])
             ->name('pengaduan.store');
-
         Route::get('/pengaduan/{id}',
             [PengaduanBencanaController::class, 'showUser'])
             ->name('pengaduan.show');
 });
+
+// Route::middleware([
+//     'auth',
+//     'role:admin|relawan'
+// ])->prefix('management_posko')
+//     ->name('management_posko.')
+//     ->group(function () {
+
+//         Route::resource('posko', PoskoController::class);
+//     });
+
