@@ -142,6 +142,10 @@ Route::middleware(['auth', 'role:admin'])
                 'penerima_distribusi/delete/{id}',
                 [PenerimaDistribusiController::class, 'destroy']
             )->name('penerima.destroy');
+            Route::get(
+                'distribusi/{id}/ba',
+                [DistribusiController::class, 'generateBA']
+            )->name('distribusi.ba');
             Route::resource('paket_bantuan', PaketBantuanController::class);
             Route::resource('detail_paket', DetailPaketController::class);
             Route::resource('distribusi_paket', DistribusiPaketController::class);
@@ -149,6 +153,7 @@ Route::middleware(['auth', 'role:admin'])
             Route::patch('distribusi_paket/{id}/selesai', [DistribusiPaketController::class, 'selesai'])->name('distribusi_paket.selesai');
             Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
         });
+
 
         // --- Management Korban ---
         Route::prefix('management-korban')->name('management_korban.')->group(function () {
