@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Laporan Distribusi Logistik - Politeknik Negeri Cilacap</title>
+    <title>Laporan Barang Keluar - Politeknik Negeri Cilacap</title>
     <style>
         @page { size: A4 landscape; margin: 1cm; }
         body { font-family: 'Arial', sans-serif; font-size: 8.5pt; color: #333; line-height: 1.4; }
