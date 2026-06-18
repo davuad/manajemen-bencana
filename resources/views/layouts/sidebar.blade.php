@@ -62,20 +62,49 @@
                 </span>
 
             </a>
-        @elseif(auth()->user()->hasRole('relawan') || auth()->user()->hasRole('kadus') || auth()->user()->hasRole('desa'))
-            <a href="{{ route('user.pengaduan.index') }}"
-                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
+@elseif(auth()->user()->hasRole('relawan'))
 
-                <span>
-                    <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
-                </span>
+    <a href="{{ route('relawan.pengaduan.index') }}"
+        class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+        {{ request()->routeIs('relawan.pengaduan.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
 
-                <span x-show="sidebarOpen">
-                    Pengaduan Saya
-                </span>
+        <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
 
-            </a>
-        @endif
+        <span x-show="sidebarOpen">
+            Pengaduan Saya
+        </span>
+
+    </a>
+
+@elseif(auth()->user()->hasRole('kadus'))
+
+    <a href="{{ route('kadus.pengaduan.index') }}"
+        class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+        {{ request()->routeIs('kadus.pengaduan.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+
+        <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
+
+        <span x-show="sidebarOpen">
+            Pengaduan Saya
+        </span>
+
+    </a>
+
+@elseif(auth()->user()->hasRole('desa'))
+
+    <a href="{{ route('desa.pengaduan.index') }}"
+        class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+        {{ request()->routeIs('desa.pengaduan.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+
+        <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
+
+        <span x-show="sidebarOpen">
+            Pengaduan Saya
+        </span>
+
+    </a>
+
+@endif
 
         <div x-data="{ openGudang: {{ request()->routeIs('admin.jenis-barang.*') ||
         request()->routeIs('admin.sumber-barang.*') ||

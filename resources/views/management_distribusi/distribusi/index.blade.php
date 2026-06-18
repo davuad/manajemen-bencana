@@ -165,9 +165,11 @@
                                     🗑
                                 </button>
 
-                                <a href="{{ route('distribusi.ba', $item->id) }}"
-                                   class="px-2 py-1 text-xs bg-green-100 text-green-700 rounded hover:bg-green-200">
-                                    BA
+                                <a href="{{ route('admin.management_distribusi.berita_acara.cetak', $item->id) }}"
+                                target="_blank"
+                                class="p-2 bg-green-100 text-green-700 rounded"
+                                title="Cetak Berita Acara">
+                                    📄
                                 </a>
 
                             </div>
