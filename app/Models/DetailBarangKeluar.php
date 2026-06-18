@@ -20,17 +20,18 @@ class DetailBarangKeluar extends Model
 
     public function barangKeluar()
     {
-        return $this->belongsTo(BarangKeluar::class);
+        return $this->belongsTo(
+            BarangKeluar::class,
+            'barang_keluar_id'
+        );
     }
 
     public function barang()
     {
-        return $this->belongsTo(Barang::class);
-    }
-
-    public function pengajuanDetail()
-    {
-        return $this->belongsTo(DetailPengajuanBarang::class, 'barang_id', 'barang_id')
-                    ->where('pengajuan_barang_id', $this->barangKeluar->pengajuan_barang_id);
+        return $this->belongsTo(
+            Barang::class,
+            'barang_id',
+            'id_barang'
+        );
     }
 }

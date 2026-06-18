@@ -13,14 +13,14 @@
             </p>
         </div>
 
-        <a href="{{ route('manajemen_barang.petugas.create') }}"
+        <a href="{{ route('management_barang.petugas.create') }}"
            class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
             + Tambah Petugas
         </a>
 
     </div>
 
-<form method="GET" action="{{ route('manajemen_barang.petugas.index') }}">
+<form method="GET" action="{{ route('management_barang.petugas.index') }}">
     <div class="flex gap-4 mb-6">
 
         <input type="text"
@@ -96,13 +96,13 @@
                     <td class="p-3 flex justify-center gap-2">
 
                         {{-- Edit --}}
-                        <a href="{{ route('manajemen_barang.petugas.edit', $item->id) }}"
+                        <a href="{{ route('management_barang.petugas.edit', $item->id) }}"
                            class="text-blue-500 hover:text-blue-700">
                             ✏️
                         </a>
 
                         {{-- Hapus --}}
-                        <form action="{{ route('manajemen_barang.petugas.destroy', $item->id) }}"
+                        <form action="{{ route('management_barang.petugas.destroy', $item->id) }}"
                               method="POST"
                               onsubmit="return confirm('Yakin mau hapus data ini?')">
                             @csrf

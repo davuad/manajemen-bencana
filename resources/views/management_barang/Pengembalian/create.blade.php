@@ -17,7 +17,7 @@
 
     </div>
 
-    <form action="{{ route('manajemen_barang.pengembalian.store') }}"
+    <form action="{{ route('management_barang.pengembalian.store') }}"
           method="POST">
 
         @csrf
@@ -268,7 +268,7 @@
         {{-- BUTTON --}}
         <div class="mt-8 flex justify-between">
 
-            <a href="{{ route('manajemen_barang.pengembalian.index') }}"
+            <a href="{{ route('management_barang.pengembalian.index') }}"
                class="px-5 py-2 bg-gray-300 rounded-lg">
 
                 Kembali
@@ -329,7 +329,7 @@ document.getElementById('pengambilan')
     }
 
     // FETCH
-    fetch("{{ url('manajemen_barang/pengembalian/get') }}/" + id)
+    fetch("{{ url('management_barang/pengembalian/get') }}/" + id)
 
     .then(response => response.json())
 

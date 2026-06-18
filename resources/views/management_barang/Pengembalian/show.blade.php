@@ -308,7 +308,7 @@
     {{-- BUTTON --}}
     <div class="mt-8 flex justify-between">
 
-        <a href="{{ route('manajemen_barang.pengembalian.index') }}"
+        <a href="{{ route('management_barang.pengembalian.index') }}"
            class="px-5 py-2 bg-gray-300 rounded-lg hover:bg-gray-400 transition">
 
             Kembali
@@ -317,14 +317,14 @@
 
         <div class="flex gap-3">
 
-            <a href="{{ route('manajemen_barang.pengembalian.edit', $data->id) }}"
+            <a href="{{ route('management_barang.pengembalian.edit', $data->id) }}"
                class="px-5 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
 
                 Edit
 
             </a>
 
-            <form action="{{ route('manajemen_barang.pengembalian.destroy', $data->id) }}"
+            <form action="{{ route('management_barang.pengembalian.destroy', $data->id) }}"
                   method="POST"
                   onsubmit="return confirm('Yakin ingin menghapus data ini?')">
 
