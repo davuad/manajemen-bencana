@@ -13,8 +13,8 @@
             </p>
         </div>
 
-        <a href="/barang/create"
-           class="bg-indigo-700 text-white px-4 py-2 rounded-lg">
+        <a href="{{ route('admin.barang.create') }}"
+            class="bg-indigo-700 text-white px-4 py-2 rounded-lg">
             + Tambah Barang
         </a>
     </div>
@@ -27,7 +27,7 @@
     @endif
 
     <!-- SEARCH -->
-    <form method="GET" action="/barang" class="mb-4">
+    <form method="GET" action="{{ route('admin.barang.index') }}" class="mb-4">
         <input type="text"
                 name="search"
                 value="{{ $search ?? '' }}"
@@ -70,15 +70,15 @@
                     <td class="p-2 text-center">
 
                         <!-- EDIT -->
-                        <a href="/barang/{{ $item->id_barang }}/edit"
-                           class="text-blue-500 mr-2">
+                        <a href="{{ route('admin.barang.edit', $item->id_barang) }}"
+                            class="text-blue-500 mr-2">
                             ✏️
                         </a>
 
                         <!-- DELETE -->
-                        <form action="/barang/{{ $item->id_barang }}"
-                              method="POST"
-                              class="inline">
+                        <form action="{{ route('admin.barang.destroy', $item->id_barang) }}"
+                                method="POST"
+                                class="inline">
                             @csrf
                             @method('DELETE')
                             <button class="text-red-500">

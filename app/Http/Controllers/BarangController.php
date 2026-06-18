@@ -39,7 +39,8 @@ class BarangController extends Controller
             'keterangan' => $request->keterangan
         ]);
 
-        return redirect('/barang')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('admin.barang.index')
+            ->with('success', 'Data berhasil ditambahkan');
     }
 
     public function edit($id)
@@ -55,7 +56,8 @@ class BarangController extends Controller
         $data = Barang::findOrFail($id);
         $data->update($request->all());
 
-        return redirect('/barang')->with('success', 'Data berhasil diupdate');
+        return redirect()->route('admin.barang.index')
+            ->with('success', 'Data berhasil diupdate');
     }
 
     public function destroy($id)
@@ -63,6 +65,7 @@ class BarangController extends Controller
         $data = Barang::findOrFail($id);
         $data->delete();
 
-        return redirect('/barang')->with('success', 'Data berhasil dihapus');
+        return redirect()->route('admin.barang.index')
+            ->with('success', 'Data berhasil dihapus');
     }
 }

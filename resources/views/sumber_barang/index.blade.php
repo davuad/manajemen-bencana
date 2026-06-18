@@ -13,7 +13,7 @@
             </p>
         </div>
 
-        <a href="/sumber-barang/create"
+        <a href="{{ route('admin.sumber-barang.create') }}"
            class="bg-indigo-700 text-white px-4 py-2 rounded-lg">
             + Tambah Sumber Barang
         </a>
@@ -28,9 +28,13 @@
 
     <!-- SEARCH -->
     <div class="mb-6">
-        <input type="text"
-               placeholder="Cari nama sumber barang..."
-               class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
+        <form method="GET">
+            <input type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Cari nama sumber barang..."
+                    class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
+        </form>
     </div>
 
     <!-- TABLE -->
@@ -56,22 +60,21 @@
                     <td class="p-2 text-center">
 
                         <!-- EDIT -->
-                        <a href="/sumber-barang/{{ $item->id_sumber }}/edit"
-                           class="text-blue-500 mr-2">
+                        <a href="{{ route('admin.sumber-barang.edit', $item->id_sumber) }}"
+                            class="text-blue-500 mr-2">
                             ✏️
                         </a>
 
                         <!-- DELETE -->
-                        <form action="/sumber-barang/{{ $item->id_sumber }}"
-                              method="POST"
-                              class="inline">
-                            @csrf
-                            @method('DELETE')
-                            <button class="text-red-500">
-                                🗑️
-                            </button>
-                        </form>
-
+                        <form action="{{ route('admin.sumber-barang.destroy', $item->id_sumber) }}"
+                                method="POST"
+                                class="inline">
+                                @csrf
+                                @method('DELETE')
+                                <button class="text-red-500">
+                                    🗑️ 
+                                </button> 
+                            </form>
                     </td>
                 </tr>
             @empty

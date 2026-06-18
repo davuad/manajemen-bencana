@@ -11,7 +11,7 @@
 
 <div class="bg-white rounded-xl p-5 m-3 mt-5">
 
-    <form action="/jenis-barang/{{ $data->id_jenis_barang }}" method="POST" class="space-y-6">
+    <form action="{{ route('admin.jenis-barang.update', $data->id_jenis_barang) }}" method="POST" class="space-y-6">
         @csrf
         @method('PUT')
 
@@ -49,7 +49,7 @@
 
         <!-- BUTTON -->
         <div class="flex justify-end gap-3">
-            <a href="/jenis-barang"
+            <a href="{{ route('admin.jenis-barang.index') }}"
                class="px-4 py-2 bg-gray-300 rounded-lg">
                 Batal
             </a>

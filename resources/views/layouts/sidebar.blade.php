@@ -26,10 +26,52 @@
             <span x-show="sidebarOpen" x-transition>Pengaduan Bencana</span>
         </a>
 
-        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
-            <span><x-heroicon-o-archive-box class="w-5 h-5" /></span>
-            <span x-show="sidebarOpen" x-transition>Gudang Logistik</span>
+        <div x-data="{ openGudang: {{ request()->routeIs('admin.jenis-barang.*')
+    || request()->routeIs('admin.sumber-barang.*')
+    || request()->routeIs('admin.barang.*')
+    || request()->routeIs('admin.barang-masuk.*')
+    ? 'true' : 'false' }} }"
+    class="rounded">
+
+    <div @click="openGudang = !openGudang"
+        class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
+        :class="openGudang ? 'bg-orange-500' : 'hover:bg-blue-800'">
+
+        <span>
+            <x-heroicon-o-archive-box class="w-5 h-5" />
+        </span>
+
+        <span x-show="sidebarOpen" x-transition>
+            Gudang Logistik
+        </span>
+    </div>
+
+    <div x-show="openGudang" x-transition
+        class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
+
+        <a href="{{ route('admin.jenis-barang.index') }}"
+            class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.jenis-barang.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Jenis Barang
         </a>
+
+        <a href="{{ route('admin.sumber-barang.index') }}"
+            class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.sumber-barang.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Sumber Barang
+        </a>
+
+        <a href="{{ route('admin.barang.index') }}"
+            class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.barang.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Data Barang
+        </a>
+
+        <a href="{{ route('admin.barang-masuk.index') }}"
+            class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.barang-masuk.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Barang Masuk
+        </a>
+
+    </div>
+</div>
+
 
         {{-- <a href="#" class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
             <span><x-heroicon-o-truck class="w-5 h-5" /></span>
@@ -73,7 +115,7 @@
         </a>
 
         <!-- DATA GUDANG -->
-        <a href="{{ route('gudang.index') }}"
+        <a href="{{ route('admin.gudang.index') }}"
             class="flex items-center gap-3 px-3 py-2 rounded 
             {{ request()->routeIs('gudang.*') ? 'bg-blue-700' : 'hover:bg-blue-800' }}">
 
@@ -85,7 +127,7 @@
             </a>
 
             <!-- STOK GUDANG -->
-                <a href="{{ route('stok_gudang.index') }}"
+                <a href="{{ route('admin.stok_gudang.index') }}"
                     class="flex items-center gap-3 px-3 py-2 rounded 
                     {{ request()->routeIs('stok.*') ? 'bg-blue-700' : 'hover:bg-blue-800' }}">
 
@@ -97,6 +139,7 @@
                         Stok Gudang
                     </span>
                 </a>
+
 
         <div x-data="{ openMenu: {{ request()->routeIs('admin.desa.*') || request()->routeIs('admin.warga.*') ? 'true' : 'false' }} }" class="rounded">
             <div @click="openMenu = !openMenu"
@@ -272,7 +315,7 @@
 
         <!-- ================= MANAGEMENT BARANG ================= -->
 
-          <div x-data="{ openMenuManagementBarang: {{ request()->routeIs('management_barang.*') ? 'true' : 'false' }} }" class="rounded">
+          <div x-data="{ openMenuManagementBarang: {{ request()->routeIs('admin.management_barang.*') ? 'true' : 'false' }} }" class="rounded">
             <div @click="openMenuManagementBarang = !openMenuManagementBarang"
                 class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
                 :class="openMenuManagementBarang
@@ -289,15 +332,15 @@
 
             <div x-show="openMenuManagementBarang" x-transition class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
 
-                <a href="{{ route('management_barang.petugas.index') }}"
+                <a href="{{ route('admin.management_barang.petugas.index') }}"
                     class="block px-3 py-2 text-sm rounded {{ request()->routeIs('management_barang.petugas.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
                     Petugas
                 </a>
-                <a href="{{ route('management_barang.pengambilan.index') }}"
+                <a href="{{ route('admin.management_barang.pengambilan.index') }}"
                     class="block px-3 py-2 text-sm rounded {{ request()->routeIs('management_barang.pengambilan.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
                     Pengambilan Barang
                 </a>
-                <a href="{{ route('management_barang.pengembalian.index') }}"
+                <a href="{{ route('admin.management_barang.pengembalian.index') }}"
                     class="block px-3 py-2 text-sm rounded {{ request()->routeIs('management_barang.pengembalian.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
                     Pengembalian Barang
                 </a>

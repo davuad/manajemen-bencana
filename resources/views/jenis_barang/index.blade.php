@@ -13,8 +13,8 @@
             </p>
         </div>
 
-        <a href="/jenis-barang/create"
-           class="bg-indigo-700 text-white px-4 py-2 rounded-lg">
+        <a href="{{ route('admin.jenis-barang.create') }}"
+            class="bg-indigo-700 text-white px-4 py-2 rounded-lg">
             + Tambah Jenis Barang
         </a>
     </div>
@@ -27,10 +27,14 @@
     @endif
 
     <!-- SEARCH -->
-    <div class="mb-6">
-        <input type="text"
-               placeholder="Cari nama jenis barang..."
-               class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
+   <div class="mb-6">
+        <form method="GET">
+            <input type="text"
+                    name="search"
+                    value="{{ request('search') }}"
+                    placeholder="Cari nama jenis barang..."
+                    class="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
+        </form>
     </div>
 
     <!-- TABLE -->
@@ -56,19 +60,19 @@
                     <td class="p-2 text-center">
 
                         <!-- EDIT -->
-                        <a href="/jenis-barang/{{ $item->id_jenis_barang }}/edit"
-                           class="text-blue-500 mr-2">
+                        <a href="{{ route('admin.jenis-barang.edit', $item->id_jenis_barang) }}"
+                            class="text-blue-500 mr-2">
                             ✏️
                         </a>
 
                         <!-- DELETE -->
-                        <form action="/jenis-barang/{{ $item->id_jenis_barang }}"
-                              method="POST"
-                              class="inline">
+                        <form action="{{ route('admin.jenis-barang.destroy', $item->id_jenis_barang) }}"
+                                method="POST"
+                                class="inline">
                             @csrf
                             @method('DELETE')
                             <button class="text-red-500">
-                                🗑️
+                            🗑️
                             </button>
                         </form>
 

@@ -11,7 +11,7 @@
 
 <div class="bg-white rounded-xl p-5 m-3 mt-5">
 
-    <form action="/sumber-barang/{{ $data->id_sumber }}" method="POST" class="space-y-6">
+    <form action="{{ route('admin.sumber-barang.update', $data->id_sumber) }}" method="POST" class="space-y-6">
         @csrf
         @method('PUT')
 

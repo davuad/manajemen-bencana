@@ -7,9 +7,14 @@ use App\Models\JenisBarang;
 
 class JenisBarangController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = JenisBarang::all();
+        $search = $request->search;
+
+        $data = JenisBarang::when($search, function ($query) use ($search) {
+            $query->where('nama_jenis_barang', 'like', '%' . $search . '%');
+        })->get();
+
         return view('jenis_barang.index', compact('data'));
     }
 
@@ -26,7 +31,8 @@ class JenisBarangController extends Controller
             'keterangan' => $request->keterangan
         ]);
 
-        return redirect('/jenis-barang')->with('success', 'Data berhasil ditambahkan');
+        return redirect('/admin/jenis-barang')
+            ->with('success', 'Data berhasil ditambahkan');
     }
 
     public function edit($id)
@@ -40,7 +46,7 @@ class JenisBarangController extends Controller
         $data = JenisBarang::findOrFail($id);
         $data->update($request->all());
 
-        return redirect('/jenis-barang')->with('success', 'Data berhasil diupdate');
+        return redirect()->route('admin.jenis-barang.index')->with('success', 'Data berhasil diupdate');
     }
 
     public function destroy($id)
@@ -48,6 +54,7 @@ class JenisBarangController extends Controller
         $data = JenisBarang::findOrFail($id);
         $data->delete();
 
-        return redirect('/jenis-barang')->with('success', 'Data berhasil dihapus');
+        return redirect()->route('admin.jenis-barang.index')
+            ->with('success', 'Data berhasil dihapus');
     }
 }

@@ -138,6 +138,12 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('kategori_bantuan', KategoriBantuanController::class);
         Route::resource('stok_gudang', StokGudangController::class);
 
+        // --- Gudang Logistik ---
+        Route::resource('jenis-barang', JenisBarangController::class);
+        Route::resource('sumber-barang', SumberBarangMasukController::class);
+        Route::resource('barang', BarangController::class);
+        Route::resource('barang-masuk', BarangMasukController::class);
+
         // --- Data Desa & Warga Terdampak ---
         Route::get('/data-desa', [DesaController::class, 'index'])->name('desa.index');
         Route::get('/data-desa/create', [DesaController::class, 'create'])->name('desa.create');

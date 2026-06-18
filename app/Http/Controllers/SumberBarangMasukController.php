@@ -7,9 +7,14 @@ use App\Models\SumberBarangMasuk;
 
 class SumberBarangMasukController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $data = SumberBarangMasuk::all();
+        $search = $request->search;
+
+        $data = SumberBarangMasuk::when($search, function ($query) use ($search) {
+            $query->where('nama_sumber', 'like', '%' . $search . '%');
+        })->get();
+
         return view('sumber_barang.index', compact('data'));
     }
 
@@ -26,7 +31,8 @@ class SumberBarangMasukController extends Controller
             'keterangan' => $request->keterangan
         ]);
 
-        return redirect('/sumber-barang')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('admin.sumber-barang.index')
+            ->with('success', 'Data berhasil ditambahkan');
     }
 
     public function edit($id)
@@ -40,7 +46,8 @@ class SumberBarangMasukController extends Controller
         $data = SumberBarangMasuk::findOrFail($id);
         $data->update($request->all());
 
-        return redirect('/sumber-barang')->with('success', 'Data berhasil diupdate');
+        return redirect()->route('admin.sumber-barang.index')
+            ->with('success', 'Data berhasil diupdate');
     }
 
     public function destroy($id)
@@ -48,6 +55,7 @@ class SumberBarangMasukController extends Controller
         $data = SumberBarangMasuk::findOrFail($id);
         $data->delete();
 
-        return redirect('/sumber-barang')->with('success', 'Data berhasil dihapus');
+        return redirect()->route('admin.sumber-barang.index')
+            ->with('success', 'Data berhasil dihapus');
     }
 }

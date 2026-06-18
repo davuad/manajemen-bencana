@@ -17,7 +17,7 @@
         </div>
     @endif
 
-    <form action="/barang" method="POST" class="space-y-6">
+    <form action="{{ route('admin.barang.store') }}" method="POST" class="space-y-6">
         @csrf
 
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -76,8 +76,8 @@
 
         <!-- BUTTON -->
         <div class="flex justify-end gap-3">
-            <a href="/barang"
-               class="px-4 py-2 bg-gray-300 rounded-lg">
+            <a href="{{ route('admin.barang.index') }}"
+                class="px-4 py-2 bg-gray-300 rounded-lg">
                 Batal
             </a>
 

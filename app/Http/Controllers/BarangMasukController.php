@@ -13,19 +13,22 @@ use App\Models\Barang;
 class BarangMasukController extends Controller
 {
     public function index(Request $request)
-    {
-        $search = $request->search;
+{
+    $search = $request->search;
 
-        $data = BarangMasuk::with(['sumber', 'gudang', 'pegawai'])
-            ->when($search, function ($query) use ($search) {
-                $query->where('id_barang_masuk', 'like', "%{$search}%")
-                    ->orWhere('no_dokumen', 'like', "%{$search}%")
-                    ->orWhere('status', 'like', "%{$search}%");
-            })
-            ->get();
+    $data = BarangMasuk::with(['sumber', 'gudang', 'pegawai'])
+        ->when($search, function ($query) use ($search) {
+            $query->where('id_barang_masuk', 'like', "%{$search}%")
+                ->orWhere('no_dokumen', 'like', "%{$search}%")
+                ->orWhere('status', 'like', "%{$search}%")
+                ->orWhereHas('sumber', function ($q) use ($search) {
+                    $q->where('nama_sumber', 'like', "%{$search}%");
+                });
+        })
+        ->get();
 
-        return view('barang_masuk.index', compact('data', 'search'));
-    }
+    return view('barang_masuk.index', compact('data', 'search'));
+}
 
     public function create()
     {
@@ -65,7 +68,8 @@ class BarangMasukController extends Controller
             }
         }
 
-        return redirect('/barang-masuk')->with('success', 'Data berhasil ditambahkan');
+        return redirect()->route('admin.barang-masuk.index')
+            ->with('success', 'Data berhasil ditambahkan');
     }
 
     public function show($id)
@@ -123,7 +127,7 @@ class BarangMasukController extends Controller
             }
         }
 
-        return redirect('/barang-masuk')
+        return redirect()->route('admin.barang-masuk.index')
             ->with('success', 'Data berhasil diupdate');
     }
 
@@ -132,6 +136,7 @@ class BarangMasukController extends Controller
         $data = BarangMasuk::findOrFail($id);
         $data->delete();
 
-        return redirect('/barang-masuk')->with('success', 'Data berhasil dihapus');
+        return redirect()->route('admin.barang-masuk.index')
+            ->with('success', 'Data berhasil dihapus');
     }
 }
