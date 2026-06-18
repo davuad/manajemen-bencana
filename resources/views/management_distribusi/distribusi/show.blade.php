@@ -114,34 +114,42 @@
             </thead>
 
             <tbody>
-                @forelse($distribusi->detailDistribusis as $detail)
-                    <tr class="hover:bg-gray-50">
+    @forelse($distribusi->detailDistribusis as $detail)
 
-                        <td class="border p-3">
-                            {{ $detail->barangKeluar?->barang?->nama_barang ?? '-' }}
-                        </td>
+        @php
+            $detailBarang = optional($detail->barangKeluar)
+                ->detailBarangKeluar
+                ->first();
+        @endphp
 
-                        <td class="border p-3 text-center">
-                            {{ $detail->barangKeluar->jumlah ?? 0 }}
-                        </td>
+        <tr class="hover:bg-gray-50">
 
-                        <td class="border p-3 text-center">
-                            {{ $detail->jumlah_kirim }}
-                        </td>
+            <td class="border p-3">
+                {{ $detailBarang?->barang?->nama_barang ?? '-' }}
+            </td>
 
-                        <td class="border p-3 text-center">
-                            {{ $detail->barangKeluar?->barang?->satuan ?? '-' }}
-                        </td>
+            <td class="border p-3 text-center">
+                {{ $detailBarang?->jumlah_keluar ?? 0 }}
+            </td>
 
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="border p-3 text-center text-gray-500">
-                            Tidak ada data
-                        </td>
-                    </tr>
-                @endforelse
-            </tbody>
+            <td class="border p-3 text-center">
+                {{ $detail->jumlah_kirim }}
+            </td>
+
+            <td class="border p-3 text-center">
+                {{ $detailBarang?->barang?->satuan ?? ($detail->satuan ?? '-') }}
+            </td>
+
+        </tr>
+
+    @empty
+        <tr>
+            <td colspan="4" class="border p-3 text-center text-gray-500">
+                Tidak ada data
+            </td>
+        </tr>
+    @endforelse
+</tbody>
         </table>
 
     </div>

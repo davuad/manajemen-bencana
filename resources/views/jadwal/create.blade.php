@@ -51,7 +51,7 @@
                         class="w-full border rounded-lg p-3 focus:ring-2 focus:ring-indigo-500 outline-none">
                         <option value="">Pilih Pegawai</option>
                         @foreach ($pegawais as $p)
-                            <option value="{{ $p->id }}" {{ old('pegawai_id') == $p->id ? 'selected' : '' }}>
+                            <option value="{{ $p->id_pegawai }}" {{ old('id_pegawai') == $p->id ? 'selected' : '' }}>
                                 {{ $p->nama_pegawai }}
                             </option>
                         @endforeach
