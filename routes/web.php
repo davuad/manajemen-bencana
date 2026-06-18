@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\BencanaController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PengaduanBencanaController;
@@ -33,9 +34,7 @@ Route::get('/', function () {
 
 require __DIR__ . '/auth.php';
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware('verified')->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('verified')->name('dashboard');
 
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
