@@ -56,7 +56,7 @@ gadipake  --}}
             <select name="status_proses" class="w-full border rounded-lg p-3 text-sm focus:ring-2 focus:ring-blue-500 outline-none transition">
                 <option value="diproses" {{ $data->status_proses == 'diproses' ? 'selected' : '' }}>PENDING (Diproses)</option>
                 <option value="dikirim" {{ $data->status_proses == 'dikirim' ? 'selected' : '' }}>DIKIRIM (Dalam Pengiriman)</option>
-                <option value="selesai" {{ $data->status_proses == 'selesai' ? 'selected' : '' }}>SELESAI (Sudah Distribusi)</option>
+                <option value="selesai" {{ $data->status_proses == 'selesai' ? 'selected' : '' }}>SELESAI (Sudah Selesai)</option>
                 <option value="dibatalkan" {{ $data->status_proses == 'dibatalkan' ? 'selected' : '' }}>BATAL (Dibatalkan)</option>
             </select>
         </div>
