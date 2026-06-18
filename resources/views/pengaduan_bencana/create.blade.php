@@ -18,7 +18,7 @@
             </p>
         </div>
 
-        <a href="/pengaduan"
+        <a href="{{ route('admin.pengaduan_bencana.index') }}"
            class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg">
 
             Kembali
@@ -28,7 +28,7 @@
     </div>
 
     {{-- FORM --}}
-    <form action="/pengaduan/store"
+    <form action="{{ route('admin.pengaduan_bencana.store') }}"
           method="POST"
           enctype="multipart/form-data">
 
@@ -354,7 +354,7 @@
         {{-- BUTTON --}}
         <div class="flex justify-end gap-3">
 
-            <a href="/pengaduan"
+            <a href="{{ route('admin.pengaduan_bencana.index') }}"
                class="bg-gray-200 text-gray-700 px-5 py-2 rounded-lg">
 
                 Batal

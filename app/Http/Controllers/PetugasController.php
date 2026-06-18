@@ -13,15 +13,15 @@ class PetugasController extends Controller
     {
         $data = Petugas::with('posko')->latest()->paginate(10);
 
-        return view('manajemen_barang.petugas.index', compact('data'));
+        return view('management_barang.petugas.index', compact('data'));
     }
 
     // CREATE
     public function create()
-    {
+    { 
         $posko = Posko::all();
 
-        return view('manajemen_barang.petugas.create', compact('posko'));
+        return view('management_barang.petugas.create', compact('posko'));
     }
 
     // STORE
@@ -38,7 +38,7 @@ class PetugasController extends Controller
 
         Petugas::create($validated);
 
-        return redirect()->route('manajemen_barang.petugas.index')
+        return redirect()->route('management_barang.petugas.index')
             ->with('success', 'Data petugas berhasil ditambahkan');
     }
 
@@ -46,7 +46,7 @@ class PetugasController extends Controller
     public function show($id)
     {
         $petugas = Petugas::with('posko')->findOrFail($id);
-        return view('manajemen_barang.petugas.show', compact('petugas'));
+        return view('management_barang.petugas.show', compact('petugas'));
     }
 
     // EDIT
@@ -55,7 +55,7 @@ class PetugasController extends Controller
         $petugas = Petugas::findOrFail($id);
         $posko = Posko::all();
 
-        return view('manajemen_barang.petugas.edit', compact('petugas', 'posko'));
+        return view('management_barang.petugas.edit', compact('petugas', 'posko'));
     }
 
     // UPDATE
@@ -74,7 +74,7 @@ class PetugasController extends Controller
 
         $petugas->update($validated);
 
-        return redirect()->route('manajemen_barang.petugas.index')
+        return redirect()->route('management_barang.petugas.index')
             ->with('success', 'Data petugas berhasil diupdate');
     }
 
@@ -84,7 +84,7 @@ class PetugasController extends Controller
         $petugas = Petugas::findOrFail($id);
         $petugas->delete();
 
-        return redirect()->route('manajemen_barang.petugas.index')
+        return redirect()->route('management_barang.petugas.index')
             ->with('success', 'Data petugas berhasil dihapus');
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Controllers\PenerimaDistribusiController;
+
 
 class PenerimaDistribusi extends Model
 {
@@ -25,6 +27,14 @@ class PenerimaDistribusi extends Model
     public function getRouteKeyName()
     {
         return 'penerima_id';
+    }
+
+    public function detailDistribusi()
+    {
+        return $this->belongsTo(
+            DetailDistribusi::class,
+            'detail_distribusi_id'
+        );
     }
 
 }

@@ -9,18 +9,21 @@ use App\Models\KebutuhanPengaduan;
 use App\Models\PengaduanBencana;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 
 class PengaduanBencanaController extends Controller
     {
     public function boot()
-        {
-            View::composer('*', function ($view) {
-                $user = User::with('role')->first(); // sementara ambil user pertama
-                $view->with('user', $user);
-            });
-        }
+    {
+        View::composer('*', function ($view) {
 
+            $user = Auth::user();
+
+            $view->with('user', $user);
+        });
+    }
+    
     public function index(Request $request)
     {
         $query = PengaduanBencana::with([
@@ -112,7 +115,7 @@ class PengaduanBencanaController extends Controller
             }
         }
 
-        return redirect('/pengaduan')->with('success', 'Data berhasil ditambahkan');
+        return redirect('/admin/pengaduan')->with('success', 'Data berhasil ditambahkan');
     }
 
         public function update(Request $request, $id)
@@ -158,7 +161,7 @@ class PengaduanBencanaController extends Controller
             ]
         );
 
-        return redirect('/pengaduan')->with('success', 'Data berhasil diupdate');
+        return redirect('/admin/pengaduan')->with('success', 'Data berhasil diupdate');
     }
 
     public function show($id)
@@ -198,7 +201,7 @@ class PengaduanBencanaController extends Controller
 
         $foto->delete();
 
-        return redirect('/pengaduan' )
+        return redirect('/admin/pengaduan' )
             ->with('success', 'Foto berhasil dihapus');
     }
 
@@ -215,6 +218,349 @@ class PengaduanBencanaController extends Controller
         FotoPengaduan::where('pengaduan_bencana_id', $id)->delete();
         KebutuhanPengaduan::where('pengaduan_bencana_id', $id)->delete();
         $pengaduan->delete();
-        return redirect('/pengaduan')->with('success', 'Data pengaduan beserta seluruh lampiran fotonya berhasil dihapus secara permanen.');
+        return redirect('/admin/pengaduan')->with('success', 'Data pengaduan beserta seluruh lampiran fotonya berhasil dihapus secara permanen.');
     }
+
+    // =====================================
+    // KABID - DATA PENGADUAN
+    // =====================================
+
+    public function kabidIndex(Request $request)
+    {
+        $query = PengaduanBencana::with([
+            'user',
+            'kategori',
+            'foto',
+            'kebutuhan'
+        ]);
+
+        if ($request->filled('search')) {
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+                $q->where('desa', 'like', "%{$search}%")
+                ->orWhere('deskripsi', 'like', "%{$search}%")
+                ->orWhereHas('user', function ($u) use ($search) {
+                        $u->where('nama', 'like', "%{$search}%");
+                });
+            });
+        }
+
+        if ($request->filled('status')) {
+            $query->where('status_pengaduan', $request->status);
+        }
+
+        $data = $query->latest()->get();
+
+        return view(
+            'pengaduan_bencana.kabid.index',
+            compact('data')
+        );
+    }
+
+    // =====================================
+    // DETAIL PENGADUAN
+    // =====================================
+
+    public function kabidDetail($id)
+    {
+        $data = PengaduanBencana::with([
+            'user',
+            'kategori',
+            'foto',
+            'kebutuhan'
+        ])->findOrFail($id);
+
+        return view(
+            'pengaduan_bencana.kabid.detail',
+            compact('data')
+        );
+    }
+
+    // =====================================
+    // FORM VERIFIKASI
+    // =====================================
+
+    public function verifikasi($id)
+    {
+        $data = PengaduanBencana::with([
+            'user',
+            'kategori',
+            'foto',
+            'kebutuhan'
+        ])->findOrFail($id);
+
+        return view(
+            'pengaduan_bencana.kabid.verifikasi',
+            compact('data')
+        );
+    }
+
+    // =====================================
+    // SIMPAN VERIFIKASI
+    // =====================================
+
+    public function simpanVerifikasi(Request $request, $id)
+    {
+        $request->validate([
+            'status_pengaduan' => 'required',
+        ]);
+
+        $pengaduan = PengaduanBencana::findOrFail($id);
+
+        $pengaduan->update([
+            'status_pengaduan' => $request->status_pengaduan,
+            'keterangan_verifikasi' => $request->keterangan_verifikasi,
+        ]);
+
+        if ($pengaduan->kebutuhan) {
+
+            $pengaduan->kebutuhan->update([
+                'dapur_umum' => $request->dapur_umum ?? 'Tidak',
+                'psikososial' => $request->psikososial ?? 'Tidak',
+                'logistik_rentan' => $request->logistik_rentan ?? 'Tidak',
+                'logistik_makanan' => $request->logistik_makanan ?? 'Tidak',
+                'logistik_penampungan' => $request->logistik_penampungan ?? 'Tidak',
+                'keterangan' => $request->keterangan_kebutuhan,
+            ]);
+
+        }
+
+        return redirect()
+            ->route('kabid.pengaduan.index')
+            ->with('success', 'Verifikasi berhasil disimpan');
+    }
+
+    // =====================================
+    // KETUA TIM - MONITORING
+    // =====================================
+
+    public function ketuaTimIndex(Request $request)
+    {
+        $query = PengaduanBencana::with([
+            'user',
+            'kategori',
+            'foto',
+            'kebutuhan'
+        ]);
+
+        // Cari
+        if ($request->filled('search')) {
+
+            $search = $request->search;
+
+            $query->where(function ($q) use ($search) {
+
+                $q->where('desa', 'like', "%{$search}%")
+                ->orWhere('deskripsi', 'like', "%{$search}%")
+                ->orWhereHas('user', function ($u) use ($search) {
+
+                        $u->where('nama', 'like', "%{$search}%");
+
+                });
+
+            });
+        }
+
+        // Filter Status
+        if ($request->filled('status')) {
+
+            $query->where(
+                'status_pengaduan',
+                $request->status
+            );
+
+        } else {
+
+            $query->whereIn('status_pengaduan', [
+                'DITANGANI',
+                'SELESAI'
+            ]);
+
+        }
+
+        $data = $query->latest()->get();
+
+        return view(
+            'pengaduan_bencana.ketua_tim.index',
+            compact('data')
+        );
+    }
+    // =====================================
+    // FORM SELESAI
+    // =====================================
+
+    public function formSelesai($id)
+    {
+        $data = PengaduanBencana::with([
+            'user',
+            'kategori',
+            'foto',
+            'kebutuhan'
+        ])->findOrFail($id);
+
+        return view(
+            'pengaduan_bencana.ketua_tim.selesai',
+            compact('data')
+        );
+    }
+
+    // =====================================
+    // SIMPAN PENYELESAIAN
+    // =====================================
+
+    public function simpanSelesai(Request $request, $id)
+    {
+        $request->validate([
+            'tanggal_selesai' => 'required|date'
+        ]);
+
+        $pengaduan = PengaduanBencana::findOrFail($id);
+
+        $pengaduan->update([
+            'status_pengaduan' => 'SELESAI',
+            'tanggal_selesai' => $request->tanggal_selesai
+        ]);
+
+        return redirect()
+            ->route('ketua_tim.pengaduan.index')
+            ->with(
+                'success',
+                'Pengaduan berhasil diselesaikan'
+            );
+    }
+    // =====================================
+// USER (RELAWAN / KADUS / DESA)
+// =====================================
+
+public function userIndex(Request $request)
+{
+    $query = PengaduanBencana::with([
+        'user',
+        'kategori',
+        'foto',
+        'kebutuhan'
+    ])
+    ->where('user_id', Auth::id());
+
+    if ($request->filled('search')) {
+
+        $search = $request->search;
+
+        $query->where(function ($q) use ($search) {
+
+            $q->where('desa', 'like', "%{$search}%")
+              ->orWhere('deskripsi', 'like', "%{$search}%");
+
+        });
+    }
+
+    if ($request->filled('status')) {
+
+        $query->where(
+            'status_pengaduan',
+            $request->status
+        );
+    }
+
+    $data = $query->latest()->get();
+
+    return view(
+        'pengaduan_bencana.user.index',
+        compact('data')
+    );
+}
+
+// =====================================
+// FORM TAMBAH PENGADUAN USER
+// =====================================
+
+public function userCreate()
+{
+    $kategori = KategoriBencana::all();
+
+    return view(
+        'pengaduan_bencana.user.create',
+        compact('kategori')
+    );
+}
+
+// =====================================
+// SIMPAN PENGADUAN USER
+// =====================================
+
+public function userStore(Request $request)
+{
+    $request->validate([
+        'kategori_id' => 'required',
+        'desa' => 'required',
+        'deskripsi' => 'required',
+        'foto.*' => 'image|mimes:jpg,jpeg,png|max:5120'
+    ]);
+
+    $pengaduan = PengaduanBencana::create([
+        'user_id' => Auth::id(),
+        'kategori_id' => $request->kategori_id,
+        'desa' => $request->desa,
+        'deskripsi' => $request->deskripsi,
+        'status_pengaduan' => 'BELUM_DITANGANI'
+    ]);
+
+    KebutuhanPengaduan::create([
+        'pengaduan_bencana_id' => $pengaduan->id,
+        'dapur_umum' => 'Tidak',
+        'psikososial' => 'Tidak',
+        'logistik_rentan' => 'Tidak',
+        'logistik_makanan' => 'Tidak',
+        'logistik_penampungan' => 'Tidak',
+        'keterangan' => null
+    ]);
+
+    if ($request->hasFile('foto')) {
+
+        foreach ($request->file('foto') as $file) {
+
+            $nama = time().'_'.uniqid().'_'.$file->getClientOriginalName();
+
+            $file->move(
+                public_path('foto'),
+                $nama
+            );
+
+            FotoPengaduan::create([
+                'pengaduan_bencana_id' => $pengaduan->id,
+                'file_foto' => $nama,
+                'keterangan' => $request->keterangan
+            ]);
+        }
+    }
+
+    return redirect()
+        ->route('user.pengaduan.index')
+        ->with(
+            'success',
+            'Pengaduan berhasil dikirim'
+        );
+}
+
+// =====================================
+// DETAIL PENGADUAN USER
+// =====================================
+
+public function showUser($id)
+{
+    $data = PengaduanBencana::with([
+        'user',
+        'kategori',
+        'foto',
+        'kebutuhan'
+    ])
+    ->where('user_id', Auth::id())
+    ->findOrFail($id);
+
+    return view(
+        'pengaduan_bencana.user.show',
+        compact('data')
+    );
+}
 }

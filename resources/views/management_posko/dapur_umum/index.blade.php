@@ -12,11 +12,12 @@
                 </p>
             </div>
 
+            @role('admin')
             <a href="{{ route('admin.management_posko.dapur_umum.create') }}"
                 class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
                 + Tambah Data Dapur
             </a>
-
+            @endrole
         </div>
 
         <form method="GET" action="{{ route('admin.management_posko.dapur_umum.index') }}">
@@ -90,11 +91,10 @@
                                     {{-- DETAIL KEBUTUHAN --}}
                                     <a href="{{ route('admin.management_posko.kebutuhan_harian.index', $item->id) }}"
                                         class="px-3 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">
-
                                         Detail Kebutuhan
-
                                     </a>
 
+                                    @role('admin')
                                     {{-- EDIT --}}
                                     <a href="{{ route('admin.management_posko.dapur_umum.edit', $item->id) }}"
                                         class="px-3 py-2 bg-yellow-500 text-white rounded-lg text-sm hover:bg-yellow-600">
@@ -111,6 +111,7 @@
                                             Hapus
                                         </button>
                                     </form>
+                                    @endrole
                                 </div>
                             </td>
                         </tr>

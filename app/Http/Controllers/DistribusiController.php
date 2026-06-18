@@ -2,207 +2,299 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Distribusi;
 use App\Models\BarangKeluar;
 use App\Models\Bencana;
-use App\Models\Posko;
+use App\Models\DetailBarangKeluar;
 use App\Models\DetailDistribusi;
+use App\Models\Distribusi;
+use App\Models\Posko;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class DistribusiController extends Controller
 {
     // ================= INDEX =================
     public function index(Request $request)
-    {
-        $query = Distribusi::with([
-            'detailDistribusis.barangKeluar.barang',
-            'bencana',
-            'posko.desa'
-        ]);
+{
+    $query = Distribusi::with([
+        'bencana',
+        'posko.desa'
+    ]);
 
-        if ($request->search) {
-            $query->where(function ($q) use ($request) {
-                $q->where('lokasi_distribusi', 'like', "%{$request->search}%")
-                    ->orWhere('kendaraan', 'like', "%{$request->search}%")
-                    ->orWhere('nama_supir', 'like', "%{$request->search}%")
-                    ->orWhere('nomor_kendaraan', 'like', "%{$request->search}%")
-                    ->orWhere('kategori_distribusi', 'like', "%{$request->search}%")
-                    ->orWhere('status', 'like', "%{$request->search}%")
-                    ->orWhere('id', $request->search);
+    if ($request->filled('search')) {
 
-                $q->orWhereHas('posko', function ($q2) use ($request) {
-                    $q2->where('nama_posko', 'like', "%{$request->search}%");
-                });
+        $search = $request->search;
+
+        $query->where(function ($q) use ($search) {
+
+            // tabel distribusi
+            $q->where('kategori_distribusi', 'like', "%{$search}%")
+              ->orWhere('status', 'like', "%{$search}%");
+
+            // tabel bencana
+            $q->orWhereHas('bencana', function ($bencana) use ($search) {
+                $bencana->where(
+                    'nama_bencana',
+                    'like',
+                    "%{$search}%"
+                );
             });
-        }
 
-        $distribusi = $query->latest()->get();
+            // tabel posko
+            $q->orWhereHas('posko', function ($posko) use ($search) {
+                $posko->where(
+                    'nama_posko',
+                    'like',
+                    "%{$search}%"
+                );
+            });
 
-        return view('management_distribusi.distribusi.index', compact('distribusi'));
+            // tabel desa
+            $q->orWhereHas('posko.desa', function ($desa) use ($search) {
+                $desa->where(
+                    'nama_desa',
+                    'like',
+                    "%{$search}%"
+                );
+            });
+        });
     }
+
+    $distribusi = $query->latest()->get();
+
+    return view(
+        'management_distribusi.distribusi.index',
+        compact('distribusi')
+    );
+}
 
     // ================= CREATE =================
     public function create()
     {
         return view('management_distribusi.distribusi.create', [
-            'barangKeluar' => BarangKeluar::with('barang')->get(),
+            'barangKeluar' => DetailBarangKeluar::with([
+                'barang',
+                'barangKeluar'
+            ])->get(),
+
             'bencana' => Bencana::all(),
             'posko' => Posko::with('desa')->get(),
         ]);
     }
 
     // ================= STORE =================
-    public function store(Request $request)
-    {
-        DB::beginTransaction();
+ public function store(Request $request)
+{
+    DB::beginTransaction();
 
-        try {
-            $request->validate([
-                'bencana_id' => 'required',
-                'posko_id' => 'required',
-                'tanggal_distribusi' => 'required|date',
-                'lokasi_distribusi' => 'required',
-                'kendaraan' => 'required',
-                'nama_supir' => 'required',
-                'nomor_kendaraan' => 'required',
-                'kategori_distribusi' => 'required',
-                'status' => 'required',
+    try {
 
-                'barang_detail' => 'required|array',
-                'barang_detail.*.barang_keluar_id' => 'required',
-                'barang_detail.*.jumlah_kirim' => 'required|integer|min:1',
-                'barang_detail.*.satuan' => 'required',
-            ]);
+        $request->validate([
+            'bencana_id' => 'required',
+            'posko_id' => 'required',
+            'tanggal_distribusi' => 'required|date',
+            'lokasi_distribusi' => 'required',
+            'kendaraan' => 'required',
+            'nama_supir' => 'required',
+            'nomor_kendaraan' => 'required',
+            'kategori_distribusi' => 'required',
+            'status' => 'required',
 
-            // ✅ SIMPAN DATA UTAMA (JANGAN IKUTIN barang_detail)
-            $distribusi = Distribusi::create(
-                $request->except('barang_detail')
-            );
+            'barang_detail' => 'required|array',
+            'barang_detail.*.barang_keluar_id' => 'required',
+            'barang_detail.*.jumlah_kirim' => 'required|integer|min:1',
+            'barang_detail.*.satuan' => 'required',
+        ]);
 
-            // ✅ SIMPAN DETAIL
-            foreach ($request->barang_detail as $detail) {
+        // SIMPAN DISTRIBUSI
+        $distribusi = Distribusi::create([
+            'bencana_id' => $request->bencana_id,
+            'posko_id' => $request->posko_id,
+            'tanggal_distribusi' => $request->tanggal_distribusi,
+            'lokasi_distribusi' => $request->lokasi_distribusi,
+            'kendaraan' => $request->kendaraan,
+            'nama_supir' => $request->nama_supir,
+            'nomor_kendaraan' => $request->nomor_kendaraan,
+            'keterangan' => $request->keterangan,
+            'kategori_distribusi' => $request->kategori_distribusi,
+            'status' => $request->status,
+        ]);
 
-                if (empty($detail['barang_keluar_id'])) continue;
+        // SIMPAN DETAIL DISTRIBUSI
+        foreach ($request->barang_detail as $detail) {
 
-                $barangKeluar = BarangKeluar::find($detail['barang_keluar_id']);
-                if (!$barangKeluar) continue;
-
-                if ($detail['jumlah_kirim'] > $barangKeluar->jumlah) {
-                    throw new \Exception("Jumlah kirim melebihi stok barang keluar");
-                }
-
-                DetailDistribusi::create([
-                    'distribusi_id' => $distribusi->id,
-                    'barang_keluar_id' => $barangKeluar->id,
-                    'jumlah_kirim' => $detail['jumlah_kirim'],
-                    'satuan' => $detail['satuan'],
-                ]);
+            if (empty($detail['barang_keluar_id'])) {
+                continue;
             }
 
-            DB::commit();
+            $detailBarangKeluar = DetailBarangKeluar::find(
+                $detail['barang_keluar_id']
+            );
 
-            return redirect()->route('admin.management_distribusi.distribusi.index')
-                ->with('success', 'Data berhasil ditambahkan');
+            if (!$detailBarangKeluar) {
+                continue;
+            }
 
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors($e->getMessage());
+            // VALIDASI JUMLAH KIRIM
+            if ($detail['jumlah_kirim'] > $detailBarangKeluar->jumlah_keluar) {
+                throw new \Exception(
+                    'Jumlah kirim melebihi jumlah barang keluar'
+                );
+            }
+
+            DetailDistribusi::create([
+                'distribusi_id' => $distribusi->id,
+
+                // FK ke tabel barang_keluar
+                'barang_keluar_id' => $detailBarangKeluar->barang_keluar_id,
+
+                'jumlah_kirim' => $detail['jumlah_kirim'],
+                'satuan' => $detail['satuan'],
+            ]);
         }
+
+        DB::commit();
+
+        return redirect()
+            ->route('admin.management_distribusi.distribusi.index')
+            ->with('success', 'Data distribusi berhasil ditambahkan');
+
+    } catch (\Exception $e) {
+
+        DB::rollBack();
+
+        return back()
+            ->withInput()
+            ->withErrors($e->getMessage());
     }
-
-    // ================= SHOW =================
-    public function show($id)
-    {
-        $distribusi = Distribusi::with([
-            'detailDistribusis.barangKeluar.barang',
-            'bencana',
-            'posko.desa'
-        ])->findOrFail($id);
-
-        return view('management_distribusi.distribusi.show', compact('distribusi'));
-    }
-
+}
     // ================= EDIT =================
-    public function edit($id)
-    {
-        $distribusi = Distribusi::with([
-            'detailDistribusis.barangKeluar.barang',
-            'bencana',
-            'posko.desa'
-        ])->findOrFail($id);
+public function edit($id)
+{
+    $distribusi = Distribusi::with([
+        'detailDistribusis.barangKeluar',
+        'bencana',
+        'posko.desa'
+    ])->findOrFail($id);
 
-        return view('management_distribusi.distribusi.edit', [
-            'distribusi' => $distribusi,
-            'barangKeluar' => BarangKeluar::with('barang')->get(),
-            'bencana' => Bencana::all(),
-            'posko' => Posko::with('desa')->get(),
-        ]);
-    }
+    return view('management_distribusi.distribusi.edit', [
+        'distribusi' => $distribusi,
+
+        'barangKeluar' => DetailBarangKeluar::with([
+            'barang',
+            'barangKeluar'
+        ])->get(),
+
+        'bencana' => Bencana::all(),
+        'posko' => Posko::with('desa')->get(),
+    ]);
+}
 
     // ================= UPDATE =================
-    public function update(Request $request, $id)
-    {
-        DB::beginTransaction();
+ public function update(Request $request, $id)
+{
+    DB::beginTransaction();
 
-        try {
-            $distribusi = Distribusi::findOrFail($id);
+    try {
 
-            $request->validate([
-                'bencana_id' => 'required',
-                'posko_id' => 'required',
-                'tanggal_distribusi' => 'required|date',
-                'lokasi_distribusi' => 'required',
-                'kendaraan' => 'required',
-                'nama_supir' => 'required',
-                'nomor_kendaraan' => 'required',
-                'kategori_distribusi' => 'required',
-                'status' => 'required',
+        $distribusi = Distribusi::findOrFail($id);
 
-                'barang_detail' => 'required|array',
-                'barang_detail.*.barang_keluar_id' => 'required',
-                'barang_detail.*.jumlah_kirim' => 'required|integer|min:1',
-                'barang_detail.*.satuan' => 'required',
-            ]);
+        $request->validate([
+            'bencana_id' => 'required',
+            'posko_id' => 'required',
+            'tanggal_distribusi' => 'required|date',
+            'lokasi_distribusi' => 'required',
+            'kendaraan' => 'required',
+            'nama_supir' => 'required',
+            'nomor_kendaraan' => 'required',
+            'kategori_distribusi' => 'required',
+            'status' => 'required',
 
-            // ✅ UPDATE DATA UTAMA
-            $distribusi->update(
-                $request->except('barang_detail')
-            );
+            'barang_detail' => 'required|array',
+            'barang_detail.*.barang_keluar_id' => 'required',
+            'barang_detail.*.jumlah_kirim' => 'required|integer|min:1',
+            'barang_detail.*.satuan' => 'required',
+        ]);
 
-            // ✅ HAPUS DETAIL LAMA
-            $distribusi->detailDistribusis()->delete();
+        // UPDATE DATA DISTRIBUSI
+        $distribusi->update([
+            'bencana_id' => $request->bencana_id,
+            'posko_id' => $request->posko_id,
+            'tanggal_distribusi' => $request->tanggal_distribusi,
+            'lokasi_distribusi' => $request->lokasi_distribusi,
+            'kendaraan' => $request->kendaraan,
+            'nama_supir' => $request->nama_supir,
+            'nomor_kendaraan' => $request->nomor_kendaraan,
+            'keterangan' => $request->keterangan,
+            'kategori_distribusi' => $request->kategori_distribusi,
+            'status' => $request->status,
+        ]);
 
-            // ✅ SIMPAN ULANG DETAIL
-            foreach ($request->barang_detail as $detail) {
+        // HAPUS DETAIL LAMA
+        $distribusi->detailDistribusis()->delete();
 
-                if (empty($detail['barang_keluar_id'])) continue;
+        // SIMPAN ULANG DETAIL
+        foreach ($request->barang_detail as $detail) {
 
-                $barangKeluar = BarangKeluar::find($detail['barang_keluar_id']);
-                if (!$barangKeluar) continue;
-
-                if ($detail['jumlah_kirim'] > $barangKeluar->jumlah) {
-                    throw new \Exception("Jumlah kirim melebihi stok asli");
-                }
-
-                DetailDistribusi::create([
-                    'distribusi_id' => $distribusi->id,
-                    'barang_keluar_id' => $barangKeluar->id,
-                    'jumlah_kirim' => $detail['jumlah_kirim'],
-                    'satuan' => $detail['satuan'],
-                ]);
+            if (empty($detail['barang_keluar_id'])) {
+                continue;
             }
 
-            DB::commit();
+            $detailBarangKeluar = DetailBarangKeluar::find(
+                $detail['barang_keluar_id']
+            );
 
-            return redirect()->route('management_distribusi.distribusi.index')
-                ->with('success', 'Data berhasil diupdate');
+            if (!$detailBarangKeluar) {
+                continue;
+            }
 
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return back()->withErrors($e->getMessage());
+            if ($detail['jumlah_kirim'] > $detailBarangKeluar->jumlah_keluar) {
+                throw new \Exception(
+                    'Jumlah kirim melebihi jumlah barang keluar'
+                );
+            }
+
+            DetailDistribusi::create([
+                'distribusi_id' => $distribusi->id,
+
+                // WAJIB pakai barang_keluar_id asli
+                'barang_keluar_id' => $detailBarangKeluar->barang_keluar_id,
+
+                'jumlah_kirim' => $detail['jumlah_kirim'],
+                'satuan' => $detail['satuan'],
+            ]);
         }
+
+        DB::commit();
+
+        return redirect()
+            ->route('admin.management_distribusi.distribusi.index')
+            ->with('success', 'Data distribusi berhasil diupdate');
+
+    } catch (\Exception $e) {
+
+        DB::rollBack();
+
+        return back()
+            ->withInput()
+            ->withErrors($e->getMessage());
     }
+}
+
+public function show($id)
+{
+    $distribusi = Distribusi::with([
+        'bencana',
+        'posko.desa',
+        'detailDistribusis.barangKeluar.detailBarangKeluar.barang'
+    ])->findOrFail($id);
+
+    return view(
+        'management_distribusi.distribusi.show',
+        compact('distribusi')
+    );
+}
 
     // ================= DELETE =================
     public function destroy($id)
