@@ -53,9 +53,7 @@
                         <th class="p-4 text-left">Kapasitas</th>
                         <th class="p-4 text-left">Jumlah Warga</th>
                         <th class="p-4 text-left">Penanggung Jawab</th>
-                        @role('admin')
                         <th class="p-4 text-center">Aksi</th>
-                        @endrole
                     </tr>
                 </thead>
 
