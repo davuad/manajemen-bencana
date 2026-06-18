@@ -1,5 +1,6 @@
 <?php
 
+
 use App\Http\Controllers\AnakTerpisahController;
 use App\Http\Controllers\BencanaController;
 use App\Http\Controllers\DashboardController;
@@ -31,12 +32,13 @@ use App\Http\Controllers\JenisBarangController;
 use App\Http\Controllers\SumberBarangMasukController;
 use App\Http\Controllers\BarangController;
 use App\Http\Controllers\BarangMasukController;
-use App\Http\Controllers\PengajuanBarangController;
+
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\PengambilanController;
 use App\Http\Controllers\PengembalianController;
 use App\Models\User;
 use App\Http\Controllers\LaporanController;
+
 
 // --- Public Routes ---
 Route::get('/', function () {
@@ -114,7 +116,6 @@ Route::middleware(['auth', 'role:admin'])
         Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
             Route::resource('distribusi', DistribusiController::class);
             Route::resource('detail_distribusi', DetailDistribusiController::class);
-
             Route::get('penerima_distribusi', [PenerimaDistribusiController::class, 'index'])->name('penerima.index');
 
             Route::get(
@@ -141,12 +142,10 @@ Route::middleware(['auth', 'role:admin'])
                 'penerima_distribusi/delete/{id}',
                 [PenerimaDistribusiController::class, 'destroy']
             )->name('penerima.destroy');
-
             Route::get(
                 'distribusi/{id}/ba',
                 [DistribusiController::class, 'generateBA']
             )->name('distribusi.ba');
-
             Route::resource('paket_bantuan', PaketBantuanController::class);
             Route::resource('detail_paket', DetailPaketController::class);
             Route::resource('distribusi_paket', DistribusiPaketController::class);
@@ -154,6 +153,7 @@ Route::middleware(['auth', 'role:admin'])
             Route::patch('distribusi_paket/{id}/selesai', [DistribusiPaketController::class, 'selesai'])->name('distribusi_paket.selesai');
             Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
         });
+
 
         // --- Management Korban ---
         Route::prefix('management-korban')->name('management_korban.')->group(function () {
@@ -205,20 +205,8 @@ Route::middleware(['auth', 'role:admin'])
             Route::resource('pengembalian', PengembalianController::class);
         });
 
-        // --- Pengajuan Barang ---
-        Route::prefix('pengajuan-barang')->name('pengajuan_barang.')->group(function () {
-            Route::get('/', [PengajuanBarangController::class, 'index'])->name('index');
-            Route::get('/create', [PengajuanBarangController::class, 'create'])->name('create');
-            Route::post('/store', [PengajuanBarangController::class, 'store'])->name('store');
-            Route::get('/{id}', [PengajuanBarangController::class, 'show'])->name('show');
-            Route::get('/{id}/edit', [PengajuanBarangController::class, 'edit'])->name('edit');
-            Route::put('/{id}', [PengajuanBarangController::class, 'update'])->name('update');
-            Route::delete('/{id}', [PengajuanBarangController::class, 'destroy'])->name('destroy');
-            Route::get('/{id}/export', [PengajuanBarangController::class, 'export'])->name('export');
-            Route::post('/import', [PengajuanBarangController::class, 'import'])->name('import');
-        });
-
         Route::prefix('laporan')->name('laporan.')->group(function () {
+
             Route::get('/', [LaporanController::class, 'index'])->name('index');
             Route::get('/pdf', [LaporanController::class, 'pdf'])->name('pdf');
             Route::get('/{id}/pdf', [LaporanController::class, 'pdfDetail'])->name('pdf.detail');
@@ -229,54 +217,42 @@ Route::middleware(['auth', 'role:admin'])
 // --- FITUR JADWAL LAYANAN PASCA BENCANA (MANDIRI / POLOSAN DI LUAR) ---
 // =========================================================================
 
-// 1. ROUTE JADWAL ADMIN (BISA CRUD + CETAK)
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
-    Route::get('/jadwal/create', [JadwalController::class, 'create'])->name('jadwal.create');
-    Route::post('/jadwal', [JadwalController::class, 'store'])->name('jadwal.store');
-    Route::get('/jadwal/{id}/edit', [JadwalController::class, 'edit'])->name('jadwal.edit');
-    Route::put('/jadwal/{id}', [JadwalController::class, 'update'])->name('jadwal.update');
-    Route::delete('/jadwal/{id}', [JadwalController::class, 'destroy'])->name('jadwal.destroy');
-    Route::get('/jadwal/cetak-pdf', [JadwalController::class, 'cetak_pdf'])->name('jadwal.cetak');
-});
-
-// 2. ROUTE JADWAL KABID (BISA LIHAT + CETAK)
-Route::prefix('kabid')->name('kabid.')->group(function () {
+// 1. ROUTE JADWAL KABID (BISA LIHAT + CETAK)
+Route::prefix('kabid')->name('kabid.')->middleware(['auth', 'role:kabid'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
     Route::get('/jadwal/cetak-pdf', [JadwalController::class, 'cetak_pdf'])->name('jadwal.cetak');
 });
 
-// 3. ROUTE JADWAL RELAWAN (HANYA LIHAT)
-Route::prefix('relawan')->name('relawan.')->group(function () {
+// 2. ROUTE JADWAL RELAWAN (HANYA LIHAT)
+Route::prefix('relawan')->name('relawan.')->middleware(['auth', 'role:relawan'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 });
 
-// 4. ROUTE JADWAL KADUS (HANYA LIHAT)
-Route::prefix('kadus')->name('kadus.')->group(function () {
+// 3. ROUTE JADWAL KADUS (HANYA LIHAT)
+Route::prefix('kadus')->name('kadus.')->middleware(['auth', 'role:kadus'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 });
 
-// 5. ROUTE JADWAL DESA (HANYA LIHAT)
-Route::prefix('desa')->name('desa.')->group(function () {
+// 4. ROUTE JADWAL DESA (HANYA LIHAT)
+Route::prefix('desa')->name('desa.')->middleware(['auth', 'role:desa'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 });
 
-// 6. ROUTE JADWAL KETUA TIM (HANYA LIHAT)
-Route::prefix('ketua_tim')->name('ketua_tim.')->group(function () {
+// 5. ROUTE JADWAL KETUA TIM (HANYA LIHAT)
+Route::prefix('ketua_tim')->name('ketua_tim.')->middleware(['auth', 'role:ketua_tim'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 });
 
-// 7. ROUTE JADWAL PETUGAS (HANYA LIHAT)
-Route::prefix('petugas')->name('petugas.')->group(function () {
+// 6. ROUTE JADWAL PETUGAS (HANYA LIHAT)
+Route::prefix('petugas')->name('petugas.')->middleware(['auth', 'role:petugas'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 });
 
-// 8. ROUTE JADWAL PEGAWAI (HANYA LIHAT)
-Route::prefix('pegawai')->name('pegawai.')->group(function () {
+// 7. ROUTE JADWAL PEGAWAI (HANYA LIHAT)
+Route::prefix('pegawai')->name('pegawai.')->middleware(['auth', 'role:pegawai'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 });
-
-// --- Role Placeholders ---
+// --- Role Placeholders (Kosong) ---
 Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')->group(function () {
     Route::prefix('management-posko')->name('management_posko.')->group(function () {
         Route::get('/posko', [PoskoController::class, 'index'])
@@ -300,7 +276,6 @@ Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->grou
             ->name('dapur_umum.index');
     });
 });
-
 Route::middleware(['auth', 'role:kabid'])
     ->prefix('kabid')
     ->name('kabid.')
@@ -351,7 +326,6 @@ Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(f
             ->name('dapur_umum.index');
     });
 });
-
 Route::middleware(['auth', 'role:ketua_tim'])
     ->prefix('ketua_tim')
     ->name('ketua_tim.')
@@ -395,7 +369,6 @@ Route::middleware(['auth', 'role:relawan|kadus|desa'])
             [PengaduanBencanaController::class, 'userStore']
         )
             ->name('pengaduan.store');
-
         Route::get(
             '/pengaduan/{id}',
             [PengaduanBencanaController::class, 'showUser']
@@ -404,7 +377,7 @@ Route::middleware(['auth', 'role:relawan|kadus|desa'])
     });
 
 // ROUTE LAPORAN KABID (BISA LIHAT + CETAK PDF)
-Route::prefix('kabid')->name('kabid.')->group(function () {
+Route::prefix('kabid')->name('kabid.')->middleware(['auth', 'role:kabid'])->group(function () {
 
     Route::prefix('laporan')->name('laporan.')->group(function () {
 
