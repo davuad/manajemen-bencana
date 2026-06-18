@@ -37,6 +37,8 @@ use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\PengambilanController;
 use App\Http\Controllers\PengembalianController;
 use App\Models\User;
+use App\Http\Controllers\LaporanController;
+
 
 // --- Public Routes ---
 Route::get('/', function () {
@@ -198,7 +200,14 @@ Route::middleware(['auth', 'role:admin'])
             Route::resource('petugas', PetugasController::class);
             Route::resource('pengambilan', PengambilanController::class);
             Route::resource('pengembalian', PengembalianController::class);
-});
+        });
+
+        Route::prefix('laporan')->name('laporan.')->group(function () {
+
+            Route::get('/', [LaporanController::class, 'index'])->name('index');
+            Route::get('/pdf', [LaporanController::class, 'pdf'])->name('pdf');
+            Route::get('/{id}/pdf', [LaporanController::class, 'pdfDetail'])->name('pdf.detail');
+         });
     });
 
 // =========================================================================
