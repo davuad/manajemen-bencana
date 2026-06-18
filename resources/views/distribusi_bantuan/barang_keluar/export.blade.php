@@ -42,7 +42,7 @@
 <body onload="window.print()">
 
     <div class="header">
-        <h1>Laporan Pengeluaran Barang Logistik (Distribusi)</h1>
+        <h1>Laporan Pengeluaran Barang Logistik</h1>
         <p>Jurusan Komputer dan Bisnis - Politeknik Negeri Cilacap</p>
         
         <div class="filter-info">
