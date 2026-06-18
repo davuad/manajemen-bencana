@@ -23,16 +23,21 @@
 
                 {{-- Sudah Disalurkan --}}
                 @if ($distribusi->status_distribusi == 'Proses Penyaluran')
-                    <form action="{{ route('admin.management_distribusi.distribusi_paket.selesai', $distribusi->id) }}"
-                        method="POST">
-                        @csrf
-                        @method('PATCH')
-                        <button
-                            class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm">
-                            <x-heroicon-o-check class="w-4 h-4" />
-                            Selesai
-                        </button>
-                    </form>
+                    @if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('petugas'))
+                        <form action="{{ route('admin.management_distribusi.distribusi_paket.selesai', $distribusi->id) }}"
+                            method="POST">
+
+                            @csrf
+                            @method('PATCH')
+
+                            <button
+                                class="flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm">
+                                <x-heroicon-o-check class="w-4 h-4" />
+                                Selesai
+                            </button>
+
+                        </form>
+                    @endif
                 @endif
 
             </div>

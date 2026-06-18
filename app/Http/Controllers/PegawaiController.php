@@ -64,10 +64,6 @@ elyza
     return view('management_pegawai.edit', compact('pegawai'));
 }
 
-    {
-        $pegawai = Pegawai::findOrFail($id);
-        return view('management_pegawai.pegawai.edit', compact('pegawai'));
-    }
 
 main
     // update data pegawai

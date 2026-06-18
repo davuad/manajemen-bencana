@@ -89,7 +89,9 @@
                             <th class="text-center">Bencana</th>
                             <th class="text-center">Jumlah Anggota</th>
                             <th class="text-center">Status Distribusi</th>
-                            <th class="text-center">Aksi</th>
+                            @if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('pegawai'))
+                                <th class="text-center">Aksi</th>
+                            @endif
                         </tr>
                     </thead>
 
@@ -129,21 +131,25 @@
                                     @endif
                                 </td>
 
-                                <td class="p-3 text-center">
-                                    @if ($item->status_penyaluran == 'Belum diproses')
-                                        <a href="{{ route('admin.management_distribusi.distribusi_paket.create', ['warga_id' => $item->id]) }}"
-                                            class="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg text-xs hover:bg-slate-700">
-                                            <x-heroicon-o-truck class="w-4 h-4" />
-                                            <span>Distribusi Bantuan</span>
-                                        </a>
-                                    @elseif ($item->status_penyaluran == 'Proses Penyaluran')
-                                        <button type="button"
-                                            class="bg-gray-300 text-gray-600 px-4 py-2 rounded-lg text-xs cursor-not-allowed"
-                                            disabled>
-                                            Tidak Tersedia
-                                        </button>
-                                    @endif
-                                </td>
+                                @if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('pegawai'))
+                                    <td class="p-3 text-center">
+
+                                        @if ($item->status_penyaluran == 'Belum diproses')
+                                            <a href="{{ route('admin.management_distribusi.distribusi_paket.create', ['warga_id' => $item->id]) }}"
+                                                class="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg text-xs hover:bg-slate-700">
+                                                <x-heroicon-o-truck class="w-4 h-4" />
+                                                <span>Distribusi Bantuan</span>
+                                            </a>
+                                        @elseif ($item->status_penyaluran == 'Proses Penyaluran')
+                                            <button type="button"
+                                                class="bg-gray-300 text-gray-600 px-4 py-2 rounded-lg text-xs cursor-not-allowed"
+                                                disabled>
+                                                Tidak Tersedia
+                                            </button>
+                                        @endif
+
+                                    </td>
+                                @endif
                             </tr>
                         @empty
                             <tr>
@@ -241,17 +247,24 @@
 
                                         {{-- SELESAI --}}
                                         @if ($item->status_distribusi == 'Proses Penyaluran')
-                                            <form
-                                                action="{{ route('admin.management_distribusi.distribusi_paket.selesai', $item->id) }}"
-                                                method="POST">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit"
-                                                    class="inline-flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs">
-                                                    <x-heroicon-o-check class="w-4 h-4" />
-                                                    Selesai
-                                                </button>
-                                            </form>
+                                            @if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('petugas'))
+                                                <form
+                                                    action="{{ route('admin.management_distribusi.distribusi_paket.selesai', $item->id) }}"
+                                                    method="POST">
+
+                                                    @csrf
+                                                    @method('PATCH')
+
+                                                    <button type="submit"
+                                                        class="inline-flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs">
+
+                                                        <x-heroicon-o-check class="w-4 h-4" />
+                                                        Selesai
+
+                                                    </button>
+
+                                                </form>
+                                            @endif
                                         @endif
 
                                     </div>
