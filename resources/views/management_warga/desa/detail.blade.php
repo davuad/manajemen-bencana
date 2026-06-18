@@ -3,130 +3,187 @@
 @section('title', 'Detail Data Desa')
 
 @section('content')
-    <div class="space-y-6">
-        {{-- Breadcrumb --}}
-        <div class="text-sm text-gray-500">
-            Dashboard <span class="mx-1">&gt;</span> Data Desa <span class="mx-1">&gt;</span> Detail Data Desa
-        </div>
+<div class="space-y-6">
 
-        {{-- Card --}}
-        <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
-            {{-- Header --}}
-            <div
-                class="flex flex-col gap-4 border-b border-gray-100 px-6 py-5 lg:flex-row lg:items-start lg:justify-between">
-                <div>
-                    <h2 class="text-2xl font-bold text-gray-900">
-                        Detail Data Desa
-                    </h2>
-                    <p class="mt-1 text-sm text-gray-500">
-                        Informasi lengkap desa untuk kebutuhan pendataan wilayah terdampak bencana.
-                    </p>
-                </div>
+    {{-- Breadcrumb --}}
+    <div class="text-sm text-gray-500">
+        Dashboard
+        <span class="mx-1">&gt;</span>
+        Data Desa
+        <span class="mx-1">&gt;</span>
+        Detail Data Desa
+    </div>
 
-                <div class="flex flex-col gap-3 sm:flex-row">
-                    <a href="{{ route('admin.desa.index') }}"
-                        class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
-                        Kembali
-                    </a>
+    <div class="overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-sm">
 
-                    <a href="{{ route('admin.desa.edit', $desa->id) }}"
-                        class="inline-flex items-center justify-center rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-orange-600">
-                        Edit Data
-                    </a>
-                </div>
+        {{-- Header --}}
+        <div
+            class="flex flex-col gap-4 border-b border-gray-100 px-6 py-5 lg:flex-row lg:items-start lg:justify-between">
+
+            <div>
+                <h2 class="text-2xl font-bold text-gray-900">
+                    Detail Data Desa
+                </h2>
+
+                <p class="mt-1 text-sm text-gray-500">
+                    Informasi lengkap desa untuk kebutuhan pendataan wilayah terdampak bencana.
+                </p>
             </div>
 
-            {{-- Body --}}
-            <div class="space-y-6 px-6 py-6">
-                {{-- Top Grid --}}
-                <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
-                    {{-- Profile --}}
-                    <div class="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-2">
-                        <div class="mb-5 flex items-start gap-4">
-                            <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 text-2xl">
-                                🏘️
-                            </div>
+            <div class="flex flex-col gap-3 sm:flex-row">
 
-                            <div>
-                                <h3 class="text-xl font-bold text-gray-900">
-                                    Desa {{ $desa->nama_desa }}
-                                </h3>
-                                <p class="mt-1 text-sm text-gray-500">
-                                    Kecamatan {{ $desa->kecamatan }} · Data wilayah administrasi desa
-                                </p>
-                            </div>
+                <a href="{{ route('admin.desa.index') }}"
+                    class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
+                    Kembali
+                </a>
+
+                <a href="{{ route('admin.desa.edit', $desa) }}"
+                    class="inline-flex items-center justify-center rounded-xl bg-orange-500 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-orange-600">
+                    Edit Data
+                </a>
+
+            </div>
+        </div>
+
+        {{-- Body --}}
+        <div class="space-y-6 px-6 py-6">
+
+            {{-- Top Grid --}}
+            <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
+
+                {{-- Profil Desa --}}
+                <div class="rounded-2xl border border-gray-200 bg-white p-5 lg:col-span-2">
+
+                    <div class="mb-5 flex items-start gap-4">
+
+                        <div class="flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100 text-2xl">
+                            🏘️
                         </div>
 
-                        <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
-                            <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
-                                <p class="text-xs font-medium text-gray-400">ID Desa</p>
-                                <p class="mt-2 text-base font-semibold text-gray-900">{{ $desa->id }}</p>
-                            </div>
+                        <div>
+                            <h3 class="text-xl font-bold text-gray-900">
+                                Desa {{ $desa->nama_desa }}
+                            </h3>
 
-                            <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
-                                <p class="text-xs font-medium text-gray-400">Kecamatan</p>
-                                <p class="mt-2 text-base font-semibold text-gray-900">{{ $desa->kecamatan }}</p>
-                            </div>
-
-                            <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
-                                <p class="text-xs font-medium text-gray-400">Kepala Desa</p>
-                                <p class="mt-2 text-base font-semibold text-gray-900">{{ $desa->nama_kades }}</p>
-                            </div>
-
-                            <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
-                                <p class="text-xs font-medium text-gray-400">Kontak</p>
-                                <p class="mt-2 text-base font-semibold text-gray-900">{{ $desa->kontak_kades }}</p>
-                            </div>
+                            <p class="mt-1 text-sm text-gray-500">
+                                Kecamatan {{ $desa->kecamatan }}
+                            </p>
                         </div>
+
                     </div>
 
-                    {{-- Status --}}
-                    <div class="rounded-2xl border border-gray-200 bg-white p-5">
-                        <h3 class="text-base font-semibold text-gray-900">Status Data</h3>
+                    <div class="grid grid-cols-1 gap-3 sm:grid-cols-2">
 
-                        <div class="mt-5">
-                            <span
-                                class="inline-flex rounded-full bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-700">
-                                Data Desa Aktif
-                            </span>
+                        <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                            <p class="text-xs font-medium text-gray-400">
+                                ID Desa
+                            </p>
+                            <p class="mt-2 text-base font-semibold text-gray-900">
+                                {{ $desa->id }}
+                            </p>
                         </div>
+
+                        <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                            <p class="text-xs font-medium text-gray-400">
+                                Kecamatan
+                            </p>
+                            <p class="mt-2 text-base font-semibold text-gray-900">
+                                {{ $desa->kecamatan }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                            <p class="text-xs font-medium text-gray-400">
+                                Kepala Desa
+                            </p>
+                            <p class="mt-2 text-base font-semibold text-gray-900">
+                                {{ $desa->nama_kades }}
+                            </p>
+                        </div>
+
+                        <div class="rounded-xl border border-gray-200 bg-gray-50 p-4">
+                            <p class="text-xs font-medium text-gray-400">
+                                Kontak
+                            </p>
+                            <p class="mt-2 text-base font-semibold text-gray-900">
+                                {{ $desa->kontak_kades }}
+                            </p>
+                        </div>
+
                     </div>
                 </div>
 
-                {{-- Detail Section --}}
-                <div>
-                    <h3 class="mb-4 text-lg font-bold text-gray-900">
-                        Informasi Lengkap Desa
+                {{-- Status --}}
+                <div class="rounded-2xl border border-gray-200 bg-white p-5">
+
+                    <h3 class="text-base font-semibold text-gray-900">
+                        Status Data
                     </h3>
 
-                    <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
-                        <div class="rounded-2xl border border-gray-200 bg-white p-4">
-                            <p class="text-xs font-medium text-gray-400">ID Desa</p>
-                            <p class="mt-2 text-base font-semibold text-gray-900">{{ $desa->id }}</p>
-                        </div>
-
-                        <div class="rounded-2xl border border-gray-200 bg-white p-4">
-                            <p class="text-xs font-medium text-gray-400">Nama Desa</p>
-                            <p class="mt-2 text-base font-semibold text-gray-900">{{ $desa->nama_desa }}</p>
-                        </div>
-
-                        <div class="rounded-2xl border border-gray-200 bg-white p-4">
-                            <p class="text-xs font-medium text-gray-400">Kecamatan</p>
-                            <p class="mt-2 text-base font-semibold text-gray-900">{{ $desa->kecamatan }}</p>
-                        </div>
-
-                        <div class="rounded-2xl border border-gray-200 bg-white p-4">
-                            <p class="text-xs font-medium text-gray-400">Nama Kepala Desa</p>
-                            <p class="mt-2 text-base font-semibold text-gray-900">{{ $desa->nama_kades }}</p>
-                        </div>
-
-                        <div class="rounded-2xl border border-gray-200 bg-white p-4 md:col-span-2">
-                            <p class="text-xs font-medium text-gray-400">Kontak Kepala Desa</p>
-                            <p class="mt-2 text-base font-semibold text-gray-900">{{ $desa->kontak_kades }}</p>
-                        </div>
+                    <div class="mt-5">
+                        <span
+                            class="inline-flex rounded-full bg-blue-100 px-3 py-1.5 text-xs font-semibold text-blue-700">
+                            Data Desa Aktif
+                        </span>
                     </div>
+
                 </div>
+
             </div>
+
+            {{-- Detail Informasi --}}
+            <div>
+
+                <h3 class="mb-4 text-lg font-bold text-gray-900">
+                    Informasi Lengkap Desa
+                </h3>
+
+                <div class="grid grid-cols-1 gap-4 md:grid-cols-2">
+
+                    <div class="rounded-2xl border border-gray-200 bg-white p-4">
+                        <p class="text-xs font-medium text-gray-400">ID Desa</p>
+                        <p class="mt-2 text-base font-semibold text-gray-900">
+                            {{ $desa->id }}
+                        </p>
+                    </div>
+
+                    <div class="rounded-2xl border border-gray-200 bg-white p-4">
+                        <p class="text-xs font-medium text-gray-400">Nama Desa</p>
+                        <p class="mt-2 text-base font-semibold text-gray-900">
+                            {{ $desa->nama_desa }}
+                        </p>
+                    </div>
+
+                    <div class="rounded-2xl border border-gray-200 bg-white p-4">
+                        <p class="text-xs font-medium text-gray-400">Kecamatan</p>
+                        <p class="mt-2 text-base font-semibold text-gray-900">
+                            {{ $desa->kecamatan }}
+                        </p>
+                    </div>
+
+                    <div class="rounded-2xl border border-gray-200 bg-white p-4">
+                        <p class="text-xs font-medium text-gray-400">Nama Kepala Desa</p>
+                        <p class="mt-2 text-base font-semibold text-gray-900">
+                            {{ $desa->nama_kades }}
+                        </p>
+                    </div>
+
+                    <div class="rounded-2xl border border-gray-200 bg-white p-4 md:col-span-2">
+                        <p class="text-xs font-medium text-gray-400">
+                            Nomor Handphone Kepala Desa
+                        </p>
+                        <p class="mt-2 text-base font-semibold text-gray-900">
+                            {{ $desa->kontak_kades }}
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
         </div>
+
     </div>
+
+</div>
 @endsection
