@@ -2,42 +2,42 @@
 
 
 use App\Http\Controllers\AnakTerpisahController;
+use App\Http\Controllers\BAController;
+use App\Http\Controllers\BarangController;
+use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\BencanaController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\PengaduanBencanaController;
 use App\Http\Controllers\DapurUmumController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\DetailDistribusiController;
-use App\Http\Controllers\PenerimaDistribusiController;
 use App\Http\Controllers\DetailPaketController;
 use App\Http\Controllers\DistribusiController;
 use App\Http\Controllers\DistribusiPaketController;
-use App\Http\Controllers\PaketBantuanController;
-use App\Http\Controllers\KorbanController;
-use App\Http\Controllers\WargaTerdampakController;
-use App\Http\Controllers\PegawaiController;
-use App\Http\Controllers\RelawanController;
-use App\Http\Controllers\JadwalController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\KategoriBencanaController;
 use App\Http\Controllers\GudangController;
-use App\Http\Controllers\KategoriBantuanController;
-use App\Http\Controllers\PenjemputanAnakController;
-use App\Http\Controllers\KebutuhanHarianController;
-use App\Http\Controllers\PoskoController;
-use App\Http\Controllers\StokGudangController;
+use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\JenisBarangController;
-use App\Http\Controllers\SumberBarangMasukController;
-use App\Http\Controllers\BarangController;
-use App\Http\Controllers\BarangMasukController;
-
-use App\Http\Controllers\PetugasController;
+use App\Http\Controllers\KategoriBantuanController;
+use App\Http\Controllers\KategoriBencanaController;
+use App\Http\Controllers\KebutuhanHarianController;
+use App\Http\Controllers\KorbanController;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\PaketBantuanController;
+use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\PenerimaDistribusiController;
+use App\Http\Controllers\PengaduanBencanaController;
 use App\Http\Controllers\PengambilanController;
 use App\Http\Controllers\PengembalianController;
+use App\Http\Controllers\PenjemputanAnakController;
+use App\Http\Controllers\PetugasController;
+use App\Http\Controllers\PoskoController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RelawanController;
+use App\Http\Controllers\StokGudangController;
+use App\Http\Controllers\SumberBarangMasukController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\WargaTerdampakController;
 use App\Models\User;
-use App\Http\Controllers\LaporanController;
+use Illuminate\Support\Facades\Route;
 
 
 // --- Public Routes ---
@@ -175,22 +175,9 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('barang-masuk', BarangMasukController::class);
 
         // --- Data Desa & Warga Terdampak ---
-        Route::get('/data-desa', [DesaController::class, 'index'])->name('desa.index');
-        Route::get('/data-desa/create', [DesaController::class, 'create'])->name('desa.create');
-        Route::post('/data-desa/store', [DesaController::class, 'store'])->name('desa.store');
-        Route::get('/data-desa/detail/{id}', [DesaController::class, 'detail'])->name('desa.detail');
-        Route::get('/data-desa/edit/{id}', [DesaController::class, 'edit'])->name('desa.edit');
-        Route::post('/data-desa/update/{id}', [DesaController::class, 'update'])->name('desa.update');
-        Route::get('/data-desa/delete/{id}', [DesaController::class, 'delete'])->name('desa.delete');
-
-        Route::get('/warga-terdampak', [WargaTerdampakController::class, 'index'])->name('warga.index');
-        Route::get('/warga-terdampak/create', [WargaTerdampakController::class, 'create'])->name('warga.create');
-        Route::post('/warga-terdampak/store', [WargaTerdampakController::class, 'store'])->name('warga.store');
-        Route::get('/warga-terdampak/detail/{id}', [WargaTerdampakController::class, 'detail'])->name('warga.detail');
-        Route::get('/warga-terdampak/edit/{id}', [WargaTerdampakController::class, 'edit'])->name('warga.edit');
-        Route::post('/warga-terdampak/update/{id}', [WargaTerdampakController::class, 'update'])->name('warga.update');
-        Route::get('/warga-terdampak/delete/{id}', [WargaTerdampakController::class, 'delete'])->name('warga.delete');
-        Route::post('/warga-terdampak/ubah-status/{id}', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
+        Route::resource('data-desa', DesaController::class)->names('desa');
+        Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
+        Route::post('warga/{id}/ubah-status',[WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 
         // --- Management Pegawai ---
         Route::prefix('management-pegawai')->name('management_pegawai.')->group(function () {
@@ -214,7 +201,7 @@ Route::middleware(['auth', 'role:admin'])
     });
 
 // =========================================================================
-// --- FITUR JADWAL LAYANAN PASCA BENCANA (MANDIRI / POLOSAN DI LUAR) ---
+// --- JADWAL LAYANAN PER ROLE ---
 // =========================================================================
 
 // 1. ROUTE JADWAL KABID (BISA LIHAT + CETAK)
@@ -262,10 +249,17 @@ Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')
             ->name('dapur_umum.index');
     });
 
+
+    Route::resource('data-desa', DesaController::class)->names('desa');
+    Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
+    Route::post('warga/{id}/ubah-status',[WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
+
     Route::prefix('kebutuhan_harian')->name('kebutuhan_harian.')->group(function () {
         Route::get('/{dapur}', [KebutuhanHarianController::class, 'index'])->name('kebutuhan_harian.index');
     });
+
 });
+
 
 Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->group(function () {
     Route::prefix('management-posko')->name('management_posko.')->group(function () {
@@ -314,7 +308,9 @@ Route::middleware(['auth', 'role:kabid'])
             '/pengaduan/{id}/verifikasi',
             [PengaduanBencanaController::class, 'simpanVerifikasi']
         )
-            ->name('pengaduan.simpan');
+            ->name('pengaduan.simpan')
+        ;
+
     });
 
 Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(function () {
@@ -325,6 +321,7 @@ Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(f
         Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
             ->name('dapur_umum.index');
     });
+
 });
 Route::middleware(['auth', 'role:ketua_tim'])
     ->prefix('ketua_tim')
@@ -345,6 +342,7 @@ Route::middleware(['auth', 'role:ketua_tim'])
             '/pengaduan/{id}/selesai',
             [PengaduanBencanaController::class, 'simpanSelesai']
         )->name('pengaduan.simpan');
+
     });
 
 Route::middleware(['auth', 'role:relawan|kadus|desa'])
@@ -374,6 +372,7 @@ Route::middleware(['auth', 'role:relawan|kadus|desa'])
             [PengaduanBencanaController::class, 'showUser']
         )
             ->name('pengaduan.show');
+
     });
 
 // ROUTE LAPORAN KABID (BISA LIHAT + CETAK PDF)
@@ -401,3 +400,46 @@ Route::middleware([
 
         Route::resource('posko', PoskoController::class);
     });
+
+// Relawan
+Route::middleware(['auth','role:relawan'])
+    ->prefix('relawan')
+    ->name('relawan.')
+    ->group(function () {
+        Route::get('/pengaduan', [PengaduanBencanaController::class,'userIndex'])->name('pengaduan.index');
+        Route::get('/pengaduan/create', [PengaduanBencanaController::class,'userCreate'])->name('pengaduan.create');
+        Route::post('/pengaduan/store', [PengaduanBencanaController::class,'userStore'])->name('pengaduan.store');
+        Route::get('/pengaduan/{id}', [PengaduanBencanaController::class,'showUser'])->name('pengaduan.show');
+    });
+
+// Kadus
+Route::middleware(['auth','role:kadus'])
+    ->prefix('kadus')
+    ->name('kadus.')
+    ->group(function () {
+        Route::get('/pengaduan', [PengaduanBencanaController::class,'userIndex'])->name('pengaduan.index');
+        Route::get('/pengaduan/create', [PengaduanBencanaController::class,'userCreate'])->name('pengaduan.create');
+        Route::post('/pengaduan/store', [PengaduanBencanaController::class,'userStore'])->name('pengaduan.store');
+        Route::get('/pengaduan/{id}', [PengaduanBencanaController::class,'showUser'])->name('pengaduan.show');
+    });
+
+// Desa
+Route::middleware(['auth','role:desa'])
+    ->prefix('desa')
+    ->name('desa.')
+    ->group(function () {
+        Route::get('/pengaduan', [PengaduanBencanaController::class,'userIndex'])->name('pengaduan.index');
+        Route::get('/pengaduan/create', [PengaduanBencanaController::class,'userCreate'])->name('pengaduan.create');
+        Route::post('/pengaduan/store', [PengaduanBencanaController::class,'userStore'])->name('pengaduan.store');
+        Route::get('/pengaduan/{id}', [PengaduanBencanaController::class,'showUser'])->name('pengaduan.show');
+    });
+
+    Route::get(
+    '/admin/management-distribusi/berita-acara/{id}',
+    [BAController::class, 'cetak']
+)->name('admin.management_distribusi.berita_acara.cetak');
+
+Route::get(
+    '/admin/management-distribusi/berita-acara/{id}/download',
+    [BAController::class,'download']
+)->name('admin.management_distribusi.berita_acara.download');

@@ -13,7 +13,7 @@
             </p>
         </div>
 
-        <a href="{{ url('/relawan/create') }}" 
+        <a href="{{ route('admin.management_pegawai.relawan.create') }}" 
            class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
             + Tambah Relawan
         </a>
@@ -53,7 +53,7 @@
                     <td class="p-2 text-center">{{ $r->alamat }}</td>
 
                     <td class="flex gap-2 py-3">
-                        <a href="{{ url('/relawan/'.$r->id_relawan.'/edit') }}"
+                        <a href="{{ route('admin.management_pegawai.relawan.edit', $r->id_relawan) }}"
                            class="text-blue-500 hover:text-blue-700">
                             <x-heroicon-o-pencil-square class="w-5 h-5" />
                         </a>
@@ -126,7 +126,7 @@ function openModal(id, nama) {
 
     document.getElementById('namaRelawan').innerText = `"${nama}"`;
 
-    let url = "{{ url('/relawan/:id') }}";
+   let url = "/admin/management-pegawai/relawan/:id";
     url = url.replace(':id', id);
 
     document.getElementById('deleteForm').action = url;

@@ -10,23 +10,32 @@ class DetailDistribusi extends Model
 
     protected $fillable = [
         'distribusi_id',
-        'barang_keluar_id',
+        'detail_barang_keluar_id',
         'jumlah_kirim',
         'satuan',
     ];
 
-    public function barangKeluar()
-    {
-        return $this->belongsTo(BarangKeluar::class, 'barang_keluar_id');
-    }
-
+    // Relasi ke Distribusi
     public function distribusi()
     {
-        return $this->belongsTo(Distribusi::class,'distribusi_id');
+        return $this->belongsTo(Distribusi::class, 'distribusi_id');
     }
-    
-        public function penerimaDistribusi()
+
+    // Relasi ke Detail Barang Keluar
+    public function detailBarangKeluar()
     {
-        return $this->hasMany(PenerimaDistribusi::class, 'detail_distribusi_id');
+        return $this->belongsTo(
+            DetailBarangKeluar::class,
+            'detail_barang_keluar_id'
+        )->withDefault();
+    }
+
+    // Relasi ke Penerima Distribusi
+    public function penerimaDistribusi()
+    {
+        return $this->hasMany(
+            PenerimaDistribusi::class,
+            'detail_distribusi_id'
+        );
     }
 }

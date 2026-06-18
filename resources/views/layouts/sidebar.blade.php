@@ -62,20 +62,49 @@
                 </span>
 
             </a>
-        @elseif(auth()->user()->hasRole('relawan') || auth()->user()->hasRole('kadus') || auth()->user()->hasRole('desa'))
-            <a href="{{ route('user.pengaduan.index') }}"
-                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
+@elseif(auth()->user()->hasRole('relawan'))
 
-                <span>
-                    <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
-                </span>
+    <a href="{{ route('relawan.pengaduan.index') }}"
+        class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+        {{ request()->routeIs('relawan.pengaduan.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
 
-                <span x-show="sidebarOpen">
-                    Pengaduan Saya
-                </span>
+        <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
 
-            </a>
-        @endif
+        <span x-show="sidebarOpen">
+            Pengaduan Saya
+        </span>
+
+    </a>
+
+@elseif(auth()->user()->hasRole('kadus'))
+
+    <a href="{{ route('kadus.pengaduan.index') }}"
+        class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+        {{ request()->routeIs('kadus.pengaduan.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+
+        <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
+
+        <span x-show="sidebarOpen">
+            Pengaduan Saya
+        </span>
+
+    </a>
+
+@elseif(auth()->user()->hasRole('desa'))
+
+    <a href="{{ route('desa.pengaduan.index') }}"
+        class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+        {{ request()->routeIs('desa.pengaduan.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+
+        <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
+
+        <span x-show="sidebarOpen">
+            Pengaduan Saya
+        </span>
+
+    </a>
+
+@endif
 
         <div x-data="{ openGudang: {{ request()->routeIs('admin.jenis-barang.*') ||
         request()->routeIs('admin.sumber-barang.*') ||
@@ -191,35 +220,27 @@
         </a>
 
 
+      <a href="{{ route('admin.desa.index') }}"
+    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+    {{ request()->routeIs('admin.desa.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
 
-        <div x-data="{ openMenu: {{ request()->routeIs('admin.desa.*') || request()->routeIs('admin.warga.*') ? 'true' : 'false' }} }" class="rounded">
-            <div @click="openMenu = !openMenu"
-                class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
-                :class="openMenu ? 'bg-orange-500' : 'hover:bg-blue-800'">
-                <span>
-                    <x-heroicon-o-folder class="w-5 h-5" />
-                </span>
-                <span x-show="sidebarOpen" x-transition>
-                    Data Wilayah & Warga
-                </span>
-            </div>
+    <x-heroicon-o-map class="w-5 h-5" />
 
-            <div x-show="openMenu" x-transition:enter="transition ease-out duration-200"
-                x-transition:enter-start="opacity-0 -translate-y-1" x-transition:enter-end="opacity-100 translate-y-0"
-                x-transition:leave="transition ease-in duration-150"
-                x-transition:leave-start="opacity-100 translate-y-0" x-transition:leave-end="opacity-0 -translate-y-1"
-                class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
-                <a href="{{ route('admin.desa.index') }}"
-                    class="block px-3 py-2 text-sm rounded transition-all duration-200 {{ request()->routeIs('admin.desa.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
-                    Data Desa
-                </a>
+    <span x-show="sidebarOpen" x-transition>
+        Data Desa
+    </span>
+</a>
 
-                <a href="{{ route('admin.warga.index') }}"
-                    class="block px-3 py-2 text-sm rounded transition-all duration-200 {{ request()->routeIs('admin.warga.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
-                    Data Warga Terdampak
-                </a>
-            </div>
-        </div>
+<a href="{{ route('admin.warga.index') }}"
+    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+    {{ request()->routeIs('admin.warga.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+
+    <x-heroicon-o-users class="w-5 h-5" />
+
+    <span x-show="sidebarOpen" x-transition>
+        Data Warga Terdampak
+    </span>
+</a>
 
 
         @if (auth()->user()->hasRole('admin'))
@@ -375,7 +396,6 @@
 
                 <a href="{{ route('admin.management_barang.petugas.index') }}"
                     class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.management_barang.petugas.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
-
                     Petugas
                 </a>
                 <a href="{{ route('admin.management_barang.pengambilan.index') }}"
@@ -483,7 +503,7 @@
                 <span><x-heroicon-o-clock class="w-5 h-5" /></span>
                 <span x-show="sidebarOpen" x-transition>Jadwal Layanan Pasca Bencana</span>
             </a>
-        @elseif(auth()->user()->hasRole('ketua tim'))
+        @elseif(auth()->user()->hasRole('ketua_tim'))
             <a href="{{ route('ketua_tim.jadwal.index') }}"
                 class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
                 {{ request()->routeIs('ketua_tim.jadwal.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">

@@ -138,63 +138,65 @@
                         </tr>
                     </thead>
 
-                    <tbody>
-                        @forelse($barangKeluar as $bk)
-                        <tr>
+<tbody>
+@forelse($barangKeluar as $bk)
 
-                            <!-- NAMA -->
-                            <td class="border p-2">
-                                <input type="text"
-                                    value="{{ optional($bk->barang)->nama_barang ?? '-' }}"
-                                    class="w-full bg-gray-100 text-center"
-                                    readonly>
-                            </td>
+<tr>
 
-                            <!-- JUMLAH KELUAR -->
-                            <td class="border p-2">
-                                <input type="number"
-                                    value="{{ $bk->jumlah }}"
-                                    class="w-full bg-gray-100 text-center"
-                                    readonly>
-                            </td>
+    {{-- Nama Barang --}}
+    <td class="border p-2">
+        {{ $bk->barang->nama_barang ?? '-' }}
+    </td>
 
-                            <!-- JUMLAH KIRIM -->
-                            <td class="border p-2">
-                                <input type="number"
-                                    name="barang_detail[{{ $loop->index }}][jumlah_kirim]"
-                                    value="{{ $bk->jumlah }}"
-                                    data-max="{{ $bk->jumlah }}"
-                                    class="w-full border rounded text-center"
-                                    oninput="validasiInput(this)"
-                                    required>
-                            </td>
+    {{-- Jumlah Keluar --}}
+    <td class="border p-2 text-center">
+        {{ $bk->jumlah_keluar }}
+    </td>
 
-                            <!-- ✅ SATUAN (FIX AMBIL DARI BARANG) -->
-                            <td class="border p-2">
-                                <input type="text"
-                                    value="{{ optional($bk->barang)->satuan ?? '-' }}"
-                                    class="w-full bg-gray-100 text-center"
-                                    readonly>
+    {{-- Jumlah Kirim --}}
+    <td class="border p-2">
+        <input
+            type="number"
+            name="barang_detail[{{ $loop->index }}][jumlah_kirim]"
+            value="{{ $bk->jumlah_keluar }}"
+            min="1"
+            max="{{ $bk->jumlah_keluar }}"
+            data-max="{{ $bk->jumlah_keluar }}"
+            class="w-full border rounded p-2 text-center"
+            oninput="validasiInput(this)"
+            required>
+    </td>
 
-                                <input type="hidden"
-                                    name="barang_detail[{{ $loop->index }}][satuan]"
-                                    value="{{ optional($bk->barang)->satuan }}">
-                            </td>
+    {{-- Satuan --}}
+    <td class="border p-2 text-center">
 
-                            <!-- HIDDEN -->
-                            <input type="hidden"
-                                name="barang_detail[{{ $loop->index }}][barang_keluar_id]"
-                                value="{{ $bk->id }}">
+        {{ $bk->barang->satuan ?? '-' }}
 
-                        </tr>
-                        @empty
-                        <tr>
-                            <td colspan="4" class="p-3 text-gray-400">
-                                Tidak ada data barang keluar
-                            </td>
-                        </tr>
-                        @endforelse
-                    </tbody>
+        <input
+            type="hidden"
+            name="barang_detail[{{ $loop->index }}][satuan]"
+            value="{{ $bk->barang->satuan }}">
+
+    </td>
+
+    {{-- Hidden Detail Barang Keluar --}}
+    <input
+        type="hidden"
+        name="barang_detail[{{ $loop->index }}][detail_barang_keluar_id]"
+        value="{{ $bk->id }}">
+
+</tr>
+
+@empty
+
+<tr>
+    <td colspan="4" class="text-center p-4 text-gray-500">
+        Tidak ada data barang keluar
+    </td>
+</tr>
+
+@endforelse
+</tbody>
                 </table>
             </div>
 
@@ -226,18 +228,19 @@
             option.getAttribute('data-desa') ?? '';
     }
 
-    function validasiInput(input) {
-        let max = parseInt(input.getAttribute('data-max'));
+    function validasiInput(input){
 
-        if (parseInt(input.value) > max) {
-            alert('Tidak boleh melebihi jumlah barang keluar!');
-            input.value = max;
-        }
+    let max = parseInt(input.dataset.max);
 
-        if (input.value < 1 || input.value === '' || isNaN(input.value)) {
-            input.value = 1;
-        }
+    if(parseInt(input.value) > max){
+        input.value = max;
     }
+
+    if(parseInt(input.value) < 1 || isNaN(parseInt(input.value))){
+        input.value = 1;
+    }
+
+}
     </script>
 
     @endsection

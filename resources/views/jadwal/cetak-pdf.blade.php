@@ -7,42 +7,68 @@
         @page { size: A4 landscape; margin: 1cm; }
         body { font-family: 'Helvetica', Arial, sans-serif; font-size: 10px; color: #333; background-color: #ffffff; }
 
-        /* KOP SURAT REVISI: Tiga Kolom (Logo | Teks | Spacer) */
+        /* ===============
+           KOP SURAT 
+           =============== */
         .kop-table {
             width: 100%;
             border-collapse: collapse;
-            border-bottom: 3px solid #000000;
+            /* Menggunakan double border untuk efek garis tebal & tipis khas tata naskah dinas */
+            border-bottom: 4px double #000000; 
             margin-bottom: 20px;
         }
         .logo-cell { 
-            width: 100px; /* Lebar area logo */
+            width: 90px; /* Lebar area logo disesuaikan proporsinya */
             text-align: left; 
             vertical-align: middle;
-            padding: 0 0 10px 10px; /* Logo tidak menempel ke tepi kertas */
+            padding: 0 0 12px 5px;
             border: none;
         }
-        .logo { width: 70px; height: auto; }
+        .logo { width: 75px; height: auto; }
         
         .text-cell { 
             text-align: center; 
             vertical-align: middle; 
-            padding: 5px; 
+            padding: 0 0 12px 0; 
             border: none;
         }
-        /* Kolom penyeimbang agar teks tetap presisi di tengah */
-        .spacer-cell { width: 100px; border: none; }
+        /* Kolom penyeimbang dengan width sama persis seperti logo-cell agar teks murni di tengah */
+        .spacer-cell { width: 90px; border: none; }
 
-        .kop-text h3 { margin: 0; font-size: 14px; font-weight: normal; color: #1f2937; }
-        .kop-text h2 { margin: 2px 0; font-size: 18px; font-weight: bold; text-transform: uppercase; color: #1f2937; }
-        .kop-text p { margin: 1px 0; font-size: 9px; font-style: italic; color: #374151; }
+        /* Tipografi diselaraskan dengan dokumen resmi Kabupaten Cilacap */
+        .kop-text h3 { 
+            margin: 0; 
+            font-size: 14px; 
+            font-weight: normal; 
+            letter-spacing: 0.5px;
+            color: #000000; 
+        }
+        .kop-text h2 { 
+            margin: 4px 0; 
+            font-size: 18px; 
+            font-weight: bold; 
+            text-transform: uppercase; 
+            color: #000000; 
+            line-height: 1.2;
+        }
+        /* Teks alamat dibuat tegak lurus (bukan miring/italic) sesuai format baku */
+        .kop-text p { 
+            margin: 1px 0; 
+            font-size: 10px; 
+            font-style: normal; 
+            color: #000000; 
+        }
 
+        /* ==========================================================================
+           BAGIAN UTAMA & TABEL DATA
+           ========================================================================== */
         /* JUDUL */
         .judul-laporan { text-align: center; margin: 15px 0; }
         .judul-laporan h2 { font-size: 13px; text-decoration: underline; text-transform: uppercase; }
 
         /* TABEL ISI */
-        table { width: 100%; border-collapse: collapse; margin-top: 5px; }
-        th { 
+        table.data-table { width: 100%; border-collapse: collapse; margin-top: 5px; }
+        table.data-table th { 
             background-color: #facc15; 
             border: 1px solid #000000; 
             padding: 8px; 
@@ -51,7 +77,7 @@
             color: #1f2937; 
             font-weight: bold;
         }
-        td { 
+        table.data-table td { 
             border: 1px solid #000000; 
             padding: 7px; 
             vertical-align: top; 
@@ -77,18 +103,19 @@
                 <div class="kop-text">
                     <h3>PEMERINTAH KABUPATEN CILACAP</h3>
                     <h2>DINAS SOSIAL, PEMBERDAYAAN PEREMPUAN DAN PERLINDUNGAN ANAK</h2>
-                    <p>Jl. Bromo Timur No. 13, Sidakaya, Cilacap, Kode Pos 53212</p>
-                    <p>Telp. (0282) 535093 | Email: dinsospppa@cilacapkab.go.id</p>
+                    <p>Jalan Bromo Timur Nomor 13 Sidakaya, Cilacap, Jawa Tengah 53212</p>
+                    <p>Telepon (0282) 535093 | Laman: www.cilacapkab.go.id Pos-el: dinsospppa@cilacapkab.go.id</p>
                 </div>
             </td>
-            <td class="spacer-cell"></td> </tr>
+            <td class="spacer-cell"></td>
+        </tr>
     </table>
 
     <div class="judul-laporan">
         <h2>JADWAL LAYANAN PASCA BENCANA</h2>
     </div>
 
-    <table>
+    <table class="data-table">
         <thead>
             <tr>
                 <th width="3%">No</th>
