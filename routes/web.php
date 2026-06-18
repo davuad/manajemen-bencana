@@ -37,6 +37,8 @@ use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\PengambilanController;
 use App\Http\Controllers\PengembalianController;
 use App\Models\User;
+use App\Http\Controllers\PengajuanBarangController;
+use App\Http\Controllers\BarangKeluarController;
 
 // --- Public Routes ---
 Route::get('/', function () {
@@ -199,6 +201,26 @@ Route::middleware(['auth', 'role:admin'])
             Route::resource('pengambilan', PengambilanController::class);
             Route::resource('pengembalian', PengembalianController::class);
 });
+
+        // --- Pengajuan Barang - Barang Keluar ---
+        Route::prefix('distribusi_bantuan')->name('distribusi_bantuan.')->group(function () {
+        Route::resource('pengajuan-barang', PengajuanBarangController::class)->names('pengajuan');
+        Route::post('pengajuan/import-excel', [App\Http\Controllers\PengajuanBarangController::class, 'importExcel'])
+         ->name('pengajuan.import');
+     
+        Route::post('pengajuan/preview-import', [App\Http\Controllers\PengajuanBarangController::class, 'previewImport'])->name('pengajuan.preview_import');
+     
+        Route::post('pengajuan/store-import', [App\Http\Controllers\PengajuanBarangController::class, 'storeImport'])->name('pengajuan.store_import');
+
+
+        Route::resource('barang-keluar', BarangKeluarController::class)->names('barang_keluar');
+        Route::put('barang-keluar/{id}/selesaikan', [BarangKeluarController::class, 'selesaikan'])
+        ->name('barang_keluar.selesaikan');
+        
+        Route::get('pengajuan/detail-json/{id}', [App\Http\Controllers\BarangKeluarController::class, 'getDetailPengajuan'])->name('pengajuan.detail_json');
+        Route::get('distribusi_bantuan/pengajuan/detail-json/{id}', [App\Http\Controllers\BarangKeluarController::class, 'getDetailPengajuan'])->name('pengajuan.detail_json');
+    });
+        
     });
 
 // =========================================================================
