@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Desa;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class DesaController extends Controller
 {
@@ -17,9 +18,9 @@ class DesaController extends Controller
 
         if (!empty($search)) {
             $query->where(function ($q) use ($search) {
-                $q->where('nama_desa', 'like', '%' . $search . '%')
-                    ->orWhere('kecamatan', 'like', '%' . $search . '%')
-                    ->orWhere('nama_kades', 'like', '%' . $search . '%');
+                $q->where('nama_desa', 'like', "%{$search}%")
+                    ->orWhere('kecamatan', 'like', "%{$search}%")
+                    ->orWhere('nama_kades', 'like', "%{$search}%");
             });
         }
 
@@ -37,12 +38,12 @@ class DesaController extends Controller
 
         $listDesa = Desa::select('nama_desa')
             ->distinct()
-            ->orderBy('nama_desa', 'asc')
+            ->orderBy('nama_desa')
             ->pluck('nama_desa');
 
         $listKecamatan = Desa::select('kecamatan')
             ->distinct()
-            ->orderBy('kecamatan', 'asc')
+            ->orderBy('kecamatan')
             ->pluck('kecamatan');
 
         return view('management_warga.desa.index', compact(
@@ -63,23 +64,25 @@ class DesaController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'nama_desa' => 'required|string|max:100',
-            'kecamatan' => 'required|string|max:100',
-            'nama_kades' => 'required|string|max:100',
-            'kontak_kades' => 'required|string|max:20',
+            'nama_desa'     => 'required|string|max:100',
+            'kecamatan'     => 'required|string|max:100',
+            'nama_kades'    => 'required|string|max:100',
+            'kontak_kades'  => 'required|string|max:20',
         ]);
 
         Desa::create([
-            'nama_desa' => $request->nama_desa,
-            'kecamatan' => $request->kecamatan,
-            'nama_kades' => $request->nama_kades,
-            'kontak_kades' => $request->kontak_kades,
+            'nama_desa'     => $request->nama_desa,
+            'kecamatan'     => $request->kecamatan,
+            'nama_kades'    => $request->nama_kades,
+            'kontak_kades'  => $request->kontak_kades,
         ]);
 
-        return redirect()->route('admin.desa.index')->with('success', 'Data desa berhasil ditambahkan.');
+        return redirect()
+            ->route('admin.desa.index')
+            ->with('success', 'Data desa berhasil ditambahkan.');
     }
 
-    public function detail($id)
+    public function show($id)
     {
         $desa = Desa::findOrFail($id);
 
@@ -98,33 +101,34 @@ class DesaController extends Controller
         $desa = Desa::findOrFail($id);
 
         $request->validate([
-            'nama_desa' => 'required|string|max:100',
-            'kecamatan' => 'required|string|max:100',
-            'nama_kades' => 'required|string|max:100',
-            'kontak_kades' => 'required|string|max:20',
+            'nama_desa'     => 'required|string|max:100',
+            'kecamatan'     => 'required|string|max:100',
+            'nama_kades'    => 'required|string|max:100',
+            'kontak_kades'  => 'required|string|max:20',
         ]);
 
         $desa->update([
-            'nama_desa' => $request->nama_desa,
-            'kecamatan' => $request->kecamatan,
-            'nama_kades' => $request->nama_kades,
-            'kontak_kades' => $request->kontak_kades,
+            'nama_desa'     => $request->nama_desa,
+            'kecamatan'     => $request->kecamatan,
+            'nama_kades'    => $request->nama_kades,
+            'kontak_kades'  => $request->kontak_kades,
         ]);
 
-        return redirect()->route('admin.desa.index')->with('success', 'Data desa berhasil diupdate.');
+        return redirect()
+            ->route('admin.desa.index')
+            ->with('success', 'Data desa berhasil diupdate.');
     }
 
-    public function delete($id)
+    public function destroy($id)
     {
-        // Gunakan find(), jangan findOrFail() supaya tidak memicu 404 otomatis
         $desa = Desa::find($id);
 
         if ($desa) {
             $desa->delete();
-            return redirect()->route('admin.desa.index')->with('success', 'Data desa berhasil dihapus.');
         }
 
-        // Jika data sudah tidak ada (terhapus), langsung balikkan ke index dengan aman
-        return redirect()->route('admin.desa.index')->with('success', 'Data desa sudah berhasil dihapus.');
+        return redirect()
+            ->route('admin.desa.index')
+            ->with('success', 'Data desa berhasil dihapus.');
     }
 }

@@ -134,22 +134,9 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('stok_gudang', StokGudangController::class);
 
         // --- Data Desa & Warga Terdampak ---
-        Route::get('/data-desa', [DesaController::class, 'index'])->name('desa.index');
-        Route::get('/data-desa/create', [DesaController::class, 'create'])->name('desa.create');
-        Route::post('/data-desa/store', [DesaController::class, 'store'])->name('desa.store');
-        Route::get('/data-desa/detail/{id}', [DesaController::class, 'detail'])->name('desa.detail');
-        Route::get('/data-desa/edit/{id}', [DesaController::class, 'edit'])->name('desa.edit');
-        Route::post('/data-desa/update/{id}', [DesaController::class, 'update'])->name('desa.update');
-        Route::get('/data-desa/delete/{id}', [DesaController::class, 'delete'])->name('desa.delete');
-
-        Route::get('/warga-terdampak', [WargaTerdampakController::class, 'index'])->name('warga.index');
-        Route::get('/warga-terdampak/create', [WargaTerdampakController::class, 'create'])->name('warga.create');
-        Route::post('/warga-terdampak/store', [WargaTerdampakController::class, 'store'])->name('warga.store');
-        Route::get('/warga-terdampak/detail/{id}', [WargaTerdampakController::class, 'detail'])->name('warga.detail');
-        Route::get('/warga-terdampak/edit/{id}', [WargaTerdampakController::class, 'edit'])->name('warga.edit');
-        Route::post('/warga-terdampak/update/{id}', [WargaTerdampakController::class, 'update'])->name('warga.update');
-        Route::get('/warga-terdampak/delete/{id}', [WargaTerdampakController::class, 'delete'])->name('warga.delete');
-        Route::post('/warga-terdampak/ubah-status/{id}', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
+        Route::resource('data-desa', DesaController::class)->names('desa');
+        Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
+        Route::post('warga/{id}/ubah-status',[WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 
         // --- Management Pegawai ---
         Route::prefix('management-pegawai')->name('management_pegawai.')->group(function () {
@@ -224,7 +211,12 @@ Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')
         Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
             ->name('dapur_umum.index');
     });
-});
+
+    Route::resource('data-desa', DesaController::class)->names('desa');
+    Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
+    Route::post('warga/{id}/ubah-status',[WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
+
+    });
 Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->group(function () {
     Route::prefix('management-posko')->name('management_posko.')->group(function () {
         Route::get('/posko', [PoskoController::class, 'index'])
@@ -233,6 +225,10 @@ Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->grou
         Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
             ->name('dapur_umum.index');
     });
+
+    Route::resource('data-desa', DesaController::class)->names('desa');
+    Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
+    Route::post('warga/{id}/ubah-status',[WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 });
 Route::middleware(['auth', 'role:kabid'])
     ->prefix('kabid')
@@ -267,6 +263,11 @@ Route::middleware(['auth', 'role:kabid'])
         Route::put('/pengaduan/{id}/verifikasi',
             [PengaduanBencanaController::class, 'simpanVerifikasi'])
             ->name('pengaduan.simpan');
+
+
+        Route::resource('data-desa', DesaController::class)->names('desa');
+        Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
+        Route::post('warga/{id}/ubah-status',[WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');    
 });
 
 Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(function () {
@@ -277,6 +278,10 @@ Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(f
         Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
             ->name('dapur_umum.index');
     });
+
+    Route::resource('data-desa', DesaController::class)->names('desa');
+    Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
+    Route::post('warga/{id}/ubah-status',[WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 });
 
 Route::middleware(['auth', 'role:ketua_tim'])
@@ -298,6 +303,10 @@ Route::middleware(['auth', 'role:ketua_tim'])
             '/pengaduan/{id}/selesai',
             [PengaduanBencanaController::class, 'simpanSelesai']
         )->name('pengaduan.simpan');
+
+    Route::resource('data-desa', DesaController::class)->names('desa');
+    Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
+    Route::post('warga/{id}/ubah-status',[WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');   
 });
 
 Route::middleware(['auth', 'role:relawan|kadus|desa'])
