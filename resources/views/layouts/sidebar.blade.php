@@ -404,6 +404,10 @@ elyza
                     class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.management_distribusi.distribusi.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
                     Distribusi
                 </a>
+                                <a href="{{ route('admin.management_distribusi.penerima.index') }}"
+                    class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.management_distribusi.penerima_distribusi.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                    Penerima Distribusi
+                </a>
                 <a href="{{ route('admin.management_distribusi.paket_bantuan.index') }}"
                     class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.management_distribusi.paket_bantuan.*') || request()->routeIs('admin.management_distribusi.detail_paket.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
                     Paket Bantuan
