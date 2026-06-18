@@ -92,7 +92,7 @@ Route::middleware(['auth', 'role:admin'])
 
         // --- Management Posko ---
         Route::prefix('management-posko')->name('management_posko.')->group(function () {
-            // Route::resource('posko', PoskoController::class);
+            Route::resource('posko', PoskoController::class);
             Route::resource('dapur_umum', DapurUmumController::class);
 
             Route::prefix('kebutuhan_harian')->name('kebutuhan_harian.')->group(function () {
