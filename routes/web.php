@@ -404,12 +404,13 @@ Route::prefix('kabid')->name('kabid.')->group(function () {
             ->name('pdf.detail');
     });
 });
-// Route::middleware([
-//     'auth',
-//     'role:admin|relawan'
-// ])->prefix('management_posko')
-//     ->name('management_posko.')
-//     ->group(function () {
 
-//         Route::resource('posko', PoskoController::class);
-//     });
+Route::middleware([
+    'auth',
+    'role:admin|relawan'
+])->prefix('management_posko')
+    ->name('management_posko.')
+    ->group(function () {
+
+        Route::resource('posko', PoskoController::class);
+    });
