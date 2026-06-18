@@ -28,6 +28,11 @@ use App\Http\Controllers\PenjemputanAnakController;
 use App\Http\Controllers\KebutuhanHarianController;
 use App\Http\Controllers\PoskoController;
 use App\Http\Controllers\StokGudangController;
+use App\Http\Controllers\JenisBarangController;
+use App\Http\Controllers\SumberBarangMasukController;
+use App\Http\Controllers\BarangController;
+use App\Http\Controllers\BarangMasukController;
+
 use App\Http\Controllers\PetugasController;
 use App\Http\Controllers\PengambilanController;
 use App\Http\Controllers\PengembalianController;
@@ -133,6 +138,12 @@ Route::middleware(['auth', 'role:admin'])
         Route::resource('kategori_bantuan', KategoriBantuanController::class);
         Route::resource('stok_gudang', StokGudangController::class);
 
+        // --- Gudang Logistik ---
+        Route::resource('jenis-barang', JenisBarangController::class);
+        Route::resource('sumber-barang', SumberBarangMasukController::class);
+        Route::resource('barang', BarangController::class);
+        Route::resource('barang-masuk', BarangMasukController::class);
+
         // --- Data Desa & Warga Terdampak ---
         Route::get('/data-desa', [DesaController::class, 'index'])->name('desa.index');
         Route::get('/data-desa/create', [DesaController::class, 'create'])->name('desa.create');
@@ -225,6 +236,7 @@ Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')
             ->name('dapur_umum.index');
     });
 });
+
 Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->group(function () {
     Route::prefix('management-posko')->name('management_posko.')->group(function () {
         Route::get('/posko', [PoskoController::class, 'index'])
@@ -233,6 +245,7 @@ Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->grou
         Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
             ->name('dapur_umum.index');
     });
+
 });
 Route::middleware(['auth', 'role:kabid'])
     ->prefix('kabid')
@@ -278,7 +291,6 @@ Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(f
             ->name('dapur_umum.index');
     });
 });
-
 Route::middleware(['auth', 'role:ketua_tim'])
     ->prefix('ketua_tim')
     ->name('ketua_tim.')
@@ -321,4 +333,3 @@ Route::middleware(['auth', 'role:relawan|kadus|desa'])
             [PengaduanBencanaController::class, 'showUser'])
             ->name('pengaduan.show');
 });
-
