@@ -178,7 +178,7 @@ Route::middleware(['auth', 'role:admin'])
         // --- Data Desa & Warga Terdampak ---
         Route::resource('data-desa', DesaController::class)->names('desa');
         Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
-        Route::post('warga/{id}/ubah-status',[WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
+        Route::post('warga/{id}/ubah-status', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 
         // --- Management Pegawai ---
         Route::prefix('management-pegawai')->name('management_pegawai.')->group(function () {
@@ -193,6 +193,7 @@ Route::middleware(['auth', 'role:admin'])
             Route::resource('pengembalian', PengembalianController::class);
         });
 
+        // --- Laporan ---
         Route::prefix('laporan')->name('laporan.')->group(function () {
 
             Route::get('/', [LaporanController::class, 'index'])->name('index');
@@ -213,7 +214,7 @@ Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')
 
     Route::resource('data-desa', DesaController::class)->names('desa');
     Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
-    Route::post('warga/{id}/ubah-status',[WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
+    Route::post('warga/{id}/ubah-status', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 
     Route::prefix('kebutuhan_harian')->name('kebutuhan_harian.')->group(function () {
         Route::get('/{dapur}', [KebutuhanHarianController::class, 'index'])->name('kebutuhan_harian.index');
@@ -281,6 +282,22 @@ Route::middleware(['auth', 'role:kabid'])
         // =====================
         Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
         Route::get('/jadwal/cetak-pdf', [JadwalController::class, 'cetak_pdf'])->name('jadwal.cetak');
+
+
+        // =====================
+        // LAPORAN
+        // =====================
+        Route::prefix('laporan')->name('laporan.')->group(function () {
+
+            Route::get('/', [LaporanController::class, 'index'])
+                ->name('index');
+
+            Route::get('/pdf', [LaporanController::class, 'pdf'])
+                ->name('pdf');
+
+            Route::get('/{id}/pdf', [LaporanController::class, 'pdfDetail'])
+                ->name('pdf.detail');
+        });
     });
 
 Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(function () {
@@ -351,22 +368,6 @@ Route::middleware(['auth', 'role:relawan|kadus|desa'])
         Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
     });
 
-// ROUTE LAPORAN KABID (BISA LIHAT + CETAK PDF)
-Route::prefix('kabid')->name('kabid.')->group(function () {
-
-    Route::prefix('laporan')->name('laporan.')->group(function () {
-
-        Route::get('/', [LaporanController::class, 'index'])
-            ->name('index');
-
-        Route::get('/pdf', [LaporanController::class, 'pdf'])
-            ->name('pdf');
-
-        Route::get('/{id}/pdf', [LaporanController::class, 'pdfDetail'])
-            ->name('pdf.detail');
-    });
-});
-
 Route::middleware([
     'auth',
     'role:admin|relawan'
@@ -378,44 +379,44 @@ Route::middleware([
     });
 
 // Relawan
-Route::middleware(['auth','role:relawan'])
+Route::middleware(['auth', 'role:relawan'])
     ->prefix('relawan')
     ->name('relawan.')
     ->group(function () {
-        Route::get('/pengaduan', [PengaduanBencanaController::class,'userIndex'])->name('pengaduan.index');
-        Route::get('/pengaduan/create', [PengaduanBencanaController::class,'userCreate'])->name('pengaduan.create');
-        Route::post('/pengaduan/store', [PengaduanBencanaController::class,'userStore'])->name('pengaduan.store');
-        Route::get('/pengaduan/{id}', [PengaduanBencanaController::class,'showUser'])->name('pengaduan.show');
+        Route::get('/pengaduan', [PengaduanBencanaController::class, 'userIndex'])->name('pengaduan.index');
+        Route::get('/pengaduan/create', [PengaduanBencanaController::class, 'userCreate'])->name('pengaduan.create');
+        Route::post('/pengaduan/store', [PengaduanBencanaController::class, 'userStore'])->name('pengaduan.store');
+        Route::get('/pengaduan/{id}', [PengaduanBencanaController::class, 'showUser'])->name('pengaduan.show');
     });
 
 // Kadus
-Route::middleware(['auth','role:kadus'])
+Route::middleware(['auth', 'role:kadus'])
     ->prefix('kadus')
     ->name('kadus.')
     ->group(function () {
-        Route::get('/pengaduan', [PengaduanBencanaController::class,'userIndex'])->name('pengaduan.index');
-        Route::get('/pengaduan/create', [PengaduanBencanaController::class,'userCreate'])->name('pengaduan.create');
-        Route::post('/pengaduan/store', [PengaduanBencanaController::class,'userStore'])->name('pengaduan.store');
-        Route::get('/pengaduan/{id}', [PengaduanBencanaController::class,'showUser'])->name('pengaduan.show');
+        Route::get('/pengaduan', [PengaduanBencanaController::class, 'userIndex'])->name('pengaduan.index');
+        Route::get('/pengaduan/create', [PengaduanBencanaController::class, 'userCreate'])->name('pengaduan.create');
+        Route::post('/pengaduan/store', [PengaduanBencanaController::class, 'userStore'])->name('pengaduan.store');
+        Route::get('/pengaduan/{id}', [PengaduanBencanaController::class, 'showUser'])->name('pengaduan.show');
     });
 
 // Desa
-Route::middleware(['auth','role:desa'])
+Route::middleware(['auth', 'role:desa'])
     ->prefix('desa')
     ->name('desa.')
     ->group(function () {
-        Route::get('/pengaduan', [PengaduanBencanaController::class,'userIndex'])->name('pengaduan.index');
-        Route::get('/pengaduan/create', [PengaduanBencanaController::class,'userCreate'])->name('pengaduan.create');
-        Route::post('/pengaduan/store', [PengaduanBencanaController::class,'userStore'])->name('pengaduan.store');
-        Route::get('/pengaduan/{id}', [PengaduanBencanaController::class,'showUser'])->name('pengaduan.show');
+        Route::get('/pengaduan', [PengaduanBencanaController::class, 'userIndex'])->name('pengaduan.index');
+        Route::get('/pengaduan/create', [PengaduanBencanaController::class, 'userCreate'])->name('pengaduan.create');
+        Route::post('/pengaduan/store', [PengaduanBencanaController::class, 'userStore'])->name('pengaduan.store');
+        Route::get('/pengaduan/{id}', [PengaduanBencanaController::class, 'showUser'])->name('pengaduan.show');
     });
 
-    Route::get(
+Route::get(
     '/admin/management-distribusi/berita-acara/{id}',
     [BAController::class, 'cetak']
 )->name('admin.management_distribusi.berita_acara.cetak');
 
 Route::get(
     '/admin/management-distribusi/berita-acara/{id}/download',
-    [BAController::class,'download']
+    [BAController::class, 'download']
 )->name('admin.management_distribusi.berita_acara.download');

@@ -84,7 +84,7 @@
         {{-- DOWNLOAD PDF --}}
         <div class="mb-4 flex justify-end">
             <a href="{{ route('admin.laporan.pdf', request()->query()) }}"
-                class="flex items-center gap-2 bg-yellow-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition">
+                class="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg transition">
 
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2">
