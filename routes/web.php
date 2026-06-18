@@ -111,7 +111,32 @@ Route::middleware(['auth', 'role:admin'])
         Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
             Route::resource('distribusi', DistribusiController::class);
             Route::resource('detail_distribusi', DetailDistribusiController::class);
-            Route::resource('penerima_distribusi', PenerimaDistribusiController::class);
+            Route::get('penerima_distribusi',[PenerimaDistribusiController::class, 'index'])->name('penerima.index');
+
+            Route::get(
+                'penerima_distribusi/create',
+                [PenerimaDistribusiController::class, 'create']
+            )->name('penerima.create');
+
+            Route::post(
+                'penerima_distribusi/store',
+                [PenerimaDistribusiController::class, 'store']
+            )->name('penerima.store');
+
+            Route::get(
+                'penerima_distribusi/edit/{id}',
+                [PenerimaDistribusiController::class, 'edit']
+            )->name('penerima.edit');
+
+            Route::put(
+                'penerima_distribusi/update/{id}',
+                [PenerimaDistribusiController::class, 'update']
+            )->name('penerima.update');
+
+            Route::delete(
+                'penerima_distribusi/delete/{id}',
+                [PenerimaDistribusiController::class, 'destroy']
+            )->name('penerima.destroy');
             Route::resource('paket_bantuan', PaketBantuanController::class);
             Route::resource('detail_paket', DetailPaketController::class);
             Route::resource('distribusi_paket', DistribusiPaketController::class);
