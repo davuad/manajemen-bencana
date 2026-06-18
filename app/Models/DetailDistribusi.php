@@ -22,6 +22,11 @@ class DetailDistribusi extends Model
 
     public function distribusi()
     {
-        return $this->belongsTo(Distribusi::class);
+        return $this->belongsTo(Distribusi::class,'distribusi_id');
+    }
+    
+        public function penerimaDistribusi()
+    {
+        return $this->hasMany(PenerimaDistribusi::class, 'detail_distribusi_id');
     }
 }
