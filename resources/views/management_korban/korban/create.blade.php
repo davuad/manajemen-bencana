@@ -1,6 +1,6 @@
 @php
     $routePrefix = auth()->user()->hasRole('admin')
-        ? 'admin.management_korban.korban'
+        ? 'admin.korban'
         : (auth()->user()->hasRole('petugas')
             ? 'petugas.korban'
             : 'relawan.korban');

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
+
 use App\Models\Bencana;
 use App\Models\Korban;
 use App\Models\Posko;
@@ -14,7 +16,11 @@ class KorbanController extends Controller
 {
     public function index(Request $request)
     {
+        $tahun = $request->tahun ?? now()->year;
+
         $query = Korban::with(['bencana.kategori', 'posko', 'user']);
+
+        $query->whereYear('tanggal_kejadian', $tahun);
 
         if ($request->filled('bencana_id')) {
             $query->where('bencana_id', $request->bencana_id);
@@ -32,10 +38,25 @@ class KorbanController extends Controller
         }
 
         $korban = $query->latest()->paginate(10)->withQueryString();
+
         $bencana = Bencana::with('kategori')->get();
         $posko = Posko::all();
 
-        return view('management_korban.korban.index', compact('korban', 'bencana', 'posko'));
+        $tahunList = Korban::selectRaw('YEAR(tanggal_kejadian) as tahun')
+            ->distinct()
+            ->orderByDesc('tahun')
+            ->pluck('tahun');
+
+        return view(
+            'management_korban.korban.index',
+            compact(
+                'korban',
+                'bencana',
+                'posko',
+                'tahun',
+                'tahunList'
+            )
+        );
     }
 
     public function create()
@@ -69,7 +90,7 @@ class KorbanController extends Controller
 
         Korban::create($data);
 
-        return redirect()->route('admin.management_korban.korban.index')
+        return redirect()->route($this->getRoutePrefix() . '.korban.index')
             ->with('success', 'Data korban berhasil ditambahkan.');
     }
 
@@ -111,7 +132,7 @@ class KorbanController extends Controller
 
         $korban->update($data);
 
-        return redirect()->route('admin.management_korban.korban.index')
+        return redirect()->route($this->getRoutePrefix() . '.korban.index')
             ->with('success', 'Data korban berhasil diperbarui.');
     }
 
@@ -119,13 +140,17 @@ class KorbanController extends Controller
     {
         $korban->delete();
 
-        return redirect()->route('admin.management_korban.korban.index')
+        return redirect()->route($this->getRoutePrefix() . '.korban.index')
             ->with('success', 'Data korban berhasil dihapus.');
     }
 
     private function getFilteredKorban(Request $request)
     {
+        $tahun = $request->tahun ?? now()->year;
+
         $query = Korban::with(['bencana.kategori', 'posko', 'user']);
+
+        $query->whereYear('tanggal_kejadian', $tahun);
 
         if ($request->filled('bencana_id')) {
             $query->where('bencana_id', $request->bencana_id);
@@ -149,9 +174,53 @@ class KorbanController extends Controller
     {
         $korban = $this->getFilteredKorban($request);
 
-        $pdf = Pdf::loadView('management_korban.laporan.korban_pdf', compact('korban'))
-            ->setPaper('A4', 'landscape');
+        $tahun = $request->tahun ?? now()->year;
+
+        $bencana = null;
+        if ($request->filled('bencana_id')) {
+            $bencana = Bencana::with(['kategori', 'desa'])
+                ->find($request->bencana_id);
+        }
+
+        $posko = null;
+        if ($request->filled('posko_id')) {
+            $posko = Posko::find($request->posko_id);
+        }
+
+        $pdf = Pdf::loadView(
+            'management_korban.laporan.korban_pdf',
+            compact(
+                'korban',
+                'bencana',
+                'posko',
+                'tahun'
+            )
+        )->setPaper('A4', 'landscape');
 
         return $pdf->stream('laporan-korban.pdf');
+    }
+
+    private function getRoutePrefix()
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if ($user->hasRole('admin')) {
+            return 'admin';
+        }
+
+        if ($user->hasRole('petugas')) {
+            return 'petugas';
+        }
+
+        if ($user->hasRole('relawan')) {
+            return 'relawan';
+        }
+
+        if ($user->hasRole('desa')) {
+            return 'desa';
+        }
+
+        abort(403);
     }
 }

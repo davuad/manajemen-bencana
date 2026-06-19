@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <title>Laporan Data Korban</title>
+
     <style>
         @page {
             margin: 20px 20px 25px 20px;
@@ -18,32 +20,30 @@
 
         .header {
             text-align: center;
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
 
         .header h2 {
             margin: 0;
             font-size: 16px;
             font-weight: bold;
-            letter-spacing: 0.5px;
         }
 
         .header p {
-            margin: 4px 0 0;
+            margin: 3px 0 0;
             font-size: 10px;
             color: #374151;
         }
 
         .line {
             border-top: 2px solid #000;
-            margin-top: 8px;
-            margin-bottom: 12px;
+            margin: 8px 0 12px;
         }
 
         .info-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
 
         .info-table td {
@@ -53,7 +53,7 @@
         }
 
         .info-label {
-            width: 110px;
+            width: 120px;
             font-weight: bold;
         }
 
@@ -63,15 +63,16 @@
             table-layout: fixed;
         }
 
-        th, td {
+        th,
+        td {
             border: 1px solid #000;
-            padding: 4px 5px;
+            padding: 4px;
             vertical-align: top;
             word-wrap: break-word;
         }
 
         th {
-            background-color: #e5e7eb;
+            background: #e5e7eb;
             text-align: center;
             font-size: 10px;
             font-weight: bold;
@@ -85,24 +86,13 @@
             text-align: center;
         }
 
-        .text-right {
-            text-align: right;
-        }
-
-        .footer {
-            margin-top: 14px;
-            font-size: 10px;
-        }
-
         .signature {
             width: 100%;
-            margin-top: 28px;
+            margin-top: 25px;
         }
 
         .signature td {
             border: none;
-            vertical-align: top;
-            font-size: 10px;
         }
 
         .signature-box {
@@ -116,7 +106,23 @@
         }
     </style>
 </head>
+
 <body>
+
+    @php
+        $hideBencana = !empty($bencana);
+        $hidePosko = !empty($posko);
+
+        $jumlahKolom = 8;
+
+        if (!$hideBencana) {
+            $jumlahKolom++;
+        }
+
+        if (!$hidePosko) {
+            $jumlahKolom++;
+        }
+    @endphp
 
     <div class="header">
         <h2>LAPORAN DATA KORBAN BENCANA</h2>
@@ -130,10 +136,32 @@
             <td class="info-label">Tanggal Cetak</td>
             <td>: {{ now()->format('d-m-Y H:i') }}</td>
         </tr>
+
         <tr>
             <td class="info-label">Total Data</td>
             <td>: {{ $korban->count() }} korban</td>
         </tr>
+
+        @if($bencana)
+            <tr>
+                <td class="info-label">Bencana</td>
+                <td>
+                    :
+                    {{ $bencana->kategori->nama_kategori ?? '-' }}
+                    -
+                    {{ $bencana->desa->nama_desa ?? '-' }}
+                    -
+                    {{ \Carbon\Carbon::parse($bencana->tanggal)->format('d-m-Y') }}
+                </td>
+            </tr>
+        @endif
+
+        @if($posko)
+            <tr>
+                <td class="info-label">Posko</td>
+                <td>: {{ $posko->nama_posko }}</td>
+            </tr>
+        @endif
     </table>
 
     <table>
@@ -141,50 +169,106 @@
             <tr>
                 <th width="4%">No</th>
                 <th width="14%">Nama</th>
-                <th width="12%">NIK</th>
-                <th width="9%">Jenis Kelamin</th>
-                <th width="6%">Umur</th>
-                <th width="14%">Bencana</th>
-                <th width="12%">Posko</th>
-                <th width="15%">Alamat</th>
-                <th width="9%">Lokasi Kejadian</th>
+                <th width="11%">NIK</th>
+                <th width="8%">Jenis Kelamin</th>
+                <th width="5%">Umur</th>
+
+                @if(!$hideBencana)
+                    <th width="15%">Bencana</th>
+                @endif
+
+                @if(!$hidePosko)
+                    <th width="10%">Posko</th>
+                @endif
+
+                <th width="14%">Alamat</th>
+                <th width="10%">Lokasi Kejadian</th>
                 <th width="9%">Tanggal Kejadian</th>
             </tr>
         </thead>
+
         <tbody>
+
             @forelse($korban as $index => $item)
+
                 <tr>
-                    <td class="text-center">{{ $index + 1 }}</td>
-                    <td>{{ $item->nama }}</td>
-                    <td>{{ $item->nik ?? '-' }}</td>
-                    <td class="text-center">{{ $item->jenis_kelamin }}</td>
-                    <td class="text-center">{{ $item->umur }}</td>
-                    <td>{{ $item->bencana->kategori->nama_kategori ?? '-' }} - {{ $item->bencana->desa->nama_desa ?? '-' }} - {{ \Carbon\Carbon::parse($item->bencana->tanggal)->format('d-m-Y') }}</td>
-                    <td>{{ $item->posko->nama_posko ?? '-' }}</td>
-                    <td>{{ $item->alamat }}</td>
-                    <td>{{ $item->lokasi_kejadian }}</td>
+
+                    <td class="text-center">
+                        {{ $index + 1 }}
+                    </td>
+
+                    <td>
+                        {{ $item->nama }}
+                    </td>
+
+                    <td>
+                        {{ $item->nik ?? '-' }}
+                    </td>
+
+                    <td class="text-center">
+                        {{ $item->jenis_kelamin }}
+                    </td>
+
+                    <td class="text-center">
+                        {{ $item->umur }}
+                    </td>
+
+                    @if(!$hideBencana)
+                        <td>
+                            {{ $item->bencana->kategori->nama_kategori ?? '-' }}
+                            -
+                            {{ $item->bencana->desa->nama_desa ?? '-' }}
+                            -
+                            {{ \Carbon\Carbon::parse($item->bencana->tanggal)->format('d-m-Y') }}
+                        </td>
+                    @endif
+
+                    @if(!$hidePosko)
+                        <td>
+                            {{ $item->posko->nama_posko ?? '-' }}
+                        </td>
+                    @endif
+
+                    <td>
+                        {{ $item->alamat }}
+                    </td>
+
+                    <td>
+                        {{ $item->lokasi_kejadian }}
+                    </td>
+
                     <td class="text-center">
                         {{ \Carbon\Carbon::parse($item->tanggal_kejadian)->format('d-m-Y') }}
                     </td>
+
                 </tr>
+
             @empty
+
                 <tr>
-                    <td colspan="10" class="text-center">
+                    <td colspan="{{ $jumlahKolom }}" class="text-center">
                         Data korban tidak tersedia.
                     </td>
                 </tr>
+
             @endforelse
+
         </tbody>
     </table>
 
     <table class="signature">
         <tr>
             <td></td>
+
             <td class="signature-box">
                 <div>Mengetahui,</div>
                 <div>Petugas / Admin</div>
+
                 <div class="ttd-space"></div>
-                <div><strong>(................................)</strong></div>
+
+                <div>
+                    <strong>(................................)</strong>
+                </div>
             </td>
         </tr>
     </table>
