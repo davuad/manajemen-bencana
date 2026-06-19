@@ -159,7 +159,7 @@
                     <td>{{ $item->nik ?? '-' }}</td>
                     <td class="text-center">{{ $item->jenis_kelamin }}</td>
                     <td class="text-center">{{ $item->umur }}</td>
-                    <td>{{ $item->bencana->kategori->nama_kategori ?? '-' }}</td>
+                    <td>{{ $item->bencana->kategori->nama_kategori ?? '-' }} - {{ $item->bencana->desa->nama_desa ?? '-' }} - {{ \Carbon\Carbon::parse($item->bencana->tanggal)->format('d-m-Y') }}</td>
                     <td>{{ $item->posko->nama_posko ?? '-' }}</td>
                     <td>{{ $item->alamat }}</td>
                     <td>{{ $item->lokasi_kejadian }}</td>

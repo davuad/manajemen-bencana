@@ -558,15 +558,16 @@
 
         <!-- ================= DATA KORBAN ================= -->
     <div x-data="{ openKorban: {{
-        request()->routeIs('admin.management_korban.*') ||
+        request()->routeIs('admin.korban.*') ||
         request()->routeIs('admin.anak_terpisah.*') ||
         request()->routeIs('admin.penjemputan.*') ||
-        request()->routeIs('petugas.management_korban.*') ||
+        request()->routeIs('petugas.korban.*') ||
         request()->routeIs('petugas.anak_terpisah.*') ||
         request()->routeIs('petugas.penjemputan.*') ||
-        request()->routeIs('relawan.management_korban.*') ||
+        request()->routeIs('relawan.korban.*') ||
         request()->routeIs('relawan.anak_terpisah.*') ||
-        request()->routeIs('relawan.penjemputan.*')
+        request()->routeIs('relawan.penjemputan.*') ||
+        request()->routeIs('desa.korban.*') 
         ? 'true'
         : 'false'
     }} }" class="rounded">
@@ -589,9 +590,9 @@
 
     @if(auth()->user()->hasRole('admin'))
 
-        <a href="{{ route('admin.management_korban.korban.index') }}"
+        <a href="{{ route('admin.korban.index') }}"
             class="block px-3 py-2 text-sm rounded
-            {{ request()->routeIs('admin.management_korban.korban.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            {{ request()->routeIs('admin.korban.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
             Data Korban
         </a>
 
@@ -644,6 +645,12 @@
             {{ request()->routeIs('relawan.penjemputan.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
             Penjemputan Anak
         </a>
+
+    @elseif(auth()->user()->hasRole('desa'))
+        <a href="{{ route('desa.korban.index') }}"
+            class="block px-3 py-2 text-sm rounded
+            {{ request()->routeIs('desa.korban.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Data Korban
 
     @endif
 
