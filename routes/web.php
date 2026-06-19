@@ -426,12 +426,6 @@ Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')
         Route::patch('distribusi_paket/{id}/selesai', [DistribusiPaketController::class, 'selesai'])->name('distribusi_paket.selesai');
     });
 });
-Route::middleware([
-    'auth',
-    'role:admin|relawan'
-])->prefix('management_posko')
-    ->name('management_posko.')
-    ->group(function () {
 
 // --- Pegawai ---
 Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')->group(function () {
@@ -458,9 +452,8 @@ Route::middleware([
     ->group(function () {
 
         Route::resource('posko', PoskoController::class);
+        Route::resource('dapur_umum', DapurUmumController::class);
     })->where(['role' => 'admin|petugas|pegawai|relawan']);
-        Route::resource('posko', PoskoController::class);
-    });
 
 // Relawan
 Route::middleware(['auth', 'role:relawan'])
