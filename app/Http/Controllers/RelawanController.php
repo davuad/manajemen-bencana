@@ -35,7 +35,8 @@ public function create()
             'alamat'       => $request->alamat,
         ]);
 
-        return redirect('/relawan')->with('success', 'data relawan berhasil ditambahkan');
+        return redirect()->route('admin.management_pegawai.relawan.index')
+    ->with('success', 'data relawan berhasil ditambahkan');
     }
 
     public function edit($id)
@@ -64,13 +65,15 @@ public function create()
             'alamat'       => $request->alamat,
         ]);
 
-        return redirect('/relawan')->with('success', 'data relawan berhasil diupdate');
+        return redirect()->route('admin.management_pegawai.relawan.index')
+    ->with('success', 'data relawan berhasil diupdate');
     }
 
     public function destroy($id)
     {
         Relawan::findOrFail($id)->delete();
 
-        return redirect('/relawan')->with('success', 'data relawan berhasil dihapus');
+       return redirect()->route('admin.management_pegawai.relawan.index')
+    ->with('success', 'data relawan berhasil dihapus');
     }
 }

@@ -127,7 +127,7 @@
                     <tbody class="divide-y divide-gray-100 bg-white">
                         @forelse ($warga as $item)
                             <tr class="cursor-pointer transition hover:bg-gray-50"
-                                data-url="{{ route('admin.warga.detail', $item->id) }}">
+                                data-url="{{ route('admin.warga.show', $item->id) }}">
                                 <td class="px-4 py-4 text-sm text-gray-700">
                                     {{ ($warga->currentPage() - 1) * $warga->perPage() + $loop->iteration }}.
                                 </td>
@@ -187,7 +187,7 @@
 
                                         <button type="button"
                                             class="delete-btn inline-flex h-9 w-9 items-center justify-center rounded-lg text-red-600 transition hover:bg-red-50"
-                                            title="Hapus" data-url="{{ route('admin.warga.delete', $item->id) }}"
+                                            title="Hapus" data-url="{{ route('admin.warga.destroy', $item->id) }}"
                                             data-nama="{{ $item->nama_kepala_keluarga }}">
                                             🗑️
                                         </button>
@@ -246,7 +246,9 @@
                     Batal
                 </button>
 
-                <form id="deleteForm" method="GET">
+                <form id="deleteForm" method="POST">
+                    @csrf
+                    @method('DELETE')
                     <button type="submit"
                         class="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">
                         Hapus

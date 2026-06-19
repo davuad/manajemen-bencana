@@ -106,7 +106,7 @@ class WargaTerdampakController extends Controller
             ->with('success', 'Data warga terdampak berhasil ditambahkan.');
     }
 
-    public function detail($id)
+    public function show($id)
     {
         $warga = WargaTerdampak::with(['desa', 'bencana'])->findOrFail($id);
 
@@ -158,7 +158,7 @@ class WargaTerdampakController extends Controller
             ->with('success', 'Data warga terdampak berhasil diupdate.');
     }
 
-    public function delete($id)
+    public function destroy($id)
     {
         // Diubah menjadi find() untuk mencegah crash ganda
         $warga = WargaTerdampak::find($id);

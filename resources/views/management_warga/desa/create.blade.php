@@ -61,13 +61,13 @@
                             @enderror
                         </div>
 
-                        {{-- Kontak Kepala Desa --}}
+                        {{-- Nomor Handphone --}}
                         <div>
-                            <label for="kontak_kades" class="mb-2 block text-sm font-medium text-gray-700">
-                                Kontak Kepala Desa
+                            <label for="nomor_telepon" class="mb-2 block text-sm font-medium text-gray-700">
+                                Nomor Handphone
                             </label>
-                            <input type="text" id="kontak_kades" name="kontak_kades" value="{{ old('kontak_kades') }}"
-                                placeholder="Masukkan kontak kepala desa"
+                            <input type="text" id="nomor_telepon" name="nomor_telepon" value="{{ old('nomor_telepon') }}"
+                                placeholder="Masukkan nomor handphone"
                                 class="w-full rounded-xl border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 outline-none transition focus:border-indigo-600 focus:ring-4 focus:ring-indigo-100">
                             @error('kontak_kades')
                                 <p class="mt-2 text-sm text-red-600">{{ $message }}</p>

@@ -7,68 +7,84 @@ use Illuminate\Http\Request;
 
 class DetailDistribusiController extends Controller
 {
-    // INDEX (VIEW)
+    // ================= INDEX =================
     public function index()
     {
         $detail_distribusi = DetailDistribusi::with([
             'distribusi',
-            'barangKeluar'
+            'detailBarangKeluar.barang'
         ])->get();
 
-        return view('management_distribusi.detail_distribusi.index', compact('detail_distribusi'));
+        return view(
+            'management_distribusi.detail_distribusi.index',
+            compact('detail_distribusi')
+        );
     }
 
-    // CREATE (FORM)
+    // ================= CREATE =================
     public function create()
     {
         return view('management_distribusi.detail_distribusi.create');
     }
 
-    // STORE
+    // ================= STORE =================
     public function store(Request $request)
     {
         $data = $request->validate([
-            'distribusi_id' => 'required|integer',
-            'barang_keluar_id' => 'required|integer',
-            'jumlah' => 'required|integer',
-            'satuan' => 'required|string|max:20',
-            'keterangan' => 'nullable|string|max:100',
+            'distribusi_id'            => 'required|exists:distribusi,id',
+            'detail_barang_keluar_id'  => 'required|exists:detail_barang_keluar,id',
+            'jumlah_kirim'             => 'required|integer|min:1',
+            'satuan'                   => 'required|string|max:20',
         ]);
 
         DetailDistribusi::create($data);
 
-        return redirect()->route('admin.management_distribusi.detail_distribusi.index')
-                         ->with('success', 'Data detail berhasil ditambahkan');
+        return redirect()
+            ->route('admin.management_distribusi.detail_distribusi.index')
+            ->with('success', 'Data detail distribusi berhasil ditambahkan.');
     }
 
-    // SHOW (OPTIONAL)
+    // ================= SHOW =================
     public function show($id)
     {
         $data = DetailDistribusi::with([
             'distribusi',
-            'barangKeluar'
+            'detailBarangKeluar.barang'
         ])->findOrFail($id);
 
-        return view('management_distribusi.detail_distribusi.show', compact('data'));
+        return view(
+            'management_distribusi.detail_distribusi.show',
+            compact('data')
+        );
     }
 
-    // UPDATE
+    // ================= UPDATE =================
     public function update(Request $request, $id)
     {
         $detail = DetailDistribusi::findOrFail($id);
-        $detail->update($request->all());
 
-        return redirect()->route('admin.management_distribusi.detail_distribusi.index')
-                         ->with('success', 'Data berhasil diupdate');
+        $data = $request->validate([
+            'distribusi_id'            => 'required|exists:distribusi,id',
+            'detail_barang_keluar_id'  => 'required|exists:detail_barang_keluar,id',
+            'jumlah_kirim'             => 'required|integer|min:1',
+            'satuan'                   => 'required|string|max:20',
+        ]);
+
+        $detail->update($data);
+
+        return redirect()
+            ->route('admin.management_distribusi.detail_distribusi.index')
+            ->with('success', 'Data detail distribusi berhasil diupdate.');
     }
 
-    // DELETE
+    // ================= DELETE =================
     public function destroy($id)
     {
         $detail = DetailDistribusi::findOrFail($id);
         $detail->delete();
 
-        return redirect()->route('admin.management_distribusi.ddetail_distribusi.index')
-                         ->with('success', 'Data berhasil dihapus');
+        return redirect()
+            ->route('admin.management_distribusi.detail_distribusi.index')
+            ->with('success', 'Data detail distribusi berhasil dihapus.');
     }
 }
