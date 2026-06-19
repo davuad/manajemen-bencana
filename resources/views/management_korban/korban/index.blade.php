@@ -1,6 +1,6 @@
 @php
     $routePrefix = auth()->user()->hasRole('admin')
-        ? 'admin.management_korban.korban'
+        ? 'admin.korban'
         : (auth()->user()->hasRole('petugas')
             ? 'petugas.korban'
             : 'relawan.korban');
@@ -19,7 +19,7 @@
                 </h2>
 
                 <p class="text-gray-500 text-sm mt-1">
-                    Kelola data korban luka maupun meninggal akibat bencana
+                    Kelola data korban meninggal akibat bencana
                 </p>
             </div>
 
@@ -48,72 +48,163 @@
             </script>
         @endif
 
-        <!-- Filter & Export -->
-        <form method="GET" action="{{ route($routePrefix . '.index') }}" class="mb-6">
+        {{-- FILTER --}}
+        <div class="bg-gray-50 border border-gray-200 rounded-xl p-5 mb-6">
 
-            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
+            <div class="flex items-center gap-2 mb-4">
 
-                <!-- Filter -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 flex-1">
+                <x-heroicon-o-funnel class="w-5 h-5 text-indigo-600" />
 
-                    <input type="text"
-                        name="search"
-                        value="{{ request('search') }}"
-                        placeholder="Cari nama atau NIK korban"
-                        class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
-
-                    <select name="bencana_id"
-                        class="border rounded-lg py-2 px-3">
-                        <option value="">Semua Bencana</option>
-                        @foreach ($bencana as $item)
-                            <option value="{{ $item->id }}"
-                                {{ request('bencana_id') == $item->id ? 'selected' : '' }}>
-                                {{ $item->kategori->nama_kategori ?? '-' }}
-                                - {{ $item->desa->nama_desa ?? '-' }}
-                                - {{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}
-                            </option>
-                        @endforeach
-                    </select>
-
-                    <select name="posko_id"
-                        class="border rounded-lg py-2 px-3">
-                        <option value="">Semua Posko</option>
-                        @foreach ($posko as $item)
-                            <option value="{{ $item->id }}"
-                                {{ request('posko_id') == $item->id ? 'selected' : '' }}>
-                                {{ $item->nama_posko }}
-                            </option>
-                        @endforeach
-                    </select>
-
-                </div>
-
-                <!-- Action -->
-                <div class="flex flex-wrap gap-2">
-
-                    <button type="submit"
-                        class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">
-                        Filter
-                    </button>
-
-                    <a href="{{ route($routePrefix . '.index') }}"
-                        class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg">
-                        Reset
-                    </a>
-
-                    <a href="{{ route($routePrefix . '.reviewPdf', request()->query()) }}"
-                        target="_blank"
-                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-
-                        <x-heroicon-o-document-arrow-down class="w-5 h-5" />
-                        PDF
-                    </a>
-
-                </div>
+                <h3 class="font-semibold text-gray-800">
+                    Filter Data Korban
+                </h3>
 
             </div>
 
-        </form>
+            <form id="filterForm"
+                method="GET"
+                action="{{ route($routePrefix . '.index') }}">
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-3">
+
+                    {{-- Tahun --}}
+                    <div class="lg:col-span-2">
+                        <select
+                            name="tahun"
+                            class="auto-submit w-full border rounded-lg py-2.5 px-3">
+
+                            @foreach($tahunList as $item)
+                                <option value="{{ $item }}"
+                                    {{ ($tahun ?? now()->year) == $item ? 'selected' : '' }}>
+                                    Tahun {{ $item }}
+                                </option>
+                            @endforeach
+
+                        </select>
+                    </div>
+
+                    {{-- Bencana --}}
+                    <div class="lg:col-span-3">
+                        <select
+                            name="bencana_id"
+                            class="auto-submit w-full border rounded-lg py-2.5 px-3">
+
+                            <option value="">
+                                Semua Bencana
+                            </option>
+
+                            @foreach ($bencana as $item)
+
+                                <option value="{{ $item->id }}"
+                                    {{ request('bencana_id') == $item->id ? 'selected' : '' }}>
+
+                                    {{ $item->kategori->nama_kategori ?? '-' }}
+                                    -
+                                    {{ $item->desa->nama_desa ?? '-' }}
+                                    -
+                                    {{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}
+
+                                </option>
+
+                            @endforeach
+
+                        </select>
+                    </div>
+
+                    {{-- Posko --}}
+                    <div class="lg:col-span-3">
+                        <select
+                            name="posko_id"
+                            class="auto-submit w-full border rounded-lg py-2.5 px-3">
+
+                            <option value="">
+                                Semua Posko
+                            </option>
+
+                            @foreach ($posko as $item)
+
+                                <option value="{{ $item->id }}"
+                                    {{ request('posko_id') == $item->id ? 'selected' : '' }}>
+
+                                    {{ $item->nama_posko }}
+
+                                </option>
+
+                            @endforeach
+
+                        </select>
+                    </div>
+
+                    {{-- Search --}}
+                    <div class="lg:col-span-4">
+                        <input
+                            id="searchInput"
+                            type="text"
+                            name="search"
+                            value="{{ request('search') }}"
+                            placeholder="Cari nama atau NIK korban..."
+                            class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                    </div>
+
+                </div>
+
+                <div class="flex justify-between items-center mt-4">
+
+                    {{-- Badge Filter Aktif --}}
+                    <div class="flex flex-wrap gap-2">
+
+                        <span class="bg-indigo-100 text-indigo-700 text-xs px-3 py-1 rounded-full">
+                            Tahun {{ $tahun }}
+                        </span>
+
+                        @if(request('bencana_id'))
+                            <span class="bg-orange-100 text-orange-700 text-xs px-3 py-1 rounded-full">
+                                Bencana Dipilih
+                            </span>
+                        @endif
+
+                        @if(request('posko_id'))
+                            <span class="bg-emerald-100 text-emerald-700 text-xs px-3 py-1 rounded-full">
+                                Posko Dipilih
+                            </span>
+                        @endif
+
+                        @if(request('search'))
+                            <span class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full">
+                                "{{ request('search') }}"
+                            </span>
+                        @endif
+
+                    </div>
+
+                    {{-- Action --}}
+                    <div class="flex items-center gap-2">
+
+                        <a href="{{ route($routePrefix . '.index') }}"
+                            class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-lg"
+                            title="Bersihkan Filter">
+
+                            <x-heroicon-o-x-mark class="w-5 h-5" />
+
+                        </a>
+
+                        <a href="{{ route($routePrefix . '.reviewPdf', request()->query()) }}"
+                            target="_blank"
+                            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+
+                            <x-heroicon-o-document-arrow-down class="w-5 h-5" />
+
+                            PDF
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </form>
+
+        </div>
 
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
@@ -228,23 +319,30 @@
     </div>
 
     <script>
-        function openModal(id, nama) {
-            const modal = document.getElementById('deleteModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
 
-            document.getElementById('namaKorban').innerText = `"${nama}"`;
+        const filterForm = document.getElementById('filterForm');
 
-            let url = "{{ route($routePrefix . '.destroy', ':id') }}";
-            url = url.replace(':id', id);
+        document.querySelectorAll('.auto-submit')
+            .forEach(element => {
 
-            document.getElementById('deleteForm').action = url;
-        }
+                element.addEventListener('change', () => {
+                    filterForm.submit();
+                });
 
-        function closeModal() {
-            const modal = document.getElementById('deleteModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
+            });
+
+        let debounce;
+
+        document.getElementById('searchInput')
+            .addEventListener('input', function () {
+
+                clearTimeout(debounce);
+
+                debounce = setTimeout(() => {
+                    filterForm.submit();
+                }, 700);
+
+            });
+
     </script>
 @endsection
