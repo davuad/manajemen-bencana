@@ -58,10 +58,19 @@ class BencanaController extends Controller
             'tingkat_kerusakan' => 'required'
         ]);
 
-        Bencana::create($request->all());
+        Bencana::create([
+            'nama_bencana' => $request->nama_bencana,
+            'kategori_id' => $request->kategori_id,
+            'desa_id' => $request->desa_id,
+            'pengaduan_id' => $request->pengaduan_id,
+            'tanggal' => $request->tanggal,
+            'status_bencana' => $request->status_bencana,
+            'tingkat_kerusakan' => $request->tingkat_kerusakan,
+        ]);
 
-        return redirect()->route('admin.bencana.index')
-            ->with('success', 'Data berhasil ditambahkan');
+        return redirect()
+            ->route('admin.bencana.index')
+            ->with('success', 'Data bencana berhasil ditambahkan');
     }
 
     public function edit($id)
@@ -87,10 +96,20 @@ class BencanaController extends Controller
         ]);
 
         $bencana = Bencana::findOrFail($id);
-        $bencana->update($request->all());
 
-        return redirect()->route('admin.bencana.index')
-            ->with('success', 'Data berhasil diupdate');
+        $bencana->update([
+            'nama_bencana' => $request->nama_bencana,
+            'kategori_id' => $request->kategori_id,
+            'desa_id' => $request->desa_id,
+            'pengaduan_id' => $request->pengaduan_id,
+            'tanggal' => $request->tanggal,
+            'status_bencana' => $request->status_bencana,
+            'tingkat_kerusakan' => $request->tingkat_kerusakan,
+        ]);
+
+        return redirect()
+            ->route('admin.bencana.index')
+            ->with('success', 'Data bencana berhasil diperbarui');
     }
 
     public function destroy($id)

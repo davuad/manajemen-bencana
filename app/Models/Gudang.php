@@ -7,7 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Gudang extends Model
 {
     protected $table = 'gudang';
-    protected $primaryKey = 'id_gudang';
 
     protected $fillable = [
         'nama_gudang',
@@ -18,6 +17,6 @@ class Gudang extends Model
 
     public function stok()
     {
-        return $this->hasMany(StokGudang::class, 'id_gudang');
+        return $this->hasMany(StokGudang::class, 'gudang_id');
     }
 }
