@@ -332,7 +332,6 @@ Route::middleware(['auth', 'role:kabid'])
         Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
         Route::get('/jadwal/cetak-pdf', [JadwalController::class, 'cetak_pdf'])->name('jadwal.cetak');
 
-
         // =====================
         // LAPORAN
         // =====================
@@ -450,7 +449,32 @@ Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')
             ->name('penjemputan.store');
 
         Route::get('penjemputan/{id}', [PenjemputanAnakController::class, 'show'])
-            ->name('penjemputan.show');    
+            ->name('penjemputan.show');           
+
+        // KORBAN
+        Route::get('/korban', [KorbanController::class, 'index'])
+            ->name('korban.index');
+
+        Route::get('/korban/create', [KorbanController::class, 'create'])
+            ->name('korban.create');
+
+        Route::post('/korban', [KorbanController::class, 'store'])
+            ->name('korban.store');
+
+        Route::get('/korban/review-pdf', [KorbanController::class, 'reviewPdf'])
+            ->name('korban.reviewPdf'); 
+
+        Route::get('/korban/{korban}', [KorbanController::class, 'show'])
+            ->name('korban.show');
+
+        Route::get('/korban/{korban}/edit', [KorbanController::class, 'edit'])
+            ->name('korban.edit');
+
+        Route::put('/korban/{korban}', [KorbanController::class, 'update'])
+            ->name('korban.update');
+
+        Route::delete('/korban/{korban}', [KorbanController::class, 'destroy'])
+            ->name('korban.destroy');    
 
     Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
         Route::get('distribusi_paket', [DistribusiPaketController::class, 'index'])->name('distribusi_paket.index');
@@ -458,6 +482,7 @@ Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')
         Route::patch('distribusi_paket/{id}/selesai', [DistribusiPaketController::class, 'selesai'])->name('distribusi_paket.selesai');
     });
 });
+
 Route::middleware([
     'auth',
     'role:admin|petugas|pegawai|relawan'
@@ -492,7 +517,32 @@ Route::middleware(['auth', 'role:relawan'])
 
         Route::get('/penjemputan/{id}', [PenjemputanAnakController::class, 'show'])
             ->name('penjemputan.show');
-    });
+
+        // KORBAN (VIEW ONLY)   
+        Route::get('/korban', [KorbanController::class, 'index'])
+            ->name('korban.index');
+
+        Route::get('/korban/create', [KorbanController::class, 'create'])
+            ->name('korban.create');
+
+        Route::post('/korban', [KorbanController::class, 'store'])
+            ->name('korban.store');
+
+        Route::get('/korban/review-pdf', [KorbanController::class, 'reviewPdf'])
+            ->name('korban.reviewPdf'); 
+
+        Route::get('/korban/{korban}', [KorbanController::class, 'show'])
+            ->name('korban.show');
+
+        Route::get('/korban/{korban}/edit', [KorbanController::class, 'edit'])
+            ->name('korban.edit');
+
+        Route::put('/korban/{korban}', [KorbanController::class, 'update'])
+            ->name('korban.update');
+
+        Route::delete('/korban/{korban}', [KorbanController::class, 'destroy'])
+            ->name('korban.destroy');
+        });
 
 // Kadus
 Route::middleware(['auth', 'role:kadus'])

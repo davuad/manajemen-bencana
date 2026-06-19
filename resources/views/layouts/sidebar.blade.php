@@ -557,17 +557,19 @@
         @endif
 
         <!-- ================= DATA KORBAN ================= -->
-<div x-data="{ openKorban: {{
-request()->routeIs('admin.management_korban.*') ||
-request()->routeIs('admin.anak_terpisah.*') ||
-request()->routeIs('admin.penjemputan.*') ||
-request()->routeIs('petugas.anak_terpisah.*') ||
-request()->routeIs('petugas.penjemputan.*') ||
-request()->routeIs('relawan.anak_terpisah.*') ||
-request()->routeIs('relawan.penjemputan.*')
-? 'true'
-: 'false'
-}} }" class="rounded">
+    <div x-data="{ openKorban: {{
+        request()->routeIs('admin.management_korban.*') ||
+        request()->routeIs('admin.anak_terpisah.*') ||
+        request()->routeIs('admin.penjemputan.*') ||
+        request()->routeIs('petugas.management_korban.*') ||
+        request()->routeIs('petugas.anak_terpisah.*') ||
+        request()->routeIs('petugas.penjemputan.*') ||
+        request()->routeIs('relawan.management_korban.*') ||
+        request()->routeIs('relawan.anak_terpisah.*') ||
+        request()->routeIs('relawan.penjemputan.*')
+        ? 'true'
+        : 'false'
+    }} }" class="rounded">
 
     <div @click="openKorban = !openKorban"
         class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
@@ -606,6 +608,11 @@ request()->routeIs('relawan.penjemputan.*')
         </a>
 
     @elseif(auth()->user()->hasRole('petugas'))
+        <a href="{{ route('petugas.korban.index') }}"
+            class="block px-3 py-2 text-sm rounded
+            {{ request()->routeIs('petugas.korban.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Data Korban
+        </a>
 
         <a href="{{ route('petugas.anak_terpisah.index') }}"
             class="block px-3 py-2 text-sm rounded
@@ -620,6 +627,11 @@ request()->routeIs('relawan.penjemputan.*')
         </a>
 
     @elseif(auth()->user()->hasRole('relawan'))
+        <a href="{{ route('relawan.korban.index') }}"
+            class="block px-3 py-2 text-sm rounded
+            {{ request()->routeIs('relawan.korban.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Data Korban
+        </a>
 
         <a href="{{ route('relawan.anak_terpisah.index') }}"
             class="block px-3 py-2 text-sm rounded
@@ -638,7 +650,6 @@ request()->routeIs('relawan.penjemputan.*')
 </div>
 
 </div>
-
         <!-- ================= JADWAL LAYANAN PASCA BENCANA  ================= -->
         @if (auth()->user()->hasRole('admin'))
             <a href="{{ route('admin.jadwal.index') }}"

@@ -1,3 +1,11 @@
+@php
+    $routePrefix = auth()->user()->hasRole('admin')
+        ? 'admin.management_korban.korban'
+        : (auth()->user()->hasRole('petugas')
+            ? 'petugas.korban'
+            : 'relawan.korban');
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
@@ -11,7 +19,7 @@
                 </p>
             </div>
 
-            <a href="{{ route('admin.management_korban.korban.create') }}"
+            <a href="{{ route($routePrefix . '.create') }}"
                 class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
                 + Tambah Data Korban
             </a>
@@ -35,7 +43,7 @@
             </script>
         @endif
 
-        <form method="GET" action="{{ route('admin.management_korban.korban.index') }}">
+        <form method="GET" action="{{ route($routePrefix . '.index') }}">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
 
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama atau NIK korban"
@@ -65,7 +73,7 @@
                         Filter
                     </button>
 
-                    <a href="{{ route('admin.management_korban.korban.index') }}"
+                    <a href="{{ route($routePrefix . '.index') }}"
                         class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg">
                         Reset
                     </a>
@@ -73,7 +81,7 @@
             </div>
 
             <div class="flex flex-wrap gap-3 mb-6">
-                <a href="{{ route('admin.management_korban.korban.reviewPdf', request()->query()) }}" target="_blank"
+                <a href="{{ route($routePrefix . '.reviewPdf', request()->query()) }}" target="_blank"
                     class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
                     PDF
                 </a>
@@ -113,12 +121,12 @@
 
                             <td class="py-3">
                                 <div class="flex gap-2 items-center">
-                                    <a href="{{ route('admin.management_korban.korban.show', $item->id) }}"
+                                    <a href="{{ route($routePrefix . '.show', $item->id) }}"
                                         class="text-green-600 hover:text-green-800" title="Detail">
                                         <x-heroicon-o-eye class="w-5 h-5" />
                                     </a>
 
-                                    <a href="{{ route('admin.management_korban.korban.edit', $item->id) }}"
+                                    <a href="{{ route($routePrefix . '.edit', $item->id) }}"
                                         class="text-blue-500 hover:text-blue-700" title="Edit">
                                         <x-heroicon-o-pencil-square class="w-5 h-5" />
                                     </a>
@@ -198,7 +206,7 @@
 
             document.getElementById('namaKorban').innerText = `"${nama}"`;
 
-            let url = "{{ route('admin.management_korban.korban.destroy', ':id') }}";
+            let url = "{{ route($routePrefix . '.destroy', ':id') }}";
             url = url.replace(':id', id);
 
             document.getElementById('deleteForm').action = url;
