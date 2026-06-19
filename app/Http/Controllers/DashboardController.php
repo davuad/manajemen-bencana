@@ -121,7 +121,7 @@ class DashboardController extends Controller
     protected function pegawaiDashboard()
     {
         return view('dashboard', [
-            'total_stok' => StokGudang::sum('stok'),
+            'total_stok' => StokGudang::sum('jumlah_stok'),
             'distribusi_pending' => Distribusi::where('status', 'pending')->count(),
             'gudang_count' => Gudang::count(),
             'barang_masuk' => DB::table('barang_masuk')->whereDate('created_at', today())->count(),

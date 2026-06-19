@@ -12,15 +12,15 @@
                 </p>
             </div>
 
-            @role('admin')
-            <a href="{{ route('admin.management_posko.dapur_umum.create') }}"
+            @hasanyrole('admin|pegawai|petugas')
+            <a href="{{ route('management_posko.dapur_umum.create') }}"
                 class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
                 + Tambah Data Dapur
             </a>
-            @endrole
+            @endhasanyrole
         </div>
 
-        <form method="GET" action="{{ route('admin.management_posko.dapur_umum.index') }}">
+        <form method="GET" action="{{ route('management_posko.dapur_umum.index') }}">
             <div class="flex gap-4 mb-6">
 
                 <input type="text" name="search" value="{{ request('search') }}"
@@ -53,7 +53,9 @@
                         <th class="p-4 text-left">Kapasitas</th>
                         <th class="p-4 text-left">Jumlah Warga</th>
                         <th class="p-4 text-left">Penanggung Jawab</th>
-                        <th class="p-4 text-center">Aksi</th>
+                        @hasanyrole('admin|pegawai|petugas')
+                            <th class="p-4 text-center">Aksi</th>
+                        @endhasanyrole
                     </tr>
                 </thead>
 
@@ -94,24 +96,19 @@
                                         Detail Kebutuhan
                                     </a>
 
-                                    @role('admin')
+                                    @hasanyrole('admin|pegawai|petugas')
                                     {{-- EDIT --}}
-                                    <a href="{{ route('admin.management_posko.dapur_umum.edit', $item->id) }}"
+                                    <a href="{{ route('management_posko.dapur_umum.edit', $item->id) }}"
                                         class="px-3 py-2 bg-yellow-500 text-white rounded-lg text-sm hover:bg-yellow-600">
                                         Edit
                                     </a>
 
                                     {{-- DELETE --}}
-                                    <form action="{{ route('admin.management_posko.dapur_umum.destroy', $item->id) }}"
-                                        method="POST" onsubmit="return confirm('Yakin ingin menghapus data ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit"
-                                            class="px-3 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700">
-                                            Hapus
-                                        </button>
-                                    </form>
-                                    @endrole
+                                    <button onclick="openModal('{{ $item->id }}', '{{ $item->nama_dapur_umum }}')"
+                                        class="px-3 py-2 bg-red-600 text-white rounded-lg text-sm hover:bg-red-700">
+                                        Hapus
+                                    </button>
+                                    @endhasanyrole
                                 </div>
                             </td>
                         </tr>
@@ -138,58 +135,86 @@
     </div>
 
     <!-- MODAL HAPUS -->
-    <div id="deleteModal" class="fixed inset-0 backdrop-blur-sm bg-white/10 hidden items-center justify-center z-50">
+    <div id="deleteModal"
+        class="fixed inset-0 backdrop-blur-sm bg-white/10 hidden items-center justify-center z-50">
 
         <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-6">
 
+            <!-- Header -->
             <div class="flex items-start gap-3">
+
                 <div class="bg-red-100 p-2 rounded-full">
                     <x-heroicon-o-exclamation-triangle class="w-6 h-6 text-red-500" />
                 </div>
 
                 <div>
-                    <h2 class="text-lg font-semibold text-gray-800">Hapus Data Dapur</h2>
+                    <h2 class="text-lg font-semibold text-gray-800">
+                        Hapus Data Dapur Umum
+                    </h2>
+
                     <p class="text-sm text-gray-500 mt-1">
-                        Yakin ingin menghapus data dapur
+                        Apakah Anda yakin ingin menghapus data dapur umum
                         <span id="namaDapur" class="font-semibold"></span>?
+                        Tindakan ini tidak dapat dibatalkan.
                     </p>
                 </div>
+
             </div>
 
+            <!-- Action -->
             <div class="flex justify-end gap-3 mt-6">
-                <button onclick="closeModal()" class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">
+
+                <button type="button"
+                    onclick="closeModal()"
+                    class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">
                     Batal
                 </button>
 
                 <form id="deleteForm" method="POST">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600">
-                        Hapus
+
+                    <button type="submit"
+                        class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600">
+                        Hapus Data
                     </button>
                 </form>
+
             </div>
 
         </div>
     </div>
 
     <script>
-        function openModal(id, nama) {
-            const modal = document.getElementById('deleteModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
+    function openModal(id, nama) {
 
-            document.getElementById('namaDapur').innerText = `"${nama}"`;
+        const modal = document.getElementById('deleteModal');
 
-            // route delete dapur
-            let url = "{{ route('admin.management_posko.dapur_umum.destroy', ':id') }}";
-            url = url.replace(':id', id);
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
 
-            document.getElementById('deleteForm').action = url;
-        }
+        document.getElementById('namaDapur').textContent = `"${nama}"`;
 
-        function closeModal() {
-            document.getElementById('deleteModal').classList.add('hidden');
-        }
+        let url = "{{ route('management_posko.dapur_umum.destroy', ':id') }}";
+        url = url.replace(':id', id);
+
+        document.getElementById('deleteForm').action = url;
+    }
+
+    function closeModal() {
+
+        const modal = document.getElementById('deleteModal');
+
+        modal.classList.remove('flex');
+        modal.classList.add('hidden');
+    }
+
+    // Tutup modal saat klik area luar
+        document.getElementById('deleteModal').addEventListener('click', function(e) {
+
+            if (e.target === this) {
+                closeModal();
+            }
+        });
     </script>
 @endsection
