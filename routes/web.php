@@ -404,7 +404,6 @@ Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')
         Route::resource('paket_bantuan', PaketBantuanController::class);
         Route::resource('detail_paket', DetailPaketController::class);
         Route::resource('distribusi_paket', DistribusiPaketController::class);
-        Route::patch('distribusi_paket/{id}/selesai', [DistribusiPaketController::class, 'selesai'])->name('distribusi_paket.selesai');
         Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
     });
 });
