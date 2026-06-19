@@ -1,7 +1,13 @@
 @php
-    $routePrefix = auth()->user()->hasRole('admin')
+    $user = auth()->user();
+
+    $canManageKorban = $user->hasRole('admin')
+        || $user->hasRole('petugas')
+        || $user->hasRole('relawan');
+
+    $routePrefix = $user->hasRole('admin')
         ? 'admin.korban'
-        : (auth()->user()->hasRole('petugas')
+        : ($user->hasRole('petugas')
             ? 'petugas.korban'
             : 'relawan.korban');
 @endphp
@@ -23,10 +29,12 @@
                 </p>
             </div>
 
-            <a href="{{ route($routePrefix . '.create') }}"
-                class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg shadow-sm transition">
-                + Tambah Data Korban
-            </a>
+            @if($canManageKorban)
+                <a href="{{ route($routePrefix . '.create') }}"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg shadow-sm transition">
+                    + Tambah Data Korban
+                </a>
+            @endif
 
         </div>
 
@@ -49,34 +57,24 @@
         @endif
 
         {{-- FILTER --}}
-        <div class="bg-gray-50 border border-gray-200 rounded-xl p-5 mb-6">
-
-            <div class="flex items-center gap-2 mb-4">
-
-                <x-heroicon-o-funnel class="w-5 h-5 text-indigo-600" />
-
-                <h3 class="font-semibold text-gray-800">
-                    Filter Data Korban
-                </h3>
-
-            </div>
+        <div class="mb-6">
 
             <form id="filterForm"
                 method="GET"
                 action="{{ route($routePrefix . '.index') }}">
 
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-3">
+                <div class="flex flex-col lg:flex-row gap-3">
 
                     {{-- Tahun --}}
-                    <div class="lg:col-span-2">
+                    <div class="lg:w-28">
                         <select
                             name="tahun"
-                            class="auto-submit w-full border rounded-lg py-2.5 px-3">
+                            class="auto-submit w-full border border-gray-300 rounded-lg py-2.5 px-3">
 
                             @foreach($tahunList as $item)
                                 <option value="{{ $item }}"
                                     {{ ($tahun ?? now()->year) == $item ? 'selected' : '' }}>
-                                    Tahun {{ $item }}
+                                    {{ $item }}
                                 </option>
                             @endforeach
 
@@ -84,17 +82,14 @@
                     </div>
 
                     {{-- Bencana --}}
-                    <div class="lg:col-span-3">
+                    <div class="lg:flex-[3]">
                         <select
                             name="bencana_id"
-                            class="auto-submit w-full border rounded-lg py-2.5 px-3">
+                            class="auto-submit w-full border border-gray-300 rounded-lg py-2.5 px-3">
 
-                            <option value="">
-                                Semua Bencana
-                            </option>
+                            <option value="">Semua Bencana</option>
 
                             @foreach ($bencana as $item)
-
                                 <option value="{{ $item->id }}"
                                     {{ request('bencana_id') == $item->id ? 'selected' : '' }}>
 
@@ -105,100 +100,58 @@
                                     {{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}
 
                                 </option>
-
                             @endforeach
 
                         </select>
                     </div>
 
                     {{-- Posko --}}
-                    <div class="lg:col-span-3">
+                    <div class="lg:flex-[2]">
                         <select
                             name="posko_id"
-                            class="auto-submit w-full border rounded-lg py-2.5 px-3">
+                            class="auto-submit w-full border border-gray-300 rounded-lg py-2.5 px-3">
 
-                            <option value="">
-                                Semua Posko
-                            </option>
+                            <option value="">Semua Posko</option>
 
                             @foreach ($posko as $item)
-
                                 <option value="{{ $item->id }}"
                                     {{ request('posko_id') == $item->id ? 'selected' : '' }}>
-
                                     {{ $item->nama_posko }}
-
                                 </option>
-
                             @endforeach
 
                         </select>
                     </div>
 
                     {{-- Search --}}
-                    <div class="lg:col-span-4">
+                    <div class="lg:flex-[2]">
                         <input
                             id="searchInput"
                             type="text"
                             name="search"
                             value="{{ request('search') }}"
-                            placeholder="Cari nama atau NIK korban..."
-                            class="w-full border rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+                            placeholder="Cari nama atau NIK..."
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2.5">
                     </div>
 
-                </div>
+                    {{-- Reset --}}
+                    <a href="{{ route($routePrefix . '.index') }}"
+                        class="w-11 h-[42px] flex items-center justify-center rounded-lg border border-gray-300 text-gray-600"
+                        title="Reset Filter">
 
-                <div class="flex justify-between items-center mt-4">
+                        <x-heroicon-o-x-mark class="w-5 h-5" />
 
-                    {{-- Badge Filter Aktif --}}
-                    <div class="flex flex-wrap gap-2">
+                    </a>
 
-                        <span class="bg-indigo-100 text-indigo-700 text-xs px-3 py-1 rounded-full">
-                            Tahun {{ $tahun }}
-                        </span>
+                    {{-- PDF --}}
+                    <a href="{{ route($routePrefix . '.reviewPdf', request()->query()) }}"
+                        target="_blank"
+                        class="w-11 h-[42px] flex items-center justify-center rounded-lg bg-red-600 text-white"
+                        title="Export PDF">
 
-                        @if(request('bencana_id'))
-                            <span class="bg-orange-100 text-orange-700 text-xs px-3 py-1 rounded-full">
-                                Bencana Dipilih
-                            </span>
-                        @endif
+                        <x-heroicon-o-document-arrow-down class="w-5 h-5" />
 
-                        @if(request('posko_id'))
-                            <span class="bg-emerald-100 text-emerald-700 text-xs px-3 py-1 rounded-full">
-                                Posko Dipilih
-                            </span>
-                        @endif
-
-                        @if(request('search'))
-                            <span class="bg-blue-100 text-blue-700 text-xs px-3 py-1 rounded-full">
-                                "{{ request('search') }}"
-                            </span>
-                        @endif
-
-                    </div>
-
-                    {{-- Action --}}
-                    <div class="flex items-center gap-2">
-
-                        <a href="{{ route($routePrefix . '.index') }}"
-                            class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-3 py-2 rounded-lg"
-                            title="Bersihkan Filter">
-
-                            <x-heroicon-o-x-mark class="w-5 h-5" />
-
-                        </a>
-
-                        <a href="{{ route($routePrefix . '.reviewPdf', request()->query()) }}"
-                            target="_blank"
-                            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
-
-                            <x-heroicon-o-document-arrow-down class="w-5 h-5" />
-
-                            PDF
-
-                        </a>
-
-                    </div>
+                    </a>
 
                 </div>
 
@@ -217,7 +170,9 @@
                         <th class="text-left">Bencana</th>
                         <th class="text-left">Posko</th>
                         <th class="text-left">Tanggal Kejadian</th>
-                        <th class="text-left">Aksi</th>
+                        @if($canManageKorban)
+                            <th class="text-left">Aksi</th>
+                        @endif
                     </tr>
                 </thead>
 
@@ -241,21 +196,25 @@
 
                             <td class="py-3">
                                 <div class="flex gap-2 items-center">
+
                                     <a href="{{ route($routePrefix . '.show', $item->id) }}"
-                                        class="text-green-600 hover:text-green-800" title="Detail">
+                                        class="text-green-600 hover:text-green-800">
                                         <x-heroicon-o-eye class="w-5 h-5" />
                                     </a>
 
-                                    <a href="{{ route($routePrefix . '.edit', $item->id) }}"
-                                        class="text-blue-500 hover:text-blue-700" title="Edit">
-                                        <x-heroicon-o-pencil-square class="w-5 h-5" />
-                                    </a>
+                                    @if($canManageKorban)
+                                        <a href="{{ route($routePrefix . '.edit', $item->id) }}"
+                                            class="text-blue-500 hover:text-blue-700">
+                                            <x-heroicon-o-pencil-square class="w-5 h-5" />
+                                        </a>
 
-                                    <button type="button"
-                                        onclick="openModal('{{ $item->id }}', '{{ addslashes($item->nama) }}')"
-                                        class="text-red-500 hover:text-red-700" title="Hapus">
-                                        <x-heroicon-o-trash class="w-5 h-5" />
-                                    </button>
+                                        <button type="button"
+                                            onclick="openModal('{{ $item->id }}', '{{ addslashes($item->nama) }}')"
+                                            class="text-red-500 hover:text-red-700">
+                                            <x-heroicon-o-trash class="w-5 h-5" />
+                                        </button>
+                                    @endif
+
                                 </div>
                             </td>
                         </tr>

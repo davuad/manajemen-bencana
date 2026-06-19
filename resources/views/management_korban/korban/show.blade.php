@@ -1,9 +1,15 @@
 @php
-    $routePrefix = auth()->user()->hasRole('admin')
-        ? 'admin.management_korban.korban'
-        : (auth()->user()->hasRole('petugas')
-            ? 'petugas.korban'
-            : 'relawan.korban');
+    $user = auth()->user();
+
+    if ($user->hasRole('admin')) {
+        $routePrefix = 'admin.korban';
+    } elseif ($user->hasRole('petugas')) {
+        $routePrefix = 'petugas.korban';
+    } elseif ($user->hasRole('relawan')) {
+        $routePrefix = 'relawan.korban';
+    } elseif ($user->hasRole('desa')) {
+        $routePrefix = 'desa.korban';
+    }
 @endphp
 
 @extends('layouts.app')
@@ -107,11 +113,6 @@
         <div class="flex justify-end gap-3 mt-6">
             <a href="{{ route($routePrefix . '.index') }}" class="px-4 py-2 bg-gray-300 rounded-lg">
                 Kembali
-            </a>
-
-            <a href="{{ route($routePrefix . '.edit', $korban->id) }}"
-                class="px-6 py-2 bg-blue-600 text-white rounded-lg">
-                Edit Data
             </a>
         </div>
     </div>
