@@ -156,10 +156,10 @@ Route::middleware(['auth', 'role:admin'])
 
 
         // --- Management Korban ---
-        Route::prefix('management-korban')->name('management_korban.')->group(function () {
-            Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])->name('korban.reviewPdf');
-            Route::resource('korban', KorbanController::class);
-        });
+        Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])
+            ->name('korban.reviewPdf');
+
+        Route::resource('korban', KorbanController::class);
 
         // --- Data Master ---
         Route::resource('kategori_bencana', KategoriBencanaController::class);
@@ -452,29 +452,10 @@ Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')
             ->name('penjemputan.show');           
 
         // KORBAN
-        Route::get('/korban', [KorbanController::class, 'index'])
-            ->name('korban.index');
+        Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])
+            ->name('korban.reviewPdf');
 
-        Route::get('/korban/create', [KorbanController::class, 'create'])
-            ->name('korban.create');
-
-        Route::post('/korban', [KorbanController::class, 'store'])
-            ->name('korban.store');
-
-        Route::get('/korban/review-pdf', [KorbanController::class, 'reviewPdf'])
-            ->name('korban.reviewPdf'); 
-
-        Route::get('/korban/{korban}', [KorbanController::class, 'show'])
-            ->name('korban.show');
-
-        Route::get('/korban/{korban}/edit', [KorbanController::class, 'edit'])
-            ->name('korban.edit');
-
-        Route::put('/korban/{korban}', [KorbanController::class, 'update'])
-            ->name('korban.update');
-
-        Route::delete('/korban/{korban}', [KorbanController::class, 'destroy'])
-            ->name('korban.destroy');    
+        Route::resource('korban', KorbanController::class);            
 
     Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
         Route::get('distribusi_paket', [DistribusiPaketController::class, 'index'])->name('distribusi_paket.index');
@@ -519,29 +500,10 @@ Route::middleware(['auth', 'role:relawan'])
             ->name('penjemputan.show');
 
         // KORBAN (VIEW ONLY)   
-        Route::get('/korban', [KorbanController::class, 'index'])
-            ->name('korban.index');
+        Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])
+            ->name('korban.reviewPdf');
 
-        Route::get('/korban/create', [KorbanController::class, 'create'])
-            ->name('korban.create');
-
-        Route::post('/korban', [KorbanController::class, 'store'])
-            ->name('korban.store');
-
-        Route::get('/korban/review-pdf', [KorbanController::class, 'reviewPdf'])
-            ->name('korban.reviewPdf'); 
-
-        Route::get('/korban/{korban}', [KorbanController::class, 'show'])
-            ->name('korban.show');
-
-        Route::get('/korban/{korban}/edit', [KorbanController::class, 'edit'])
-            ->name('korban.edit');
-
-        Route::put('/korban/{korban}', [KorbanController::class, 'update'])
-            ->name('korban.update');
-
-        Route::delete('/korban/{korban}', [KorbanController::class, 'destroy'])
-            ->name('korban.destroy');
+        Route::resource('korban', KorbanController::class);
         });
 
 // Kadus
@@ -564,6 +526,13 @@ Route::middleware(['auth', 'role:desa'])
         Route::get('/pengaduan/create', [PengaduanBencanaController::class, 'userCreate'])->name('pengaduan.create');
         Route::post('/pengaduan/store', [PengaduanBencanaController::class, 'userStore'])->name('pengaduan.store');
         Route::get('/pengaduan/{id}', [PengaduanBencanaController::class, 'showUser'])->name('pengaduan.show');
+
+        // KORBAN (VIEW ONLY)
+        Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])
+            ->name('korban.reviewPdf');
+
+        Route::resource('korban', KorbanController::class)
+            ->only(['index', 'show']);
     });
 
 Route::get(
