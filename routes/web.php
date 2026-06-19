@@ -245,11 +245,25 @@ Route::prefix('ketua_tim')->name('ketua_tim.')->group(function () {
 // 7. ROUTE JADWAL PETUGAS (HANYA LIHAT)
 Route::prefix('petugas')->name('petugas.')->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+    Route::prefix('management-posko')->name('management_posko.')->group(function () {
+        Route::get('/posko', [PoskoController::class, 'index'])
+            ->name('posko.index');
+
+        Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
+            ->name('dapur_umum.index');
+    });
 });
 
 // 8. ROUTE JADWAL PEGAWAI (HANYA LIHAT)
 Route::prefix('pegawai')->name('pegawai.')->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+    Route::prefix('management-posko')->name('management_posko.')->group(function () {
+        Route::get('/posko', [PoskoController::class, 'index'])
+            ->name('posko.index');
+
+        Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
+            ->name('dapur_umum.index');
+    });
 });
 // --- Role Placeholders (Kosong) ---
 Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')->group(function () {
@@ -339,6 +353,7 @@ Route::middleware(['auth', 'role:ketua_tim'])
             '/pengaduan/{id}/selesai',
             [PengaduanBencanaController::class, 'simpanSelesai']
         )->name('pengaduan.simpan');
+
 });
 
 Route::middleware(['auth', 'role:relawan|kadus|desa'])
@@ -360,15 +375,33 @@ Route::middleware(['auth', 'role:relawan|kadus|desa'])
         Route::get('/pengaduan/{id}',
             [PengaduanBencanaController::class, 'showUser'])
             ->name('pengaduan.show');
+
 });
 
-// Route::middleware([
-//     'auth',
-//     'role:admin|relawan'
-// ])->prefix('management_posko')
-//     ->name('management_posko.')
-//     ->group(function () {
+// --- Pegawai ---
+Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')->group(function () {
+    Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
+        Route::resource('paket_bantuan', PaketBantuanController::class);
+        Route::resource('detail_paket', DetailPaketController::class);
+        Route::resource('distribusi_paket', DistribusiPaketController::class);
+        Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
+    });
+});
+// --- Petugas ---
+Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')->group(function () {
+    Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
+        Route::get('distribusi_paket', [DistribusiPaketController::class, 'index'])->name('distribusi_paket.index');
+        Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
+        Route::patch('distribusi_paket/{id}/selesai', [DistribusiPaketController::class, 'selesai'])->name('distribusi_paket.selesai');
+    });
+});
+Route::middleware([
+    'auth',
+    'role:admin|petugas|pegawai|relawan'
+])->prefix('{role}/management-posko')
+    ->name('management_posko.')
+    ->group(function () {
 
-//         Route::resource('posko', PoskoController::class);
-//     });
+        Route::resource('posko', PoskoController::class);
+    })->where(['role' => 'admin|petugas|pegawai|relawan']);
 
