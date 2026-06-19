@@ -57,7 +57,7 @@
             <div>
                 <label class="block text-sm font-semibold text-gray-500 mb-1">Bencana</label>
                 <div class="border rounded-lg p-3 bg-gray-50">
-                    {{ $korban->bencana->kategori->nama_kategori ?? '-' }}
+                    {{ $korban->bencana->kategori->nama_kategori ?? '-' }} - {{ $korban->bencana->desa->nama_desa ?? '-' }} - {{ \Carbon\Carbon::parse($korban->bencana->tanggal)->format('d-m-Y') }}
                 </div>
             </div>
 

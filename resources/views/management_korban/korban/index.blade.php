@@ -69,6 +69,8 @@
                             <option value="{{ $item->id }}"
                                 {{ request('bencana_id') == $item->id ? 'selected' : '' }}>
                                 {{ $item->kategori->nama_kategori ?? '-' }}
+                                - {{ $item->desa->nama_desa ?? '-' }}
+                                - {{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}
                             </option>
                         @endforeach
                     </select>
@@ -138,7 +140,9 @@
                             <td class="p-3 pl-4">{{ $item->nama }}</td>
                             <td class="p-3">{{ $item->nik ?? '-' }}</td>
                             <td class="p-3 text-center">{{ $item->umur }}</td>
-                            <td class="p-3">{{ $item->bencana->kategori->nama_kategori ?? '-' }}</td>
+                            <td class="p-3">
+                                {{ $item->bencana->kategori->nama_kategori ?? '-' }} - {{ $item->bencana->desa->nama_desa ?? '-' }} - {{ \Carbon\Carbon::parse($item->bencana->tanggal)->format('d-m-Y') }}
+                            </td>
                             <td class="p-3">{{ $item->posko->nama_posko ?? '-' }}</td>
                             <td class="p-3">
                                 {{ \Carbon\Carbon::parse($item->tanggal_kejadian)->format('d-m-Y') }}

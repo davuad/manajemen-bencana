@@ -31,7 +31,7 @@
                         @foreach ($bencana as $item)
                             <option value="{{ $item->id }}"
                                 {{ old('bencana_id', $korban->bencana_id) == $item->id ? 'selected' : '' }}>
-                                {{ $item->kategori->nama_kategori ?? '-' }} - {{ $item->tanggal }}
+                                {{ $item->kategori->nama_kategori ?? '-' }} - {{ $item->desa->nama_desa ?? '-' }} - {{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}
                             </option>
                         @endforeach
                     </select>
