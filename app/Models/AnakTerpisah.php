@@ -10,17 +10,17 @@ class AnakTerpisah extends Model
 
     protected $fillable = [
         'nama_anak',
+        'nama_bapak',
+        'nama_ibu',
         'jenis_kelamin',
         'umur',
         'tanggal_lahir',
         'alamat_asal',
         'lokasi_ditemukan',
         'tanggal_ditemukan',
-        'nama_ortu_wali',
         'kontak_keluarga',
         'status_anak',
         'foto_anak',
-        'bencana_id',
     ];
 
     public function penjemputan()

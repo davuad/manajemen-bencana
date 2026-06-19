@@ -46,10 +46,31 @@
 
                     <div>
                         <label class="font-semibold">Nama Anak</label>
-                        <input type="text" name="nama_anak"
-                               value="{{ old('nama_anak', $anak->nama_anak) }}"
-                               class="w-full border rounded-xl px-4 py-3"
-                               required>
+                        <input type="text"
+                            name="nama_anak"
+                            value="{{ old('nama_anak', $anak->nama_anak) }}"
+                            class="w-full border rounded-xl px-4 py-3"
+                            required>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                        <div>
+                            <label class="font-semibold">Nama Bapak</label>
+                            <input type="text"
+                                name="nama_bapak"
+                                value="{{ old('nama_bapak', $anak->nama_bapak) }}"
+                                class="w-full border rounded-xl px-4 py-3">
+                        </div>
+
+                        <div>
+                            <label class="font-semibold">Nama Ibu</label>
+                            <input type="text"
+                                name="nama_ibu"
+                                value="{{ old('nama_ibu', $anak->nama_ibu) }}"
+                                class="w-full border rounded-xl px-4 py-3">
+                        </div>
+
                     </div>
 
                     <div>
