@@ -438,6 +438,20 @@ Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')
 });
 // --- Petugas ---
 Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')->group(function () {
+    Route::resource('anak_terpisah', AnakTerpisahController::class);
+
+        Route::get('penjemputan', [PenjemputanAnakController::class, 'index'])
+            ->name('penjemputan.index');
+
+        Route::get('penjemputan/{anak_id}/jemput', [PenjemputanAnakController::class, 'formJemput'])
+            ->name('penjemputan.jemput');
+
+        Route::post('penjemputan', [PenjemputanAnakController::class, 'store'])
+            ->name('penjemputan.store');
+
+        Route::get('penjemputan/{id}', [PenjemputanAnakController::class, 'show'])
+            ->name('penjemputan.show');    
+
     Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
         Route::get('distribusi_paket', [DistribusiPaketController::class, 'index'])->name('distribusi_paket.index');
         Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
@@ -464,6 +478,20 @@ Route::middleware(['auth', 'role:relawan'])
         Route::get('/pengaduan/create', [PengaduanBencanaController::class, 'userCreate'])->name('pengaduan.create');
         Route::post('/pengaduan/store', [PengaduanBencanaController::class, 'userStore'])->name('pengaduan.store');
         Route::get('/pengaduan/{id}', [PengaduanBencanaController::class, 'showUser'])->name('pengaduan.show');
+    
+        // ANAK TERPISAH (VIEW ONLY)
+        Route::get('/anak_terpisah', [AnakTerpisahController::class, 'index'])
+            ->name('anak_terpisah.index');
+
+        Route::get('/anak_terpisah/{id}', [AnakTerpisahController::class, 'show'])
+            ->name('anak_terpisah.show');
+
+        // PENJEMPUTAN ANAK (VIEW ONLY)
+        Route::get('/penjemputan', [PenjemputanAnakController::class, 'index'])
+            ->name('penjemputan.index');
+
+        Route::get('/penjemputan/{id}', [PenjemputanAnakController::class, 'show'])
+            ->name('penjemputan.show');
     });
 
 // Kadus

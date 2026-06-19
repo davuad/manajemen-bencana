@@ -42,6 +42,8 @@
                 <p><span class="font-semibold">Nama:</span> {{ $anak->nama_anak }}</p>
                 <p><span class="font-semibold">Jenis Kelamin:</span> {{ $anak->jenis_kelamin }}</p>
                 <p><span class="font-semibold">Umur:</span> {{ $anak->umur ?? '-' }}</p>
+                <p><span class="font-semibold">Nama Bapak:</span> {{ $anak->nama_bapak ?? '-' }}</p>
+                <p><span class="font-semibold">Nama Ibu:</span> {{ $anak->nama_ibu ?? '-' }}</p>
             </div>
 
         </div>
@@ -59,8 +61,13 @@
                 </div>
 
                 <div>
-                    <p class="font-semibold">Nama Orang Tua / Wali</p>
-                    <p>{{ $anak->nama_ortu_wali ?? '-' }}</p>
+                    <p class="font-semibold">Nama Bapak</p>
+                    <p>{{ $anak->nama_bapak ?? '-' }}</p>
+                </div>
+
+                <div>
+                    <p class="font-semibold">Nama Ibu</p>
+                    <p>{{ $anak->nama_ibu ?? '-' }}</p>
                 </div>
 
                 <div>
