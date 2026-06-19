@@ -1,3 +1,11 @@
+@php
+    $routePrefix = auth()->user()->hasRole('admin')
+        ? 'admin.management_korban.korban'
+        : (auth()->user()->hasRole('petugas')
+            ? 'petugas.korban'
+            : 'relawan.korban');
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
@@ -97,11 +105,11 @@
         </div>
 
         <div class="flex justify-end gap-3 mt-6">
-            <a href="{{ route('admin.management_korban.korban.index') }}" class="px-4 py-2 bg-gray-300 rounded-lg">
+            <a href="{{ route($routePrefix . '.index') }}" class="px-4 py-2 bg-gray-300 rounded-lg">
                 Kembali
             </a>
 
-            <a href="{{ route('admin.management_korban.korban.edit', $korban->id) }}"
+            <a href="{{ route($routePrefix . '.edit', $korban->id) }}"
                 class="px-6 py-2 bg-blue-600 text-white rounded-lg">
                 Edit Data
             </a>
