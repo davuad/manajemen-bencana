@@ -16,8 +16,6 @@ class Bencana extends Model
         'tanggal',
         'status_bencana',
         'tingkat_kerusakan',
-        'jumlah_korban'
-        
     ];
 
     protected $casts = [

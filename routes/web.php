@@ -156,10 +156,10 @@ Route::middleware(['auth', 'role:admin'])
 
 
         // --- Management Korban ---
-        Route::prefix('management-korban')->name('management_korban.')->group(function () {
-            Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])->name('korban.reviewPdf');
-            Route::resource('korban', KorbanController::class);
-        });
+        Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])
+            ->name('korban.reviewPdf');
+
+        Route::resource('korban', KorbanController::class);
 
         // --- Data Master ---
         Route::resource('kategori_bencana', KategoriBencanaController::class);
@@ -234,11 +234,25 @@ Route::prefix('ketua_tim')->name('ketua_tim.')->middleware(['auth', 'role:ketua_
 // 6. ROUTE JADWAL PETUGAS (HANYA LIHAT)
 Route::prefix('petugas')->name('petugas.')->middleware(['auth', 'role:petugas'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+    Route::prefix('management-posko')->name('management_posko.')->group(function () {
+        Route::get('/posko', [PoskoController::class, 'index'])
+            ->name('posko.index');
+
+        Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
+            ->name('dapur_umum.index');
+    });
 });
 
 // 7. ROUTE JADWAL PEGAWAI (HANYA LIHAT)
 Route::prefix('pegawai')->name('pegawai.')->middleware(['auth', 'role:pegawai'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+    Route::prefix('management-posko')->name('management_posko.')->group(function () {
+        Route::get('/posko', [PoskoController::class, 'index'])
+            ->name('posko.index');
+
+        Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
+            ->name('dapur_umum.index');
+    });
 });
 // --- Role Placeholders (Kosong) ---
 Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')->group(function () {
@@ -317,7 +331,6 @@ Route::middleware(['auth', 'role:kabid'])
         Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
         Route::get('/jadwal/cetak-pdf', [JadwalController::class, 'cetak_pdf'])->name('jadwal.cetak');
 
-
         // =====================
         // LAPORAN
         // =====================
@@ -364,6 +377,7 @@ Route::middleware(['auth', 'role:ketua_tim'])
         )->name('pengaduan.simpan');
     });
 
+
 Route::middleware(['auth', 'role:relawan|kadus|desa'])
     ->prefix('user')
     ->name('user.')
@@ -393,7 +407,6 @@ Route::middleware(['auth', 'role:relawan|kadus|desa'])
             ->name('pengaduan.show');
     });
 
-
 // --- Pegawai ---
 Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')->group(function () {
     Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
@@ -411,15 +424,55 @@ Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')
         Route::patch('distribusi_paket/{id}/selesai', [DistribusiPaketController::class, 'selesai'])->name('distribusi_paket.selesai');
     });
 });
+
+// --- Pegawai ---
+Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')->group(function () {
+    Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
+        Route::resource('paket_bantuan', PaketBantuanController::class);
+        Route::resource('detail_paket', DetailPaketController::class);
+        Route::resource('distribusi_paket', DistribusiPaketController::class);
+        Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
+    });
+});
+// --- Petugas ---
+Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')->group(function () {
+    Route::resource('anak_terpisah', AnakTerpisahController::class);
+
+        Route::get('penjemputan', [PenjemputanAnakController::class, 'index'])
+            ->name('penjemputan.index');
+
+        Route::get('penjemputan/{anak_id}/jemput', [PenjemputanAnakController::class, 'formJemput'])
+            ->name('penjemputan.jemput');
+
+        Route::post('penjemputan', [PenjemputanAnakController::class, 'store'])
+            ->name('penjemputan.store');
+
+        Route::get('penjemputan/{id}', [PenjemputanAnakController::class, 'show'])
+            ->name('penjemputan.show');           
+
+        // KORBAN
+        Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])
+            ->name('korban.reviewPdf');
+
+        Route::resource('korban', KorbanController::class);            
+
+    Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
+        Route::get('distribusi_paket', [DistribusiPaketController::class, 'index'])->name('distribusi_paket.index');
+        Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
+        Route::patch('distribusi_paket/{id}/selesai', [DistribusiPaketController::class, 'selesai'])->name('distribusi_paket.selesai');
+    });
+});
+
 Route::middleware([
     'auth',
-    'role:admin|relawan'
-])->prefix('management_posko')
+    'role:admin|petugas|pegawai|relawan'
+])->prefix('{role}/management-posko')
     ->name('management_posko.')
     ->group(function () {
 
         Route::resource('posko', PoskoController::class);
-    });
+        Route::resource('dapur_umum', DapurUmumController::class);
+    })->where(['role' => 'admin|petugas|pegawai|relawan']);
 
 // Relawan
 Route::middleware(['auth', 'role:relawan'])
@@ -430,7 +483,27 @@ Route::middleware(['auth', 'role:relawan'])
         Route::get('/pengaduan/create', [PengaduanBencanaController::class, 'userCreate'])->name('pengaduan.create');
         Route::post('/pengaduan/store', [PengaduanBencanaController::class, 'userStore'])->name('pengaduan.store');
         Route::get('/pengaduan/{id}', [PengaduanBencanaController::class, 'showUser'])->name('pengaduan.show');
-    });
+    
+        // ANAK TERPISAH (VIEW ONLY)
+        Route::get('/anak_terpisah', [AnakTerpisahController::class, 'index'])
+            ->name('anak_terpisah.index');
+
+        Route::get('/anak_terpisah/{id}', [AnakTerpisahController::class, 'show'])
+            ->name('anak_terpisah.show');
+
+        // PENJEMPUTAN ANAK (VIEW ONLY)
+        Route::get('/penjemputan', [PenjemputanAnakController::class, 'index'])
+            ->name('penjemputan.index');
+
+        Route::get('/penjemputan/{id}', [PenjemputanAnakController::class, 'show'])
+            ->name('penjemputan.show');
+
+        // KORBAN (VIEW ONLY)   
+        Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])
+            ->name('korban.reviewPdf');
+
+        Route::resource('korban', KorbanController::class);
+        });
 
 // Kadus
 Route::middleware(['auth', 'role:kadus'])
@@ -452,6 +525,13 @@ Route::middleware(['auth', 'role:desa'])
         Route::get('/pengaduan/create', [PengaduanBencanaController::class, 'userCreate'])->name('pengaduan.create');
         Route::post('/pengaduan/store', [PengaduanBencanaController::class, 'userStore'])->name('pengaduan.store');
         Route::get('/pengaduan/{id}', [PengaduanBencanaController::class, 'showUser'])->name('pengaduan.show');
+
+        // KORBAN (VIEW ONLY)
+        Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])
+            ->name('korban.reviewPdf');
+
+        Route::resource('korban', KorbanController::class)
+            ->only(['index', 'show']);
     });
 
 Route::get(

@@ -104,7 +104,7 @@ class LaporanController extends Controller
 
 
             // DISTRIBUSI
-            'distribusis.detailDistribusis.barangKeluar.detailBarangKeluar.barang'
+            'distribusis.detailDistribusis.detailBarangKeluar.barang'
         ])->findOrFail($id);
 
         $pdf = Pdf::loadView(
