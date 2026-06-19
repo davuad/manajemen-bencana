@@ -11,18 +11,23 @@
 @section('content')
     <div class="bg-white rounded-xl shadow p-6">
 
-        <div class="flex justify-between items-center mb-6">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+
             <div>
-                <h2 class="text-xl font-bold">Olah Data Korban</h2>
-                <p class="text-gray-500 text-sm">
-                    Kelola data korban bencana yang tercatat pada sistem
+                <h2 class="text-2xl font-bold text-gray-800">
+                    Olah Data Korban
+                </h2>
+
+                <p class="text-gray-500 text-sm mt-1">
+                    Kelola data korban luka maupun meninggal akibat bencana
                 </p>
             </div>
 
             <a href="{{ route($routePrefix . '.create') }}"
-                class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
+                class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg shadow-sm transition">
                 + Tambah Data Korban
             </a>
+
         </div>
 
         <!-- Success Message -->
@@ -43,49 +48,69 @@
             </script>
         @endif
 
-        <form method="GET" action="{{ route($routePrefix . '.index') }}">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <!-- Filter & Export -->
+        <form method="GET" action="{{ route($routePrefix . '.index') }}" class="mb-6">
 
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama atau NIK korban"
-                    class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
+            <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-4">
 
-                <select name="bencana_id" class="border rounded-lg py-2 px-3">
-                    <option value="">Semua Bencana</option>
-                    @foreach ($bencana as $item)
-                        <option value="{{ $item->id }}" {{ request('bencana_id') == $item->id ? 'selected' : '' }}>
-                            {{ $item->kategori->nama_kategori ?? '-' }} - {{ $item->desa->nama_desa ?? '-' }} -
-                            {{ $item->tanggal }}
-                        </option>
-                    @endforeach
-                </select>
+                <!-- Filter -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3 flex-1">
 
-                <select name="posko_id" class="border rounded-lg py-2 px-3">
-                    <option value="">Semua Posko</option>
-                    @foreach ($posko as $item)
-                        <option value="{{ $item->id }}" {{ request('posko_id') == $item->id ? 'selected' : '' }}>
-                            {{ $item->nama_posko }}
-                        </option>
-                    @endforeach
-                </select>
+                    <input type="text"
+                        name="search"
+                        value="{{ request('search') }}"
+                        placeholder="Cari nama atau NIK korban"
+                        class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
 
+                    <select name="bencana_id"
+                        class="border rounded-lg py-2 px-3">
+                        <option value="">Semua Bencana</option>
+                        @foreach ($bencana as $item)
+                            <option value="{{ $item->id }}"
+                                {{ request('bencana_id') == $item->id ? 'selected' : '' }}>
+                                {{ $item->kategori->nama_kategori ?? '-' }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <select name="posko_id"
+                        class="border rounded-lg py-2 px-3">
+                        <option value="">Semua Posko</option>
+                        @foreach ($posko as $item)
+                            <option value="{{ $item->id }}"
+                                {{ request('posko_id') == $item->id ? 'selected' : '' }}>
+                                {{ $item->nama_posko }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                </div>
+
+                <!-- Action -->
                 <div class="flex flex-wrap gap-2">
-                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
+
+                    <button type="submit"
+                        class="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-lg">
                         Filter
                     </button>
 
                     <a href="{{ route($routePrefix . '.index') }}"
-                        class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg">
+                        class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg">
                         Reset
                     </a>
+
+                    <a href="{{ route($routePrefix . '.reviewPdf', request()->query()) }}"
+                        target="_blank"
+                        class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg flex items-center gap-2">
+
+                        <x-heroicon-o-document-arrow-down class="w-5 h-5" />
+                        PDF
+                    </a>
+
                 </div>
+
             </div>
 
-            <div class="flex flex-wrap gap-3 mb-6">
-                <a href="{{ route($routePrefix . '.reviewPdf', request()->query()) }}" target="_blank"
-                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
-                    PDF
-                </a>
-            </div>
         </form>
 
         <div class="overflow-x-auto">
