@@ -2,23 +2,25 @@
 
 @section('content')
 
-<div class="bg-white rounded-xl shadow p-6">
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
 
     {{-- HEADER --}}
-    <div class="flex justify-between items-center mb-6">
+    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
 
         <div>
-            <h2 class="text-xl font-bold">
-                PENYELESAIAN PENGADUAN
+
+            <h2 class="text-2xl font-bold text-gray-800">
+                Penyelesaian Pengaduan
             </h2>
 
-            <p class="text-gray-500 text-sm">
-                Monitoring dan penyelesaian pengaduan bencana
+            <p class="text-sm text-gray-500 mt-1">
+                Monitoring dan penyelesaian pengaduan bencana.
             </p>
+
         </div>
 
         <a href="{{ route('ketua_tim.pengaduan.index') }}"
-           class="bg-gray-500 text-white px-4 py-2 rounded-lg">
+            class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition">
 
             Kembali
 
@@ -26,78 +28,93 @@
 
     </div>
 
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
 
-        {{-- DATA PENGADUAN --}}
-        <div class="lg:col-span-2">
+        {{-- ========================= --}}
+        {{-- DETAIL PENGADUAN --}}
+        {{-- ========================= --}}
 
-            <div class="border rounded-xl p-5">
+        <div class="lg:col-span-2 space-y-6">
 
-                <h3 class="font-bold text-lg mb-4">
-                    Detail Pengaduan
+            <div class="border rounded-2xl p-6">
+
+                <h3 class="text-lg font-semibold text-indigo-700 mb-6">
+
+                    Data Pengaduan
+
                 </h3>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                     <div>
-                        <label class="text-gray-500 text-sm">
-                            Pelapor
+
+                        <label class="text-sm text-gray-500">
+                            Nama Pelapor
                         </label>
 
-                        <p class="font-semibold">
+                        <p class="font-semibold text-gray-800 mt-1">
+
                             {{ $data->user->nama ?? '-' }}
+
                         </p>
+
                     </div>
 
                     <div>
-                        <label class="text-gray-500 text-sm">
-                            Kategori
+
+                        <label class="text-sm text-gray-500">
+                            Kategori Bencana
                         </label>
 
-                        <p class="font-semibold">
+                        <p class="font-semibold text-gray-800 mt-1">
+
                             {{ $data->kategori->nama_kategori ?? '-' }}
+
                         </p>
+
                     </div>
 
-                </div>
+                    <div>
 
-                <div class="mt-4">
+                        <label class="text-sm text-gray-500">
+                            Desa
+                        </label>
 
-                    <label class="text-gray-500 text-sm">
-                        Desa
-                    </label>
+                        <p class="font-semibold text-gray-800 mt-1">
 
-                    <p class="font-semibold">
-                        {{ $data->desa }}
-                    </p>
+                            {{ $data->desa }}
 
-                </div>
+                        </p>
 
-                <div class="mt-4">
+                    </div>
 
-                    <label class="text-gray-500 text-sm">
-                        Deskripsi
-                    </label>
+                    <div>
 
-                    <p class="mt-1">
-                        {{ $data->deskripsi }}
-                    </p>
+                        <label class="text-sm text-gray-500">
+                            Tanggal Pengaduan
+                        </label>
 
-                </div>
+                        <p class="font-semibold text-gray-800 mt-1">
 
-                <div class="mt-4">
+                            {{ $data->created_at->format('d-m-Y H:i') }}
 
-                    <label class="text-gray-500 text-sm">
-                        Status Saat Ini
-                    </label>
+                        </p>
 
-                    <div class="mt-2">
+                    </div>
 
-                        <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs">
+                    <div class="md:col-span-2">
 
-                            {{ $data->status_pengaduan }}
+                        <label class="text-sm text-gray-500">
 
-                        </span>
+                            Deskripsi Kejadian
+
+                        </label>
+
+                        <div class="mt-2 rounded-xl border border-gray-200 bg-gray-50 p-4 leading-relaxed">
+
+                            {{ $data->deskripsi }}
+
+                        </div>
 
                     </div>
 
@@ -105,95 +122,232 @@
 
             </div>
 
-            {{-- FOTO --}}
-            <div class="border rounded-xl p-5 mt-6">
+            {{-- STATUS --}}
 
-                <h3 class="font-bold text-lg mb-4">
-                    Lampiran Foto
+            <div class="border rounded-2xl p-6">
+
+                <h3 class="text-lg font-semibold text-indigo-700 mb-5">
+
+                    Status Saat Ini
+
                 </h3>
 
-                <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+                @if($data->status_pengaduan == 'BELUM_DITANGANI')
 
-                    @forelse($data->foto as $foto)
+                    <span class="inline-flex px-4 py-2 rounded-full bg-yellow-100 text-yellow-700 font-semibold">
 
-                        <a href="{{ asset('foto/'.$foto->file_foto) }}"
-                           target="_blank">
+                        Belum Ditangani
 
-                            <img src="{{ asset('foto/'.$foto->file_foto) }}"
-                                 class="rounded-lg border h-40 w-full object-cover">
+                    </span>
 
-                        </a>
+                @elseif($data->status_pengaduan == 'DITANGANI')
 
-                    @empty
+                    <span class="inline-flex px-4 py-2 rounded-full bg-blue-100 text-blue-700 font-semibold">
 
-                        <p class="text-gray-500">
-                            Tidak ada foto
-                        </p>
+                        Sedang Ditangani
 
-                    @endforelse
+                    </span>
 
-                </div>
+                @elseif($data->status_pengaduan == 'SELESAI')
 
-            </div>
+                    <span class="inline-flex px-4 py-2 rounded-full bg-green-100 text-green-700 font-semibold">
 
-        </div>
+                        Selesai
 
-        {{-- SIDEBAR --}}
-        <div>
-
-            {{-- KEBUTUHAN --}}
-            <div class="border rounded-xl p-5">
-
-                <h3 class="font-bold text-lg mb-4">
-                    Kebutuhan
-                </h3>
-
-                @if($data->kebutuhan)
-
-                    <ul class="space-y-2 text-sm">
-
-                        <li>
-                            Dapur Umum :
-                            <b>{{ $data->kebutuhan->dapur_umum }}</b>
-                        </li>
-
-                        <li>
-                            Psikososial :
-                            <b>{{ $data->kebutuhan->psikososial }}</b>
-                        </li>
-
-                        <li>
-                            Logistik Rentan :
-                            <b>{{ $data->kebutuhan->logistik_rentan }}</b>
-                        </li>
-
-                        <li>
-                            Logistik Makanan :
-                            <b>{{ $data->kebutuhan->logistik_makanan }}</b>
-                        </li>
-
-                        <li>
-                            Logistik Penampungan :
-                            <b>{{ $data->kebutuhan->logistik_penampungan }}</b>
-                        </li>
-
-                    </ul>
-
-                @else
-
-                    <p class="text-gray-500">
-                        Tidak ada data kebutuhan
-                    </p>
+                    </span>
 
                 @endif
 
             </div>
 
-            {{-- FORM SELESAI --}}
-            <div class="border rounded-xl p-5 mt-6">
+            {{-- FOTO --}}
 
-                <h3 class="font-bold text-lg mb-4">
-                    Penyelesaian
+            <div class="border rounded-2xl p-6">
+
+                <h3 class="text-lg font-semibold text-indigo-700 mb-6">
+
+                    Dokumentasi Pengaduan
+
+                </h3>
+
+                @if($data->foto->count())
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+
+                        @foreach($data->foto as $foto)
+
+                            <div class="border rounded-xl overflow-hidden shadow-sm">
+
+                                <a href="{{ asset('foto/'.$foto->file_foto) }}"
+                                   target="_blank">
+
+                                    <img
+                                        src="{{ asset('foto/'.$foto->file_foto) }}"
+                                        class="w-full h-52 object-cover">
+
+                                </a>
+
+                                <div class="p-4">
+
+                                    <h5 class="font-semibold text-gray-700 mb-2">
+
+                                        Keterangan Foto
+
+                                    </h5>
+
+                                    <p class="text-sm text-gray-500">
+
+                                        {{ $foto->keterangan ?: '-' }}
+
+                                    </p>
+
+                                </div>
+
+                            </div>
+
+                        @endforeach
+
+                    </div>
+
+                @else
+
+                    <div class="rounded-xl border border-yellow-300 bg-yellow-50 p-4 text-yellow-700">
+
+                        Belum ada dokumentasi foto.
+
+                    </div>
+
+                @endif
+
+            </div>
+
+        </div>
+
+        {{-- ========================= --}}
+        {{-- SIDEBAR --}}
+        {{-- ========================= --}}
+
+        <div class="space-y-6">
+                        {{-- ========================= --}}
+            {{-- KEBUTUHAN BANTUAN --}}
+            {{-- ========================= --}}
+            <div class="border rounded-2xl p-6">
+
+                <h3 class="text-lg font-semibold text-indigo-700 mb-6">
+                    Hasil Verifikasi Kabid
+                </h3>
+
+                @if($data->kebutuhan)
+
+                    <div class="space-y-4">
+
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span>Dapur Umum</span>
+
+                            @if($data->kebutuhan->dapur_umum == 'Butuh')
+                                <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-semibold">
+                                    Butuh
+                                </span>
+                            @else
+                                <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-sm">
+                                    Tidak
+                                </span>
+                            @endif
+                        </div>
+
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span>Psikososial</span>
+
+                            @if($data->kebutuhan->psikososial == 'Butuh')
+                                <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-semibold">
+                                    Butuh
+                                </span>
+                            @else
+                                <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-sm">
+                                    Tidak
+                                </span>
+                            @endif
+                        </div>
+
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span>Logistik Rentan</span>
+
+                            @if($data->kebutuhan->logistik_rentan == 'Butuh')
+                                <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-semibold">
+                                    Butuh
+                                </span>
+                            @else
+                                <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-sm">
+                                    Tidak
+                                </span>
+                            @endif
+                        </div>
+
+                        <div class="flex justify-between items-center border-b pb-2">
+                            <span>Logistik Makanan</span>
+
+                            @if($data->kebutuhan->logistik_makanan == 'Butuh')
+                                <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-semibold">
+                                    Butuh
+                                </span>
+                            @else
+                                <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-sm">
+                                    Tidak
+                                </span>
+                            @endif
+                        </div>
+
+                        <div class="flex justify-between items-center">
+                            <span>Logistik Penampungan</span>
+
+                            @if($data->kebutuhan->logistik_penampungan == 'Butuh')
+                                <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-sm font-semibold">
+                                    Butuh
+                                </span>
+                            @else
+                                <span class="px-3 py-1 rounded-full bg-gray-100 text-gray-600 text-sm">
+                                    Tidak
+                                </span>
+                            @endif
+                        </div>
+
+                    </div>
+
+                    <div class="mt-6">
+
+                        <label class="block text-sm font-semibold text-gray-700 mb-2">
+                            Keterangan Kebutuhan
+                        </label>
+
+                        <div class="rounded-xl bg-gray-50 border border-gray-200 p-4 text-sm leading-relaxed">
+
+                            {{ $data->kebutuhan->keterangan ?: '-' }}
+
+                        </div>
+
+                    </div>
+
+                @else
+
+                    <div class="rounded-xl border border-yellow-300 bg-yellow-50 p-4 text-yellow-700">
+
+                        Belum ada hasil verifikasi dari Kabid.
+
+                    </div>
+
+                @endif
+
+            </div>
+
+            {{-- ========================= --}}
+            {{-- PENYELESAIAN --}}
+            {{-- ========================= --}}
+            <div class="border rounded-2xl p-6">
+
+                <h3 class="text-lg font-semibold text-indigo-700 mb-6">
+
+                    Penyelesaian Pengaduan
+
                 </h3>
 
                 <form action="{{ route('ketua_tim.pengaduan.simpan',$data->id) }}"
@@ -202,22 +356,44 @@
                     @csrf
                     @method('PUT')
 
-                    <div>
+                    <div class="mb-5">
 
-                        <label class="block mb-2 text-sm">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">
+
                             Tanggal Selesai
+
                         </label>
 
-                        <input type="date"
-                               name="tanggal_selesai"
-                               value="{{ date('Y-m-d') }}"
-                               class="w-full border rounded-lg px-3 py-2"
-                               required>
+                        <input
+                            type="date"
+                            name="tanggal_selesai"
+                            value="{{ $data->tanggal_selesai ?? date('Y-m-d') }}"
+                            class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
+                            required>
 
                     </div>
 
-                    <button type="submit"
-                            class="w-full mt-4 bg-green-600 hover:bg-green-700 text-white py-2 rounded-lg">
+                    <div class="mb-6 rounded-xl bg-blue-50 border border-blue-200 p-4">
+
+                        <h4 class="font-semibold text-blue-700 mb-2">
+
+                            Informasi
+
+                        </h4>
+
+                        <ul class="text-sm text-blue-700 list-disc list-inside space-y-1">
+
+                            <li>Pastikan seluruh bantuan telah disalurkan.</li>
+                            <li>Pastikan proses penanganan telah selesai.</li>
+                            <li>Setelah disimpan, status pengaduan akan berubah menjadi <strong>SELESAI</strong>.</li>
+
+                        </ul>
+
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="w-full bg-green-600 hover:bg-green-700 text-white py-3 rounded-xl font-semibold transition">
 
                         Selesaikan Pengaduan
 
