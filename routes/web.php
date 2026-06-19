@@ -258,7 +258,6 @@ Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')
     Route::prefix('kebutuhan_harian')->name('kebutuhan_harian.')->group(function () {
         Route::get('/{dapur}', [KebutuhanHarianController::class, 'index'])->name('kebutuhan_harian.index');
     });
-
 });
 
 
@@ -343,7 +342,6 @@ Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(f
         Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
             ->name('dapur_umum.index');
     });
-
 });
 Route::middleware(['auth', 'role:ketua_tim'])
     ->prefix('ketua_tim')
@@ -364,7 +362,6 @@ Route::middleware(['auth', 'role:ketua_tim'])
             '/pengaduan/{id}/selesai',
             [PengaduanBencanaController::class, 'simpanSelesai']
         )->name('pengaduan.simpan');
-
     });
 
 Route::middleware(['auth', 'role:relawan|kadus|desa'])
@@ -394,7 +391,6 @@ Route::middleware(['auth', 'role:relawan|kadus|desa'])
             [PengaduanBencanaController::class, 'showUser']
         )
             ->name('pengaduan.show');
-
     });
 
 
