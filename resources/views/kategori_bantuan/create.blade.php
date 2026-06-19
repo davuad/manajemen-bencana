@@ -25,7 +25,7 @@
                         <option value="">-- Pilih Sumber --</option>
 
                         @foreach ($sumber as $s)
-                            <option value="{{ $s->id }}">
+                            <option value="{{ $s->id_sumber }}">
                                 {{ $s->nama_sumber }}
                             </option>
                         @endforeach
@@ -48,7 +48,11 @@
                         Keterangan
                     </label>
 
-                    <input type="text" name="keterangan" class="w-full border rounded-lg p-3">
+                   <textarea
+                        name="keterangan"
+                        rows="4"
+                        class="w-full border rounded-lg p-3">
+                    </textarea>
                 </div>
 
             </div>

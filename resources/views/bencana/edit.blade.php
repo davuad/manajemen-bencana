@@ -1,4 +1,4 @@
-@extends('layouts.app')
+<!-- @extends('layouts.app')
 
 @section('content')
     <div class="mx-3">
@@ -110,4 +110,227 @@
         </form>
 
     </div>
+@endsection -->
+
+@extends('layouts.app')
+
+@section('content')
+
+<div class="max-w-7xl mx-auto">
+
+```
+{{-- HEADER --}}
+<div class="mb-6">
+    <h1 class="text-2xl font-bold text-gray-800">
+        Edit Data Bencana
+    </h1>
+    <p class="text-gray-500 mt-1">
+        Perbarui informasi kejadian bencana yang telah tersimpan.
+    </p>
+</div>
+
+{{-- VALIDATION ERROR --}}
+@if ($errors->any())
+    <div class="mb-5 rounded-lg border border-red-300 bg-red-50 p-4">
+        <h3 class="font-semibold text-red-700 mb-2">
+            Terjadi kesalahan:
+        </h3>
+
+        <ul class="list-disc ml-5 text-red-600">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
+
+<div class="bg-white shadow rounded-2xl p-6">
+
+    <form action="{{ route('admin.bencana.update', $bencana->id) }}" method="POST">
+        @csrf
+        @method('PUT')
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            {{-- NAMA BENCANA --}}
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    Nama Bencana <span class="text-red-500">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    name="nama_bencana"
+                    value="{{ old('nama_bencana', $bencana->nama_bencana) }}"
+                    placeholder="Contoh: Banjir Sungai Serayu"
+                    class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500">
+            </div>
+
+            {{-- KATEGORI --}}
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    Kategori Bencana <span class="text-red-500">*</span>
+                </label>
+
+                <select
+                    name="kategori_id"
+                    class="w-full rounded-xl border border-gray-300 px-4 py-3 focus:ring-2 focus:ring-indigo-500">
+
+                    @foreach ($kategori as $k)
+                        <option
+                            value="{{ $k->id }}"
+                            {{ old('kategori_id', $bencana->kategori_id) == $k->id ? 'selected' : '' }}>
+                            {{ $k->nama_kategori }}
+                        </option>
+                    @endforeach
+
+                </select>
+            </div>
+
+            {{-- DESA --}}
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    Desa
+                </label>
+
+                <select
+                    name="desa_id"
+                    class="w-full rounded-xl border border-gray-300 px-4 py-3">
+
+                    <option value="">
+                        -- Pilih Desa --
+                    </option>
+
+                    @foreach ($desa as $d)
+                        <option
+                            value="{{ $d->id }}"
+                            {{ old('desa_id', $bencana->desa_id) == $d->id ? 'selected' : '' }}>
+                            {{ $d->nama_desa }}
+                        </option>
+                    @endforeach
+
+                </select>
+            </div>
+
+            {{-- PENGADUAN --}}
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    Pengaduan
+                </label>
+
+                <select
+                    name="pengaduan_id"
+                    class="w-full rounded-xl border border-gray-300 px-4 py-3">
+
+                    <option value="">
+                        -- Pilih Pengaduan --
+                    </option>
+
+                    @foreach ($pengaduan as $p)
+                        <option
+                            value="{{ $p->id }}"
+                            {{ old('pengaduan_id', $bencana->pengaduan_id) == $p->id ? 'selected' : '' }}>
+                            {{ $p->deskripsi }}
+                        </option>
+                    @endforeach
+
+                </select>
+            </div>
+
+            {{-- TANGGAL --}}
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    Tanggal Kejadian <span class="text-red-500">*</span>
+                </label>
+
+                <input
+                    type="text"
+                    name="tanggal"
+                    value="{{ old('tanggal', date('Y-m-d', strtotime($bencana->tanggal))) }}"
+                >
+            </div>
+
+            {{-- STATUS --}}
+            <div>
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    Status Bencana <span class="text-red-500">*</span>
+                </label>
+
+                <select
+                    name="status_bencana"
+                    class="w-full rounded-xl border border-gray-300 px-4 py-3">
+
+                    <option
+                        value="berlangsung"
+                        {{ old('status_bencana', $bencana->status_bencana) == 'berlangsung' ? 'selected' : '' }}>
+                        🟠 Berlangsung
+                    </option>
+
+                    <option
+                        value="selesai"
+                        {{ old('status_bencana', $bencana->status_bencana) == 'selesai' ? 'selected' : '' }}>
+                        🟢 Selesai
+                    </option>
+
+                </select>
+            </div>
+
+            {{-- TINGKAT KERUSAKAN --}}
+            <div class="md:col-span-2">
+                <label class="block text-sm font-semibold text-gray-700 mb-2">
+                    Tingkat Kerusakan <span class="text-red-500">*</span>
+                </label>
+
+                <select
+                    name="tingkat_kerusakan"
+                    class="w-full rounded-xl border border-gray-300 px-4 py-3">
+
+                    <option
+                        value="ringan"
+                        {{ old('tingkat_kerusakan', $bencana->tingkat_kerusakan) == 'ringan' ? 'selected' : '' }}>
+                        🟢 Ringan
+                    </option>
+
+                    <option
+                        value="sedang"
+                        {{ old('tingkat_kerusakan', $bencana->tingkat_kerusakan) == 'sedang' ? 'selected' : '' }}>
+                        🟡 Sedang
+                    </option>
+
+                    <option
+                        value="parah"
+                        {{ old('tingkat_kerusakan', $bencana->tingkat_kerusakan) == 'parah' ? 'selected' : '' }}>
+                        🔴 Parah
+                    </option>
+
+                </select>
+            </div>
+
+        </div>
+
+        {{-- BUTTON --}}
+        <div class="flex justify-end gap-3 mt-8">
+
+            <a href="{{ route('admin.bencana.index') }}"
+               class="px-5 py-3 rounded-xl bg-gray-200 hover:bg-gray-300 transition">
+                Batal
+            </a>
+
+            <button
+                type="submit"
+                class="px-6 py-3 rounded-xl bg-yellow-500 hover:bg-yellow-600 text-white font-medium transition">
+
+                Update Data
+
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+```
+
+</div>
+
 @endsection
