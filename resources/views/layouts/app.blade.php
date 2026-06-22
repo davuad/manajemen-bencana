@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Manajemen Bencana</title>
     <link rel="icon" href="{{ asset('logo-dinsos.png') }}" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     @vite('resources/css/app.css')
 
     <style>

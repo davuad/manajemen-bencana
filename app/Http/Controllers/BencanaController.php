@@ -64,7 +64,7 @@ class BencanaController extends Controller
             ->with('success', 'Data berhasil ditambahkan');
     }
 
-    public function edit($id)
+    public function edit(int $id)
     {
         return view('bencana.edit', [
             'bencana' => Bencana::findOrFail($id),
@@ -74,7 +74,7 @@ class BencanaController extends Controller
         ]);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, int $id)
     {
         $request->validate([
             'nama_bencana' => 'required',
@@ -93,7 +93,7 @@ class BencanaController extends Controller
             ->with('success', 'Data berhasil diupdate');
     }
 
-    public function destroy($id)
+    public function destroy(int $id)
     {
         Bencana::findOrFail($id)->delete();
 
