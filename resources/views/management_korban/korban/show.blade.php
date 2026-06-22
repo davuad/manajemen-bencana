@@ -1,3 +1,17 @@
+@php
+    $user = auth()->user();
+
+    if ($user->hasRole('admin')) {
+        $routePrefix = 'admin.korban';
+    } elseif ($user->hasRole('petugas')) {
+        $routePrefix = 'petugas.korban';
+    } elseif ($user->hasRole('relawan')) {
+        $routePrefix = 'relawan.korban';
+    } elseif ($user->hasRole('desa')) {
+        $routePrefix = 'desa.korban';
+    }
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
@@ -49,7 +63,7 @@
             <div>
                 <label class="block text-sm font-semibold text-gray-500 mb-1">Bencana</label>
                 <div class="border rounded-lg p-3 bg-gray-50">
-                    {{ $korban->bencana->kategori->nama_kategori ?? '-' }}
+                    {{ $korban->bencana->kategori->nama_kategori ?? '-' }} - {{ $korban->bencana->desa->nama_desa ?? '-' }} - {{ \Carbon\Carbon::parse($korban->bencana->tanggal)->format('d-m-Y') }}
                 </div>
             </div>
 
@@ -97,13 +111,8 @@
         </div>
 
         <div class="flex justify-end gap-3 mt-6">
-            <a href="{{ route('admin.management_korban.korban.index') }}" class="px-4 py-2 bg-gray-300 rounded-lg">
+            <a href="{{ route($routePrefix . '.index') }}" class="px-4 py-2 bg-gray-300 rounded-lg">
                 Kembali
-            </a>
-
-            <a href="{{ route('admin.management_korban.korban.edit', $korban->id) }}"
-                class="px-6 py-2 bg-blue-600 text-white rounded-lg">
-                Edit Data
             </a>
         </div>
     </div>

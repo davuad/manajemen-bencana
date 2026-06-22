@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Traits\HasRoles;
 use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
+    use HasRoles;
     /**
      * Display a listing of the resource.
      */

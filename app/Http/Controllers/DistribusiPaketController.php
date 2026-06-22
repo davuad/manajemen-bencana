@@ -6,7 +6,7 @@ use App\Models\Desa;
 use App\Models\DetailPaket;
 use App\Models\DistribusiPaket;
 use App\Models\PaketBantuan;
-use App\Models\Pegawai;
+use App\Models\Petugas;
 use App\Models\StokPosko;
 use App\Models\WargaTerdampak;
 use Illuminate\Http\Request;
@@ -19,6 +19,8 @@ class DistribusiPaketController extends Controller
     {
         $search = $request->search;
         $desaId = $request->desa_id;
+        $tanggalAwal = $request->tanggal_awal;
+        $tanggalAkhir = $request->tanggal_akhir;
 
         $desaList = Desa::orderBy('nama_desa', 'asc')->get();
 
@@ -41,7 +43,7 @@ class DistribusiPaketController extends Controller
             'wargaTerdampak.desa',
             'wargaTerdampak.bencana',
             'paketBantuan',
-            'pegawai'
+            'petugas'
         ])
             ->when($search, function ($query) use ($search) {
                 $query->whereHas('wargaTerdampak', function ($q) use ($search) {
@@ -54,6 +56,12 @@ class DistribusiPaketController extends Controller
                     $q->where('desa_id', $desaId);
                 });
             })
+            ->when($tanggalAwal && $tanggalAkhir, function ($query) use ($tanggalAwal, $tanggalAkhir) {
+                $query->whereBetween('tanggal_distribusi', [
+                    $tanggalAwal,
+                    $tanggalAkhir
+                ]);
+            })
             ->latest()
             ->paginate(5, ['*'], 'riwayat_page');
 
@@ -62,7 +70,9 @@ class DistribusiPaketController extends Controller
             'riwayatDistribusi',
             'desaList',
             'search',
-            'desaId'
+            'desaId',
+            'tanggalAwal',
+            'tanggalAkhir'
         ));
     }
 
@@ -77,9 +87,13 @@ class DistribusiPaketController extends Controller
             })
             ->get();
 
-        $pegawai = Pegawai::all();
+        $petugas = Petugas::where('status', 'aktif')
+            ->whereHas('posko', function ($q) use ($warga) {
+                $q->where('desa_id', $warga->desa_id);
+            })
+            ->get();
 
-        return view('management_distribusi.distribusi_paket.create', compact('warga', 'paketBantuan', 'pegawai'));
+        return view('management_distribusi.distribusi_paket.create', compact('warga', 'paketBantuan', 'petugas'));
     }
 
     public function store(Request $request)
@@ -89,7 +103,7 @@ class DistribusiPaketController extends Controller
             'paket_bantuan_id'   => 'required|exists:paket_bantuan,id',
             'jumlah_paket'       => 'required|integer|min:1',
             'tanggal_distribusi' => 'required|date',
-            'pegawai_id'         => 'required|exists:pegawai,id_pegawai',
+            'petugas_id' => 'required|exists:petugas,id',
         ]);
 
         DB::beginTransaction();
@@ -151,7 +165,7 @@ class DistribusiPaketController extends Controller
                 'paket_bantuan_id'   => $validated['paket_bantuan_id'],
                 'jumlah_paket'       => $validated['jumlah_paket'],
                 'tanggal_distribusi' => $validated['tanggal_distribusi'],
-                'pegawai_id'         => $validated['pegawai_id'],
+                'petugas_id' => $validated['petugas_id'],
                 'status_distribusi'  => 'Proses Penyaluran',
             ]);
 
@@ -162,8 +176,9 @@ class DistribusiPaketController extends Controller
 
             DB::commit();
 
+            $routePrefix = request()->segment(1);
             return redirect()
-                ->route('admin.management_distribusi.distribusi_paket.index')
+                ->route($routePrefix . '.management_distribusi.distribusi_paket.index')
                 ->with('success', 'Distribusi berhasil dibuat.');
         } catch (\Exception $e) {
             DB::rollback();
@@ -177,7 +192,7 @@ class DistribusiPaketController extends Controller
             'wargaTerdampak.desa',
             'wargaTerdampak.bencana',
             'paketBantuan.detailPaket.barang',
-            'pegawai'
+            'petugas'
         ])->findOrFail($id);
 
         return view('management_distribusi.distribusi_paket.show', compact('distribusi'));

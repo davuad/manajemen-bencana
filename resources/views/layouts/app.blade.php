@@ -42,6 +42,17 @@
         {{-- Main Content --}}
 
         <main class="flex-1 overflow-auto p-6">
+            @if(session('success'))
+                <div class="mb-4 px-4 py-3 rounded-lg bg-green-100 border border-green-400 text-green-700">
+                    {{ session('success') }}
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="mb-4 px-4 py-3 rounded-lg bg-red-100 border border-red-400 text-red-700">
+                    {{ session('error') }}
+                </div>
+            @endif
             @if(isset($slot))
                 {{ $slot }}
             @else

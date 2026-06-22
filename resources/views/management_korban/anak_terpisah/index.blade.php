@@ -2,6 +2,251 @@
 
 @section('content')
 
+<div class="bg-white rounded-xl shadow p-6">
+
+    <!-- HEADER -->
+    <div class="flex justify-between items-center mb-6">
+        <div>
+            <h2 class="text-xl font-bold">Data Anak Terpisah</h2>
+            <p class="text-gray-500 text-sm">
+                Kelola data anak yang ditemukan
+            </p>
+        </div>
+
+        @if(auth()->user()->hasRole('admin'))
+    <a href="{{ route('admin.anak_terpisah.create') }}"
+       class="bg-indigo-700 text-white px-4 py-2 rounded-lg">
+        + Tambah Data Anak
+    </a>
+
+@elseif(auth()->user()->hasRole('petugas'))
+    <a href="{{ route('petugas.anak_terpisah.create') }}"
+       class="bg-indigo-700 text-white px-4 py-2 rounded-lg">
+        + Tambah Data Anak
+    </a>
+@endif
+    </div>
+
+    <!-- ALERT -->
+    @if(session('success'))
+        <div class="mb-4 p-3 bg-green-100 text-green-700 rounded-lg">
+            {{ session('success') }}
+        </div>
+    @endif
+
+   <!-- SEARCH & FILTER -->
+<form method="GET"
+      action="{{ route(auth()->user()->hasRole('relawan')
+        ? 'relawan.anak_terpisah.index'
+        : (auth()->user()->hasRole('petugas')
+            ? 'petugas.anak_terpisah.index'
+            : 'admin.anak_terpisah.index')) }}"
+            
+      class="mb-4 flex flex-wrap gap-2">
+
+    <input type="text"
+           name="search"
+           value="{{ request('search') }}"
+           placeholder="Cari nama anak..."
+           class="border rounded-lg p-3 flex-1 min-w-[250px]">
+
+    <select name="filter_umur"
+            class="border rounded-lg p-3">
+
+        <option value="">Semua Umur</option>
+
+        <option value="0-2" {{ request('filter_umur') == '0-2' ? 'selected' : '' }}>
+            0 - 2 Tahun
+        </option>
+
+        <option value="3-5" {{ request('filter_umur') == '3-5' ? 'selected' : '' }}>
+            3 - 5 Tahun
+        </option>
+
+        <option value="6-8" {{ request('filter_umur') == '6-8' ? 'selected' : '' }}>
+            6 - 8 Tahun
+        </option>
+
+        <option value="9-11" {{ request('filter_umur') == '9-11' ? 'selected' : '' }}>
+            9 - 11 Tahun
+        </option>
+
+        <option value="12-14" {{ request('filter_umur') == '12-14' ? 'selected' : '' }}>
+            12 - 14 Tahun
+        </option>
+
+        <option value="15-17" {{ request('filter_umur') == '15-17' ? 'selected' : '' }}>
+            15 - 17 Tahun
+        </option>
+
+    </select>
+
+    <button type="submit"
+            class="bg-blue-500 text-white px-4 py-3 rounded-lg">
+        Cari
+    </button>
+
+    <a href="{{ route(auth()->user()->hasRole('relawan')
+        ? 'relawan.anak_terpisah.index'
+        : (auth()->user()->hasRole('petugas')
+            ? 'petugas.anak_terpisah.index'
+            : 'admin.anak_terpisah.index')) }}"
+            
+       class="bg-gray-300 px-4 py-3 rounded-lg">
+        Reset
+    </a>
+
+</form>
+
+@if(request('search') || request('filter_umur'))
+    <p class="text-sm text-gray-500 mb-3">
+        Menampilkan hasil
+
+        @if(request('search'))
+            untuk kata kunci
+            <span class="font-semibold">
+                "{{ request('search') }}"
+            </span>
+        @endif
+
+        @if(request('filter_umur'))
+            dengan filter umur
+            <span class="font-semibold">
+                {{ request('filter_umur') }} tahun
+            </span>
+        @endif
+    </p>
+@endif
+
+    <!-- TABLE -->
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-3 text-center">No</th>
+                    <th>Foto</th>
+                    <th>Nama Anak</th>
+                    <th>Jenis Kelamin</th>
+                    <th>Umur</th>
+                    <th>Lokasi</th>
+                    <th>Status</th>
+                    <th class="text-center">Aksi</th>
+                </tr>
+            </thead>
+
+            <tbody>
+            @forelse($data as $index => $d)
+                <tr class="border-t">
+
+                    <td class="p-2 text-center">
+                        {{ $index + 1 }}
+                    </td>
+
+                    <td class="p-2">
+                        <img src="{{ asset('storage/'.$d->foto_anak) }}"
+                             class="w-16 h-16 object-cover rounded">
+                    </td>
+
+                    <td class="p-2">
+                        {{ $d->nama_anak }}
+                    </td>
+
+                    <td class="p-2">
+                        {{ $d->jenis_kelamin }}
+                    </td>
+
+                    <td class="p-2">
+                        {{ $d->umur ?? '-' }}
+                    </td>
+
+                    <td class="p-2">
+                        {{ $d->lokasi_ditemukan }}
+                    </td>
+
+                    <td class="p-2">
+                        @if($d->status_anak == 'sudah_dijemput')
+                            <span class="px-2 py-1 rounded text-white text-xs bg-green-500">
+                                Sudah Dijemput
+                            </span>
+                        @elseif($d->status_anak == 'dalam_proses')
+                            <span class="px-2 py-1 rounded text-white text-xs bg-yellow-500">
+                                Dalam Proses
+                            </span>
+                        @else
+                            <span class="px-2 py-1 rounded text-white text-xs bg-red-500">
+                                Belum Dijemput
+                            </span>
+                        @endif
+                    </td>
+
+                    <td class="flex gap-2 py-4">
+
+    @if(auth()->user()->hasRole('relawan'))
+
+        <a href="{{ route('relawan.anak_terpisah.show', $d->id) }}"
+           class="text-gray-600">
+            👁️
+        </a>
+
+    @elseif(auth()->user()->hasRole('petugas'))
+
+        <a href="{{ route('petugas.anak_terpisah.show', $d->id) }}"
+           class="text-gray-600">
+            👁️
+        </a>
+
+        <a href="{{ route('petugas.anak_terpisah.edit', $d->id) }}"
+           class="text-blue-500">
+            ✏️
+        </a>
+
+        <button onclick="openModal('{{ $d->id }}','{{ $d->nama_anak }}')"
+                class="text-red-500">
+            🗑️
+        </button>
+
+    @else
+
+        <a href="{{ route('admin.anak_terpisah.show', $d->id) }}"
+           class="text-gray-600">
+            👁️
+        </a>
+
+        <a href="{{ route('admin.anak_terpisah.edit', $d->id) }}"
+           class="text-blue-500">
+            ✏️
+        </a>
+
+        <button onclick="openModal('{{ $d->id }}','{{ $d->nama_anak }}')"
+                class="text-red-500">
+            🗑️
+        </button>
+
+    @endif
+
+</td>
+
+                </tr>
+            @empty
+                <tr>
+                    <td colspan="8" class="text-center p-4">
+                        Data belum ada
+                    </td>
+                </tr>
+            @endforelse
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+@endsection
+
+
+{{-- @extends('layouts.app')
+
+@section('content')
+
 <div class="py-6">
     <div class="bg-white rounded-xl shadow p-6">
 
@@ -190,4 +435,4 @@ function closeModal() {
 }
 </script>
 
-@endsection
+@endsection --}}
