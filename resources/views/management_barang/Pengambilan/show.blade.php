@@ -249,14 +249,14 @@
     {{-- Button --}}
     <div class="mt-8 flex justify-between">
 
-        <a href="{{ route('management_barang.pengambilan.index') }}"
+        <a href="{{ route('admin.management_barang.pengambilan.index') }}"
            class="px-5 py-2 bg-gray-300 rounded-lg">
 
             Kembali
 
         </a>
 
-        <a href="{{ route('management_barang.pengambilan.edit', $data->id) }}"
+        <a href="{{ route('admin.management_barang.pengambilan.edit', $data->id) }}"
            class="px-5 py-2 bg-blue-600 text-white rounded-lg">
 
             Edit

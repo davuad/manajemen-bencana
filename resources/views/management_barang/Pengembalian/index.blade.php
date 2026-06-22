@@ -19,7 +19,7 @@
 
         </div>
 
-        <a href="{{ route('management_barang.pengembalian.create') }}"
+        <a href="{{ route('admin.management_barang.pengembalian.create') }}"
            class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
 
             + Tambah Pengembalian
@@ -30,14 +30,14 @@
 
     {{-- SEARCH --}}
     <form method="GET"
-          action="{{ route('management_barang.pengembalian.index') }}">
+          action="{{ route('admin.management_barang.pengembalian.index') }}">
 
         <div class="flex gap-4 mb-6">
 
             <input type="text"
                    name="search"
                    value="{{ request('search') }}"
-                   placeholder="Cari tujuan / bencana / barang"
+                   placeholder="Cari tujuan"
                    class="flex-1 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
 
             <button type="submit"
@@ -54,7 +54,7 @@
     {{-- FILTER STATUS --}}
     <div class="flex gap-3 mb-6 flex-wrap">
 
-        <a href="{{ route('management_barang.pengembalian.index') }}"
+        <a href="{{ route('admin.management_barang.pengembalian.index') }}"
            class="px-4 py-2 rounded-lg
            {{ request('status') == '' ? 'bg-indigo-600 text-white' : 'bg-gray-200 text-gray-700' }}">
 
@@ -62,7 +62,7 @@
 
         </a>
 
-        <a href="{{ route('management_barang.pengembalian.index', ['status' => 'Ditangani']) }}"
+        <a href="{{ route('admin.management_barang.pengembalian.index', ['status' => 'Ditangani']) }}"
            class="px-4 py-2 rounded-lg
            {{ request('status') == 'Ditangani'
                 ? 'bg-yellow-500 text-white'
@@ -72,7 +72,7 @@
 
         </a>
 
-        <a href="{{ route('management_barang.pengembalian.index', ['status' => 'Selesai']) }}"
+        <a href="{{ route('admin.management_barang.pengembalian.index', ['status' => 'Selesai']) }}"
            class="px-4 py-2 rounded-lg
            {{ request('status') == 'Selesai'
                 ? 'bg-green-600 text-white'
@@ -82,7 +82,7 @@
 
         </a>
 
-        <a href="{{ route('management_barang.pengembalian.index', ['status' => 'Dibatalkan']) }}"
+        <a href="{{ route('admin.management_barang.pengembalian.index', ['status' => 'Dibatalkan']) }}"
            class="px-4 py-2 rounded-lg
            {{ request('status') == 'Dibatalkan'
                 ? 'bg-red-600 text-white'
@@ -315,7 +315,7 @@
                         <div class="flex justify-center gap-3">
 
                             {{-- DETAIL --}}
-                            <a href="{{ route('management_barang.pengembalian.show', $first->id) }}"
+                            <a href="{{ route('admin.management_barang.pengembalian.show', $first->id) }}"
                                class="text-green-600 hover:text-green-800">
 
                                 🔍
@@ -323,7 +323,7 @@
                             </a>
 
                             {{-- EDIT --}}
-                            <a href="{{ route('management_barang.pengembalian.edit', $first->id) }}"
+                            <a href="{{ route('admin.management_barang.pengembalian.edit', $first->id) }}"
                                class="text-blue-600 hover:text-blue-800">
 
                                 ✏️
@@ -331,7 +331,7 @@
                             </a>
 
                             {{-- DELETE --}}
-                            <form action="{{ route('management_barang.pengembalian.destroy', $first->id) }}"
+                            <form action="{{ route('admin.management_barang.pengembalian.destroy', $first->id) }}"
                                   method="POST"
                                   onsubmit="return confirm('Yakin ingin menghapus data ini?')">
 

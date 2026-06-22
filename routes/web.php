@@ -187,8 +187,16 @@ Route::middleware(['auth', 'role:admin'])
 
         // --- Management Barang ---
         Route::prefix('management-barang')->name('management_barang.')->group(function () {
+
+            Route::post('pengambilan/{id}/batal',[PengambilanController::class, 'batal'])
+                ->name('pengambilan.batal');
+
             Route::resource('petugas', PetugasController::class);
             Route::resource('pengambilan', PengambilanController::class);
+
+            Route::get('pengembalian/get-pengambilan/{id}', [PengembalianController::class, 'getPengambilan'])
+                ->name('pengembalian.get_pengambilan');
+
             Route::resource('pengembalian', PengembalianController::class);
         });
 

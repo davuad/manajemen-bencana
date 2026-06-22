@@ -17,7 +17,7 @@
 
     </div>
 
-    <form action="{{ route('management_barang.pengembalian.update', $data->id) }}"
+    <form action="{{ route('admin.management_barang.pengembalian.update', $data->id) }}"
           method="POST">
 
         @csrf
@@ -290,7 +290,7 @@
         {{-- BUTTON --}}
         <div class="mt-8 flex justify-between">
 
-            <a href="{{ route('management_barang.pengembalian.index') }}"
+            <a href="{{ route('admin.management_barang.pengembalian.index') }}"
                class="px-5 py-2 bg-gray-300 rounded-lg">
 
                 Kembali
@@ -322,7 +322,7 @@
 
     {{-- FORM DELETE --}}
     <form id="hapusForm"
-          action="{{ route('management_barang.pengembalian.destroy', $data->id) }}"
+          action="{{ route('admin.management_barang.pengembalian.destroy', $data->id) }}"
           method="POST"
           class="hidden">
 
