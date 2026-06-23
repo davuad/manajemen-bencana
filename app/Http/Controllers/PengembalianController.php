@@ -9,33 +9,56 @@ use App\Models\Barang;
 
 class PengembalianController extends Controller
 {
-    public function index(Request $request)
-    {
-        $query = Pengembalian::with([
-            'pengambilan.barang',
-            'petugas',
-            'posko'
-        ]);
+   public function index(Request $request)
+{
+    // 1. Mulai query dengan Eager Loading relasi terkait
+    $query = Pengembalian::with([
+        'pengambilan.barang',
+        'petugas',
+        'posko'
+    ]);
 
-        if ($request->search) {
-            $search = $request->search;
+    // 2. Logika Fitur Search Bar
+    if ($request->filled('search')) {
+        $search = $request->search;
 
-            $query->whereHas('pengambilan', function ($q) use ($search) {
+        // Gunakan fungsi closure di mana bertujuan mengelompokkan kondisi OR (Logical Grouping)
+        $query->where(function ($mainQuery) use ($search) {
+            
+            // Cari berdasarkan Keterangan Pengembalian
+            $mainQuery->where('keterangan', 'like', "%$search%")
+                      ->orWhere('status', 'like', "%$search%");
+
+            // Cari berdasarkan data Pengambilan (Tujuan atau Nama Barang)
+            $mainQuery->orWhereHas('pengambilan', function ($q) use ($search) {
                 $q->where('tujuan', 'like', "%$search%")
                   ->orWhereHas('barang', function ($b) use ($search) {
                       $b->where('nama_barang', 'like', "%$search%");
                   });
             });
-        }
 
-        if ($request->status) {
-            $query->where('status', $request->status);
-        }
+            // Cari berdasarkan Nama Petugas
+            $mainQuery->orWhereHas('petugas', function ($q) use ($search) {
+                $q->where('nama_petugas', 'like', "%$search%");
+            });
 
-        $data = $query->latest()->get();
-
-        return view('management_barang.pengembalian.index', compact('data'));
+            // Cari berdasarkan Nama Posko
+            $mainQuery->orWhereHas('posko', function ($q) use ($search) {
+                $q->where('nama_posko', 'like', "%$search%");
+            });
+        });
     }
+
+    // 3. Filter berdasarkan Status Dropdown (jika ada)
+    if ($request->filled('status')) {
+        $query->where('status', $request->status);
+    }
+
+    // 4. Ambil data terbaru (Sangat disarankan memakai paginate agar performa aplikasi ringan)
+    $data = $query->latest()->paginate(10); 
+
+    return view('management_barang.pengembalian.index', compact('data'));
+}
 
 public function create()
 {
@@ -172,7 +195,7 @@ public function store(Request $request)
     }
 
     return redirect()
-        ->route('management_barang.pengembalian.index')
+        ->route('admin.management_barang.pengembalian.index')
         ->with(
             'success',
             'Data pengembalian berhasil disimpan'
@@ -324,7 +347,7 @@ public function getPengambilan($id)
         }
 
         return redirect()
-            ->route('management_barang.pengembalian.index')
+            ->route('admin.management_barang.pengembalian.index')
             ->with('success', 'Data pengembalian berhasil diupdate');
     }
     public function show($id)
@@ -360,7 +383,7 @@ public function getPengambilan($id)
             ->delete();
 
         return redirect()
-            ->route('management_barang.pengembalian.index')
+            ->route('admin.management_barang.pengembalian.index')
             ->with('success', 'Data pengembalian berhasil dihapus.');
     }
     

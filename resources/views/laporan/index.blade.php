@@ -1,6 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+
+    @php
+        $prefix = auth()->user()->getRoleNames()->first();
+    @endphp
+
     <div class="bg-white rounded-xl shadow p-6">
 
         {{-- HEADER --}}
@@ -16,7 +21,7 @@
         <div class="border-b pb-3 mb-4"></div>
 
         {{-- FILTER --}}
-        <form method="GET" action="{{ route('admin.laporan.index') }}" class="grid md:grid-cols-5 gap-3 mb-5">
+        <form method="GET" action="{{ route($prefix . '.laporan.index') }}" class="grid md:grid-cols-5 gap-3 mb-5">
 
             {{-- TANGGAL MULAI --}}
             <div>
@@ -66,13 +71,12 @@
 
             {{-- BUTTON --}}
             <div class="flex items-end gap-2">
-                <button type="submit"
-                    class="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2 transition w-full">
+                <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white rounded px-4 py-2 transition w-full">
                     Filter
                 </button>
 
                 @if (request()->hasAny(['tanggal_mulai', 'tanggal_selesai', 'search', 'status']))
-                    <a href="{{ route('admin.laporan.index') }}"
+                    <a href="{{ route($prefix . '.laporan.index') }}"
                         class="bg-gray-400 hover:bg-gray-500 text-white rounded px-4 py-2 text-center transition w-full">
                         Reset
                     </a>
@@ -83,8 +87,8 @@
 
         {{-- DOWNLOAD PDF --}}
         <div class="mb-4 flex justify-end">
-            <a href="{{ route('admin.laporan.pdf', request()->query()) }}"
-                class="flex items-center gap-2 bg-yellow-500 hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition">
+            <a href="{{ route($prefix . '.laporan.pdf', request()->query()) }}"
+                class="flex items-center gap-2 bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg transition">
 
                 <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="2">
@@ -150,7 +154,7 @@
 
                             {{-- ACTION --}}
                             <td class="p-2 text-center">
-                                <a href="{{ route('admin.laporan.pdf.detail', $b->id) }}" target="_blank"
+                                <a href="{{ route($prefix . '.laporan.pdf.detail', $b->id) }}" target="_blank"
                                     class="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded transition">
                                     Lihat Detail
                                 </a>

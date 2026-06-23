@@ -8,53 +8,45 @@ use App\Models\JadwalLayanan;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class JadwalController extends Controller
 {
     public function index(Request $request)
     {
-        // 1. Ambil tahun unik untuk pilihan filter tahun
-        $tahunTersedia = Bencana::select(DB::raw('YEAR(tanggal) as tahun'))
-            ->distinct()
-            ->orderBy('tahun', 'desc')
-            ->pluck('tahun')
-            ->filter();
-
-        // 2. Query dasar dengan Eager Loading agar tidak berat
         $query = JadwalLayanan::with(['pegawai', 'bencana.desa', 'bencana.kategori']);
 
-        // 3. Filter (Bencana, Status, dan Tahun)
-        if ($request->filled('bencana_id')) {
-            $query->where('bencana_id', $request->bencana_id);
+        //  Filter Bencana & Status (Tetap ada untuk semua role)
+        if ($request->filled('bencana_id')) $query->where('bencana_id', $request->bencana_id);
+        if ($request->filled('status')) $query->where('status', $request->status);
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        // Cek apakah user BUKAN Admin dan BUKAN Kabid
+        $isOperasional = !$user->hasRole('admin') && !$user->hasRole('kabid');
+
+        // Ambil tahun dari request
+        $tahunMulai = $request->input('tahun_mulai');
+        $tahunSelesai = $request->input('tahun_selesai');
+
+        // Terapkan Filter Rentang
+        if ($tahunMulai) {
+            $query->whereHas('bencana', fn($q) => $q->whereYear('tanggal', '>=', $tahunMulai));
         }
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
+        if ($tahunSelesai) {
+            $query->whereHas('bencana', fn($q) => $q->whereYear('tanggal', '<=', $tahunSelesai));
         }
 
-        // Filter Rentang Tahun (Admin/Kabid)
-        if ($request->filled('tahun_mulai')) {
-            $query->whereHas('bencana', fn($q) => $q->whereYear('tanggal', '>=', $request->tahun_mulai));
-        }
-        if ($request->filled('tahun_selesai')) {
-            $query->whereHas('bencana', fn($q) => $q->whereYear('tanggal', '<=', $request->tahun_selesai));
-        }
-        
-        // Filter Tahun Tunggal (Relawan dll)
-        if ($request->filled('tahun')) {
-            $query->whereHas('bencana', fn($q) => $q->whereYear('tanggal', $request->tahun));
-        }
-
-        // 4. PAGINATION: 10 data per halaman + withQueryString agar filter tidak hilang saat pindah halaman
+        // 3. Eksekusi
         $jadwals = $query->orderBy('tanggal_layanan', 'desc')
-                         ->orderBy('jam_mulai', 'desc')
-                         ->paginate(4)
-                         ->withQueryString(); 
-        
+            ->orderBy('jam_mulai', 'desc')
+            ->paginate(4)
+            ->withQueryString();
+
         $bencanas = Bencana::all();
 
-        return view('jadwal.index', compact('jadwals', 'bencanas', 'tahunTersedia'));
+        return view('jadwal.index', compact('jadwals', 'bencanas', 'tahunMulai', 'tahunSelesai'));
     }
-
     public function create()
     {
         $bencanas = Bencana::with('kategori')->get();
@@ -78,7 +70,7 @@ class JadwalController extends Controller
         ]);
 
         JadwalLayanan::create($request->all());
-        return redirect()->route('admin.jadwal.index')->with('success', 'Data berhasil ditambahkan');
+         return redirect()->route('admin.jadwal.index')->with('success', 'Data berhasil ditambahkan');
     }
 
     public function edit(string $id)
@@ -121,10 +113,14 @@ class JadwalController extends Controller
 
         if ($request->filled('bencana_id')) $query->where('bencana_id', $request->bencana_id);
         if ($request->filled('status')) $query->where('status', $request->status);
-        
-        if ($request->filled('tahun_mulai')) $query->whereHas('bencana', fn($q) => $q->whereYear('tanggal', '>=', $request->tahun_mulai));
-        if ($request->filled('tahun_selesai')) $query->whereHas('bencana', fn($q) => $q->whereYear('tanggal', '<=', $request->tahun_selesai));
-        if ($request->filled('tahun')) $query->whereHas('bencana', fn($q) => $q->whereYear('tanggal', $request->tahun));
+
+        // Gunakan logika yang sama persis dengan index() agar hasilnya konsisten
+        if ($request->filled('tahun_mulai')) {
+            $query->whereHas('bencana', fn($q) => $q->whereYear('tanggal', '>=', $request->tahun_mulai));
+        }
+        if ($request->filled('tahun_selesai')) {
+            $query->whereHas('bencana', fn($q) => $q->whereYear('tanggal', '<=', $request->tahun_selesai));
+        }
 
         $jadwals = $query->orderBy('tanggal_layanan', 'desc')->get();
 

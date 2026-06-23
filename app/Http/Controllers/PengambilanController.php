@@ -8,6 +8,7 @@ use App\Models\Petugas;
 use App\Models\Bencana;
 use App\Models\Posko;
 use App\Models\Barang;
+use Illuminate\Support\Facades\DB;
 
 class PengambilanController extends Controller
 {
@@ -22,446 +23,311 @@ class PengambilanController extends Controller
 
         // search
         if ($request->search) {
-
             $search = $request->search;
-
             $query->where(function ($q) use ($search) {
-
-                $q->where(
-                    'tujuan',
-                    'like',
-                    "%{$search}%"
-                )
-
+                $q->where('tujuan', 'like', "%{$search}%")
                 ->orWhereHas('petugas', function ($p) use ($search) {
-
-                    $p->where(
-                        'nama_petugas',
-                        'like',
-                        "%{$search}%"
-                    );
-
+                    $p->where('nama_petugas', 'like', "%{$search}%");
                 })
-
                 ->orWhereHas('posko', function ($p) use ($search) {
-
-                    $p->where(
-                        'nama_posko',
-                        'like',
-                        "%{$search}%"
-                    );
-
+                    $p->where('nama_posko', 'like', "%{$search}%");
                 });
-
             });
         }
 
-        $data = $query
-            ->latest('id')
+        $data = $query->latest('id')
             ->get()
-
             // grouping
             ->groupBy(function ($item) {
-
-                return
-                    $item->bencana_id .
-                    '-' .
-                    $item->petugas_id .
-                    '-' .
-                    $item->tanggal_pengambilan .
-                    '-' .
-                    $item->posko_id .
-                    '-' .
-                    $item->tujuan;
+                return $item->bencana_id .
+                    '-' . $item->petugas_id .
+                    '-' . $item->tanggal_pengambilan .
+                    '-' . $item->posko_id .
+                    '-' . $item->tujuan;
             })
-
             ->map(function ($group) {
-
                 return $group->first();
-
             });
 
-        return view(
-            'management_barang.pengambilan.index',
-            compact('data')
-        );
+        return view('management_barang.pengambilan.index', compact('data'));
     }
 
     public function create()
     {
         $barang  = Barang::all();
-
         $bencana = Bencana::all();
-
-        $petugas = Petugas::whereNull(
-            'deleted_at'
-        )->get();
-
+        $petugas = Petugas::whereNull('deleted_at')->get();
         $posko   = Posko::all();
 
-        return view(
-            'management_barang.pengambilan.create',
-            compact(
-                'barang',
-                'bencana',
-                'petugas',
-                'posko'
-            )
-        );
+        return view('management_barang.pengambilan.create', compact('barang', 'bencana', 'petugas', 'posko'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
-
             'bencana_id' => 'required|exists:bencana,id',
             'petugas_id' => 'required|exists:petugas,id',
             'posko_id' => 'required|exists:posko,id',
             'tanggal_pengambilan' => 'required|date',
             'tujuan' => 'required|max:100',
-
-            'barang_id.*' => 'nullable|exists:barang,id',
+            'barang_id.*' => 'nullable|exists:barang,id_barang', // Diperbaiki dari id_barang ke id menyesuaikan findOrFail
             'jumlah_ambil.*' => 'nullable|integer|min:1',
-
         ]);
 
         $adaBarang = false;
 
-        foreach ($request->barang_id as $index => $barangId) {
+        try {
+            DB::beginTransaction();
 
-            if (
-                empty($barangId) ||
-                empty($request->jumlah_ambil[$index])
-            ) {
-                continue;
+            foreach ($request->barang_id as $index => $barangId) {
+                if (empty($barangId) || empty($request->jumlah_ambil[$index])) {
+                    continue;
+                }
+
+                $adaBarang = true;
+                $jumlah = $request->jumlah_ambil[$index];
+                $barang = Barang::findOrFail($barangId);
+
+                // cek stok
+                if ($jumlah > $barang->stok) {
+                    return back()->withErrors([
+                        'jumlah_ambil' => 'Jumlah melebihi stok untuk ' . $barang->nama_barang
+                    ])->withInput();
+                }
+
+                // simpan
+                Pengambilan::create([
+                    'barang_id' => $barangId,
+                    'bencana_id' => $request->bencana_id,
+                    'petugas_id' => $request->petugas_id,
+                    'posko_id' => $request->posko_id,
+                    'tanggal_pengambilan' => $request->tanggal_pengambilan,
+                    'jumlah_ambil' => $jumlah,
+                    'tujuan' => $request->tujuan,
+                    'status' => 'Ditangani'
+                ]);
+
+                // kurangi stok
+                $barang->stok -= $jumlah;
+                $barang->save();
             }
 
-            $adaBarang = true;
-
-            $jumlah =
-                $request->jumlah_ambil[$index];
-
-            $barang = Barang::findOrFail(
-                $barangId
-            );
-
-            // cek stok
-            if ($jumlah > $barang->stok) {
-
+            // minimal 1 barang
+            if (!$adaBarang) {
                 return back()->withErrors([
-
-                    'jumlah_ambil' =>
-                        'Jumlah melebihi stok untuk '
-                        . $barang->nama_barang
-
+                    'barang_id' => 'Minimal pilih 1 barang'
                 ])->withInput();
             }
 
-            // simpan
-            Pengambilan::create([
+            DB::commit();
 
-                'barang_id' => $barangId,
-                'bencana_id' => $request->bencana_id,
-                'petugas_id' => $request->petugas_id,
-                'posko_id' => $request->posko_id,
+            return redirect()
+                ->route('admin.management_barang.pengambilan.index')
+                ->with('success', 'Data pengambilan berhasil ditambahkan');
 
-                'tanggal_pengambilan' =>
-                    $request->tanggal_pengambilan,
-
-                'jumlah_ambil' => $jumlah,
-
-                'tujuan' => $request->tujuan,
-
-                'status' => 'Ditangani'
-
-            ]);
-
-            // kurangi stok
-            $barang->stok -= $jumlah;
-            $barang->save();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            return back()->withErrors(['barang_id' => 'Terjadi kesalahan: ' . $e->getMessage()])->withInput();
         }
-
-        // minimal 1 barang
-        if (!$adaBarang) {
-
-            return back()->withErrors([
-
-                'barang_id' =>
-                    'Minimal pilih 1 barang'
-
-            ])->withInput();
-        }
-
-        return redirect()
-            ->route(
-                'management_barang.pengambilan.index'
-            )
-            ->with(
-                'success',
-                'Data pengambilan berhasil ditambahkan'
-            );
     }
 
-    public function edit($id)
-    {
-        $data = Pengambilan::findOrFail($id);
+   public function edit($id)
+{
+    $data = Pengambilan::findOrFail($id);
 
-        $barang = Barang::all();
+    $barangPengambilan = Pengambilan::where(
+        'tanggal_pengambilan',
+        $data->tanggal_pengambilan
+    )
+    ->where('petugas_id', $data->petugas_id)
+    ->where('tujuan', $data->tujuan)
+    ->where('posko_id', $data->posko_id)
+    ->where('bencana_id', $data->bencana_id)
+    ->get();
 
-        $bencana = Bencana::all();
+    $barang = Barang::all();
+    $bencana = Bencana::all();
+    $petugas = Petugas::whereNull('deleted_at')->get();
+    $posko = Posko::all();
 
-        $petugas = Petugas::whereNull(
-            'deleted_at'
-        )->get();
-
-        $posko = Posko::all();
-
-        return view(
-            'management_barang.pengambilan.edit',
-            compact(
-                'data',
-                'barang',
-                'bencana',
-                'petugas',
-                'posko'
-            )
-        );
-    }
+    return view(
+        'management_barang.pengambilan.edit',
+        compact(
+            'data',
+            'barang',
+            'barangPengambilan',
+            'bencana',
+            'petugas',
+            'posko'
+        )
+    );
+}
 
     public function update(Request $request, $id)
     {
         $request->validate([
-
             'bencana_id' => 'required|exists:bencana,id',
             'petugas_id' => 'required|exists:petugas,id',
             'posko_id' => 'required|exists:posko,id',
             'tanggal_pengambilan' => 'required|date',
             'tujuan' => 'required|max:100',
-
-            'status' =>
-                'required|in:Ditangani,Selesai,Dibatalkan',
-
-            'barang_id.*' =>
-                'nullable|exists:barang,id',
-
-            'jumlah_ambil.*' =>
-                'nullable|integer|min:0',
-
+            'status' => 'required|in:Ditangani,Selesai,Dibatalkan',
+            'barang_id.*' => 'nullable|exists:barang,id_barang', // Validasi diperketat kembali menggunakan id
+            'jumlah_ambil.*' => 'nullable|integer|min:0',
         ]);
 
         $dataLama = Pengambilan::findOrFail($id);
+        $statusDibatalkan = $request->status == 'Dibatalkan';
 
-        // ambil data group lama
-        $groupData = Pengambilan::where(
-                'tanggal_pengambilan',
-                $dataLama->tanggal_pengambilan
-            )
-            ->where(
-                'petugas_id',
-                $dataLama->petugas_id
-            )
-            ->where(
-                'tujuan',
-                $dataLama->tujuan
-            )
-            ->where(
-                'posko_id',
-                $dataLama->posko_id
-            )
-            ->get();
+        // 1. Filter & Bersihkan input barang dari baris kosong / placeholder
+        $validItems = [];
+        if ($request->has('barang_id')) {
+            foreach ($request->barang_id as $index => $bId) {
+                $jumlah = isset($request->jumlah_ambil[$index]) ? (int)$request->jumlah_ambil[$index] : 0;
+                
+                if (!empty($bId)) {
+                    // Jika status tidak dibatalkan, minimal jumlah ambil harus 1
+                    if (!$statusDibatalkan && $jumlah <= 0) {
+                        continue; 
+                    }
 
-        // kembalikan stok lama
-        foreach ($groupData as $old) {
-
-            if (
-                $old->status != 'Dibatalkan'
-            ) {
-
-                $barangOld = Barang::find(
-                    $old->barang_id
-                );
-
-                if ($barangOld) {
-
-                    $barangOld->stok +=
-                        $old->jumlah_ambil;
-
-                    $barangOld->save();
+                    $validItems[] = [
+                        'barang_id' => $bId,
+                        'jumlah_ambil' => $jumlah
+                    ];
                 }
             }
         }
 
-        // hapus data lama
-        Pengambilan::where(
-                'tanggal_pengambilan',
-                $dataLama->tanggal_pengambilan
-            )
-            ->where(
-                'petugas_id',
-                $dataLama->petugas_id
-            )
-            ->where(
-                'tujuan',
-                $dataLama->tujuan
-            )
-            ->where(
-                'posko_id',
-                $dataLama->posko_id
-            )
-            ->delete();
+        // Validasi minimal 1 barang jika status aktif (Ditangani / Selesai)
+        if (empty($validItems) && !$statusDibatalkan) {
+            return redirect()->route('admin.management_barang.pengambilan.edit', $id)
+                ->withErrors(['barang_id' => 'Minimal pilih 1 barang dengan jumlah yang valid.'])
+                ->withInput();
+        }
 
-        $adaBarang = false;
+        try {
+            DB::beginTransaction();
 
-        $statusDibatalkan =
-            $request->status == 'Dibatalkan';
+            // Ambil seluruh rombongan data lama berdasarkan identitas grup dataLama
+            $groupData = Pengambilan::where('tanggal_pengambilan', $dataLama->tanggal_pengambilan)
+                ->where('petugas_id', $dataLama->petugas_id)
+                ->where('tujuan', $dataLama->tujuan)
+                ->where('posko_id', $dataLama->posko_id)
+                ->get();
 
-        // simpan ulang
-        foreach ($request->barang_id as $index => $barangId) {
-
-            if (empty($barangId)) {
-                continue;
+            // Kembalikan stok lama ke tabel barang (Simulasi awal)
+            foreach ($groupData as $old) {
+                if ($old->status != 'Dibatalkan') {
+                    $barangOld = Barang::find($old->barang_id);
+                    if ($barangOld) {
+                        $barangOld->stok += $old->jumlah_ambil;
+                        $barangOld->save();
+                    }
+                }
             }
 
-            $adaBarang = true;
-
-            $jumlah =
-                $request->jumlah_ambil[$index]
-                ?? 0;
-
-            // jika dibatalkan
-            if ($statusDibatalkan) {
-
-                $jumlah = 0;
-            }
-
-            $barang = Barang::findOrFail(
-                $barangId
-            );
-
-            // cek stok
-            if (
-                !$statusDibatalkan &&
-                $jumlah > $barang->stok
-            ) {
-
-                return back()->withErrors([
-
-                    'jumlah_ambil' =>
-                        'Jumlah melebihi stok untuk '
-                        . $barang->nama_barang
-
-                ])->withInput();
-            }
-
-            // create ulang
-            Pengambilan::create([
-
-                'barang_id' => $barangId,
-                'bencana_id' => $request->bencana_id,
-                'petugas_id' => $request->petugas_id,
-                'posko_id' => $request->posko_id,
-
-                'tanggal_pengambilan' =>
-                    $request->tanggal_pengambilan,
-
-                'jumlah_ambil' => $jumlah,
-
-                'tujuan' => $request->tujuan,
-
-                'status' => $request->status,
-
-            ]);
-
-            // kurangi stok
+            // Jika status tidak dibatalkan, lakukan pengecekan stok baru setelah digabung stok lama
             if (!$statusDibatalkan) {
+                foreach ($validItems as $item) {
+                    $barang = Barang::find($item['barang_id']);
+                    
+                    if (!$barang) {
+                        throw new \Exception('Data barang tidak ditemukan.');
+                    }
 
-                $barang->stok -= $jumlah;
-                $barang->save();
+                    if ($item['jumlah_ambil'] > $barang->stok) {
+                        throw new \Exception('Jumlah melebihi stok tersedia untuk ' . $barang->nama_barang . ' (Sisa Stok: ' . $barang->stok . ')');
+                    }
+                }
             }
+
+            // 3. Jika pengecekan stok aman, hapus data grup lama
+            Pengambilan::where('tanggal_pengambilan', $dataLama->tanggal_pengambilan)
+                ->where('petugas_id', $dataLama->petugas_id)
+                ->where('tujuan', $dataLama->tujuan)
+                ->where('posko_id', $dataLama->posko_id)
+                ->delete();
+
+            // 4. Insert data baru
+            if ($statusDibatalkan) {
+                // Jika dibatalkan, sisakan 1 data history bernilai 0
+                Pengambilan::create([
+                    'barang_id' => $dataLama->barang_id ?? $request->barang_id[0],
+                    'bencana_id' => $request->bencana_id,
+                    'petugas_id' => $request->petugas_id,
+                    'posko_id' => $request->posko_id,
+                    'tanggal_pengambilan' => $request->tanggal_pengambilan,
+                    'jumlah_ambil' => 0,
+                    'tujuan' => $request->tujuan,
+                    'status' => 'Dibatalkan',
+                ]);
+            } else {
+                // Jika aktif/selesai, kurangi stok dan simpan semua item baru
+                foreach ($validItems as $item) {
+                    $barang = Barang::findOrFail($item['barang_id']);
+
+                    Pengambilan::create([
+                        'barang_id' => $item['barang_id'],
+                        'bencana_id' => $request->bencana_id,
+                        'petugas_id' => $request->petugas_id,
+                        'posko_id' => $request->posko_id,
+                        'tanggal_pengambilan' => $request->tanggal_pengambilan,
+                        'jumlah_ambil' => $item['jumlah_ambil'],
+                        'tujuan' => $request->tujuan,
+                        'status' => $request->status,
+                    ]);
+
+                    $barang->stok -= $item['jumlah_ambil'];
+                    $barang->save();
+                }
+            }
+
+            DB::commit();
+
+            return redirect()
+                ->route('admin.management_barang.pengambilan.index')
+                ->with('success', 'Data pengambilan berhasil diperbarui');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return redirect()->route('admin.management_barang.pengambilan.edit', $id)
+                ->withErrors(['jumlah_ambil' => $e->getMessage()])
+                ->withInput();
         }
-
-        if (
-            !$adaBarang &&
-            !$statusDibatalkan
-        ) {
-
-            return back()->withErrors([
-
-                'barang_id' =>
-                    'Minimal pilih 1 barang'
-
-            ])->withInput();
-        }
-
-        return redirect()
-            ->route(
-                'management_barang.pengambilan.index'
-            )
-            ->with(
-                'success',
-                'Data pengambilan berhasil diupdate'
-            );
     }
 
     public function batal($id)
     {
         $data = Pengambilan::findOrFail($id);
 
-        $groupData = Pengambilan::where(
-                'tanggal_pengambilan',
-                $data->tanggal_pengambilan
-            )
-            ->where(
-                'petugas_id',
-                $data->petugas_id
-            )
-            ->where(
-                'tujuan',
-                $data->tujuan
-            )
-            ->where(
-                'posko_id',
-                $data->posko_id
-            )
+        $groupData = Pengambilan::where('tanggal_pengambilan', $data->tanggal_pengambilan)
+            ->where('petugas_id', $data->petugas_id)
+            ->where('tujuan', $data->tujuan)
+            ->where('posko_id', $data->posko_id)
             ->get();
 
         foreach ($groupData as $item) {
-
             // kembalikan stok
-            if (
-                $item->status != 'Dibatalkan'
-            ) {
-
-                $barang = Barang::find(
-                    $item->barang_id
-                );
-
+            if ($item->status != 'Dibatalkan') {
+                $barang = Barang::find($item->barang_id);
                 if ($barang) {
-
-                    $barang->stok +=
-                        $item->jumlah_ambil;
-
+                    $barang->stok += $item->jumlah_ambil;
                     $barang->save();
                 }
             }
 
             // ubah status
             $item->update([
-
                 'status' => 'Dibatalkan',
                 'jumlah_ambil' => 0
-
             ]);
         }
 
         return redirect()
-            ->route(
-                'management_barang.pengambilan.index'
-            )
-            ->with(
-                'success',
-                'Pengambilan berhasil dibatalkan'
-            );
+            ->route('admin.management_barang.pengambilan.index')
+            ->with('success', 'Pengambilan berhasil dibatalkan');
     }
 
     public function show($id)
@@ -473,9 +339,6 @@ class PengambilanController extends Controller
             'posko'
         ])->findOrFail($id);
 
-        return view(
-            'management_barang.pengambilan.show',
-            compact('data')
-        );
+        return view('management_barang.pengambilan.show', compact('data'));
     }
 }

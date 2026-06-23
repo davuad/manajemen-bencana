@@ -1,3 +1,11 @@
+@php
+    $routePrefix = auth()->user()->hasRole('admin')
+        ? 'admin.korban'
+        : (auth()->user()->hasRole('petugas')
+            ? 'petugas.korban'
+            : 'relawan.korban');
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
@@ -9,7 +17,7 @@
     </div>
 
     <div class="bg-white rounded-xl p-5 m-3 mt-5">
-        <form action="{{ route('admin.management_korban.korban.update', $korban->id) }}" method="POST" class="space-y-6">
+        <form action="{{ route($routePrefix . '.update', $korban->id) }}" method="POST" class="space-y-6">
             @csrf
             @method('PUT')
 
@@ -23,7 +31,7 @@
                         @foreach ($bencana as $item)
                             <option value="{{ $item->id }}"
                                 {{ old('bencana_id', $korban->bencana_id) == $item->id ? 'selected' : '' }}>
-                                {{ $item->kategori->nama_kategori ?? '-' }} - {{ $item->tanggal }}
+                                {{ $item->kategori->nama_kategori ?? '-' }} - {{ $item->desa->nama_desa ?? '-' }} - {{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}
                             </option>
                         @endforeach
                     </select>
@@ -118,7 +126,7 @@
 
             <!-- Button -->
             <div class="flex justify-end gap-3">
-                <a href="{{ route('admin.management_korban.korban.index') }}" class="px-4 py-2 bg-gray-300 rounded-lg">
+                <a href="{{ route($routePrefix . '.index') }}" class="px-4 py-2 bg-gray-300 rounded-lg">
                     Batal
                 </a>
 

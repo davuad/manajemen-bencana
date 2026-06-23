@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $routePrefix = request()->segment(1);
+@endphp
     <div class="mx-3">
         <h2 class="text-xl font-bold">Edit Detail Paket Bantuan</h2>
         <p class="text-gray-500 text-sm">
@@ -19,7 +22,7 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.management_distribusi.detail_paket.update', $detail_paket->id) }}" method="POST"
+        <form action="{{ route($routePrefix .'.management_distribusi.detail_paket.update', $detail_paket->id) }}" method="POST"
             class="space-y-6">
             @csrf
             @method('PUT')
@@ -72,7 +75,7 @@
             </div>
 
             <div class="flex justify-end gap-3">
-                <a href="{{ route('admin.management_distribusi.detail_paket.index', ['paket_bantuan_id' => $detail_paket->paket_bantuan_id]) }}"
+                <a href="{{ route($routePrefix .'.management_distribusi.detail_paket.index', ['paket_bantuan_id' => $detail_paket->paket_bantuan_id]) }}"
                     class="px-4 py-2 bg-gray-300 rounded-lg">
                     Batal
                 </a>

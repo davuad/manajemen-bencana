@@ -2,42 +2,42 @@
 
 
 use App\Http\Controllers\AnakTerpisahController;
+use App\Http\Controllers\BAController;
+use App\Http\Controllers\BarangController;
+use App\Http\Controllers\BarangMasukController;
 use App\Http\Controllers\BencanaController;
-
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\PengaduanBencanaController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DapurUmumController;
 use App\Http\Controllers\DesaController;
 use App\Http\Controllers\DetailDistribusiController;
-use App\Http\Controllers\PenerimaDistribusiController;
 use App\Http\Controllers\DetailPaketController;
 use App\Http\Controllers\DistribusiController;
 use App\Http\Controllers\DistribusiPaketController;
-use App\Http\Controllers\PaketBantuanController;
-use App\Http\Controllers\KorbanController;
-use App\Http\Controllers\WargaTerdampakController;
-use App\Http\Controllers\PegawaiController;
-use App\Http\Controllers\RelawanController;
-use App\Http\Controllers\JadwalController;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\KategoriBencanaController;
 use App\Http\Controllers\GudangController;
-use App\Http\Controllers\KategoriBantuanController;
-use App\Http\Controllers\PenjemputanAnakController;
-use App\Http\Controllers\KebutuhanHarianController;
-use App\Http\Controllers\PoskoController;
-use App\Http\Controllers\StokGudangController;
+use App\Http\Controllers\JadwalController;
 use App\Http\Controllers\JenisBarangController;
-use App\Http\Controllers\SumberBarangMasukController;
-use App\Http\Controllers\BarangController;
-use App\Http\Controllers\BarangMasukController;
-
-use App\Http\Controllers\PetugasController;
+use App\Http\Controllers\KategoriBantuanController;
+use App\Http\Controllers\KategoriBencanaController;
+use App\Http\Controllers\KebutuhanHarianController;
+use App\Http\Controllers\KorbanController;
+use App\Http\Controllers\LaporanController;
+use App\Http\Controllers\PaketBantuanController;
+use App\Http\Controllers\PegawaiController;
+use App\Http\Controllers\PenerimaDistribusiController;
+use App\Http\Controllers\PengaduanBencanaController;
 use App\Http\Controllers\PengambilanController;
 use App\Http\Controllers\PengembalianController;
+use App\Http\Controllers\PenjemputanAnakController;
+use App\Http\Controllers\PetugasController;
+use App\Http\Controllers\PoskoController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\RelawanController;
+use App\Http\Controllers\StokGudangController;
+use App\Http\Controllers\SumberBarangMasukController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\WargaTerdampakController;
 use App\Models\User;
-use App\Http\Controllers\LaporanController;
+use Illuminate\Support\Facades\Route;
 
 
 // --- Public Routes ---
@@ -47,9 +47,7 @@ Route::get('/', function () {
 
 require __DIR__ . '/auth.php';
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware('verified')->name('dashboard');
+Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('verified')->name('dashboard');
 
 Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
 Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
@@ -158,10 +156,10 @@ Route::middleware(['auth', 'role:admin'])
 
 
         // --- Management Korban ---
-        Route::prefix('management-korban')->name('management_korban.')->group(function () {
-            Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])->name('korban.reviewPdf');
-            Route::resource('korban', KorbanController::class);
-        });
+        Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])
+            ->name('korban.reviewPdf');
+
+        Route::resource('korban', KorbanController::class);
 
         // --- Data Master ---
         Route::resource('kategori_bencana', KategoriBencanaController::class);
@@ -179,7 +177,7 @@ Route::middleware(['auth', 'role:admin'])
         // --- Data Desa & Warga Terdampak ---
         Route::resource('data-desa', DesaController::class)->names('desa');
         Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
-        Route::post('warga/{id}/ubah-status',[WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
+        Route::post('warga/{id}/ubah-status', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 
         // --- Management Pegawai ---
         Route::prefix('management-pegawai')->name('management_pegawai.')->group(function () {
@@ -189,11 +187,20 @@ Route::middleware(['auth', 'role:admin'])
 
         // --- Management Barang ---
         Route::prefix('management-barang')->name('management_barang.')->group(function () {
+
+            Route::post('pengambilan/{id}/batal',[PengambilanController::class, 'batal'])
+                ->name('pengambilan.batal');
+
             Route::resource('petugas', PetugasController::class);
             Route::resource('pengambilan', PengambilanController::class);
+
+            Route::get('pengembalian/get-pengambilan/{id}', [PengembalianController::class, 'getPengambilan'])
+                ->name('pengembalian.get_pengambilan');
+
             Route::resource('pengembalian', PengembalianController::class);
         });
 
+        // --- Laporan ---
         Route::prefix('laporan')->name('laporan.')->group(function () {
 
             Route::get('/', [LaporanController::class, 'index'])->name('index');
@@ -201,6 +208,60 @@ Route::middleware(['auth', 'role:admin'])
             Route::get('/{id}/pdf', [LaporanController::class, 'pdfDetail'])->name('pdf.detail');
         });
     });
+
+// =========================================================================
+// --- JADWAL LAYANAN PER ROLE ---
+// =========================================================================
+
+// 1. ROUTE JADWAL KABID (BISA LIHAT + CETAK)
+Route::prefix('kabid')->name('kabid.')->middleware(['auth', 'role:kabid'])->group(function () {
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+    Route::get('/jadwal/cetak-pdf', [JadwalController::class, 'cetak_pdf'])->name('jadwal.cetak');
+});
+
+// 2. ROUTE JADWAL RELAWAN (HANYA LIHAT)
+Route::prefix('relawan')->name('relawan.')->middleware(['auth', 'role:relawan'])->group(function () {
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+});
+
+// 3. ROUTE JADWAL KADUS (HANYA LIHAT)
+Route::prefix('kadus')->name('kadus.')->middleware(['auth', 'role:kadus'])->group(function () {
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+});
+
+// 4. ROUTE JADWAL DESA (HANYA LIHAT)
+Route::prefix('desa')->name('desa.')->middleware(['auth', 'role:desa'])->group(function () {
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+});
+
+// 5. ROUTE JADWAL KETUA TIM (HANYA LIHAT)
+Route::prefix('ketua_tim')->name('ketua_tim.')->middleware(['auth', 'role:ketua_tim'])->group(function () {
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+});
+
+// 6. ROUTE JADWAL PETUGAS (HANYA LIHAT)
+Route::prefix('petugas')->name('petugas.')->middleware(['auth', 'role:petugas'])->group(function () {
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+    Route::prefix('management-posko')->name('management_posko.')->group(function () {
+        Route::get('/posko', [PoskoController::class, 'index'])
+            ->name('posko.index');
+
+        Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
+            ->name('dapur_umum.index');
+    });
+});
+
+// 7. ROUTE JADWAL PEGAWAI (HANYA LIHAT)
+Route::prefix('pegawai')->name('pegawai.')->middleware(['auth', 'role:pegawai'])->group(function () {
+    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
+    Route::prefix('management-posko')->name('management_posko.')->group(function () {
+        Route::get('/posko', [PoskoController::class, 'index'])
+            ->name('posko.index');
+
+        Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
+            ->name('dapur_umum.index');
+    });
+});
 // --- Role Placeholders (Kosong) ---
 Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')->group(function () {
     Route::prefix('management-posko')->name('management_posko.')->group(function () {
@@ -214,14 +275,11 @@ Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')
 
     Route::resource('data-desa', DesaController::class)->names('desa');
     Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
-    Route::post('warga/{id}/ubah-status',[WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
+    Route::post('warga/{id}/ubah-status', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 
     Route::prefix('kebutuhan_harian')->name('kebutuhan_harian.')->group(function () {
         Route::get('/{dapur}', [KebutuhanHarianController::class, 'index'])->name('kebutuhan_harian.index');
     });
-
-    // --- Jadwal Layanan  ---
-    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 });
 
 
@@ -233,8 +291,6 @@ Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->grou
         Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
             ->name('dapur_umum.index');
     });
-    // --- Jadwal Layanan  ---
-    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 });
 Route::middleware(['auth', 'role:kabid'])
     ->prefix('kabid')
@@ -282,6 +338,21 @@ Route::middleware(['auth', 'role:kabid'])
         // =====================
         Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
         Route::get('/jadwal/cetak-pdf', [JadwalController::class, 'cetak_pdf'])->name('jadwal.cetak');
+
+        // =====================
+        // LAPORAN
+        // =====================
+        Route::prefix('laporan')->name('laporan.')->group(function () {
+
+            Route::get('/', [LaporanController::class, 'index'])
+                ->name('index');
+
+            Route::get('/pdf', [LaporanController::class, 'pdf'])
+                ->name('pdf');
+
+            Route::get('/{id}/pdf', [LaporanController::class, 'pdfDetail'])
+                ->name('pdf.detail');
+        });
     });
 
 Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(function () {
@@ -292,9 +363,6 @@ Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(f
         Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
             ->name('dapur_umum.index');
     });
-
-    // --- Jadwal Layanan  ---
-    Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 });
 Route::middleware(['auth', 'role:ketua_tim'])
     ->prefix('ketua_tim')
@@ -315,10 +383,8 @@ Route::middleware(['auth', 'role:ketua_tim'])
             '/pengaduan/{id}/selesai',
             [PengaduanBencanaController::class, 'simpanSelesai']
         )->name('pengaduan.simpan');
-
-        //Lihat Jadwal Layanan Pasca Bencana
-        Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
     });
+
 
 Route::middleware(['auth', 'role:relawan|kadus|desa'])
     ->prefix('user')
@@ -347,33 +413,141 @@ Route::middleware(['auth', 'role:relawan|kadus|desa'])
             [PengaduanBencanaController::class, 'showUser']
         )
             ->name('pengaduan.show');
-
-        //Lihat Jadwal Layanan Pasca Bencana
-        Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
     });
 
-// ROUTE LAPORAN KABID (BISA LIHAT + CETAK PDF)
-Route::prefix('kabid')->name('kabid.')->group(function () {
+// --- Pegawai ---
+Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')->group(function () {
+    Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
+        Route::resource('paket_bantuan', PaketBantuanController::class);
+        Route::resource('detail_paket', DetailPaketController::class);
+        Route::resource('distribusi_paket', DistribusiPaketController::class);
+        Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
+    });
+});
+// --- Petugas ---
+Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')->group(function () {
+    Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
+        Route::get('distribusi_paket', [DistribusiPaketController::class, 'index'])->name('distribusi_paket.index');
+        Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
+        Route::patch('distribusi_paket/{id}/selesai', [DistribusiPaketController::class, 'selesai'])->name('distribusi_paket.selesai');
+    });
+});
 
-    Route::prefix('laporan')->name('laporan.')->group(function () {
+// --- Pegawai ---
+Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')->group(function () {
+    Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
+        Route::resource('paket_bantuan', PaketBantuanController::class);
+        Route::resource('detail_paket', DetailPaketController::class);
+        Route::resource('distribusi_paket', DistribusiPaketController::class);
+        Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
+    });
+});
+// --- Petugas ---
+Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')->group(function () {
+    Route::resource('anak_terpisah', AnakTerpisahController::class);
 
-        Route::get('/', [LaporanController::class, 'index'])
-            ->name('index');
+        Route::get('penjemputan', [PenjemputanAnakController::class, 'index'])
+            ->name('penjemputan.index');
 
-        Route::get('/pdf', [LaporanController::class, 'pdf'])
-            ->name('pdf');
+        Route::get('penjemputan/{anak_id}/jemput', [PenjemputanAnakController::class, 'formJemput'])
+            ->name('penjemputan.jemput');
 
-        Route::get('/{id}/pdf', [LaporanController::class, 'pdfDetail'])
-            ->name('pdf.detail');
+        Route::post('penjemputan', [PenjemputanAnakController::class, 'store'])
+            ->name('penjemputan.store');
+
+        Route::get('penjemputan/{id}', [PenjemputanAnakController::class, 'show'])
+            ->name('penjemputan.show');           
+
+        // KORBAN
+        Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])
+            ->name('korban.reviewPdf');
+
+        Route::resource('korban', KorbanController::class);            
+
+    Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
+        Route::get('distribusi_paket', [DistribusiPaketController::class, 'index'])->name('distribusi_paket.index');
+        Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
+        Route::patch('distribusi_paket/{id}/selesai', [DistribusiPaketController::class, 'selesai'])->name('distribusi_paket.selesai');
     });
 });
 
 Route::middleware([
     'auth',
-    'role:admin|relawan'
-])->prefix('management_posko')
+    'role:admin|petugas|pegawai|relawan'
+])->prefix('{role}/management-posko')
     ->name('management_posko.')
     ->group(function () {
 
         Route::resource('posko', PoskoController::class);
+        Route::resource('dapur_umum', DapurUmumController::class);
+    })->where(['role' => 'admin|petugas|pegawai|relawan']);
+
+// Relawan
+Route::middleware(['auth', 'role:relawan'])
+    ->prefix('relawan')
+    ->name('relawan.')
+    ->group(function () {
+        Route::get('/pengaduan', [PengaduanBencanaController::class, 'userIndex'])->name('pengaduan.index');
+        Route::get('/pengaduan/create', [PengaduanBencanaController::class, 'userCreate'])->name('pengaduan.create');
+        Route::post('/pengaduan/store', [PengaduanBencanaController::class, 'userStore'])->name('pengaduan.store');
+        Route::get('/pengaduan/{id}', [PengaduanBencanaController::class, 'showUser'])->name('pengaduan.show');
+    
+        // ANAK TERPISAH (VIEW ONLY)
+        Route::get('/anak_terpisah', [AnakTerpisahController::class, 'index'])
+            ->name('anak_terpisah.index');
+
+        Route::get('/anak_terpisah/{id}', [AnakTerpisahController::class, 'show'])
+            ->name('anak_terpisah.show');
+
+        // PENJEMPUTAN ANAK (VIEW ONLY)
+        Route::get('/penjemputan', [PenjemputanAnakController::class, 'index'])
+            ->name('penjemputan.index');
+
+        Route::get('/penjemputan/{id}', [PenjemputanAnakController::class, 'show'])
+            ->name('penjemputan.show');
+
+        // KORBAN (VIEW ONLY)   
+        Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])
+            ->name('korban.reviewPdf');
+
+        Route::resource('korban', KorbanController::class);
+        });
+
+// Kadus
+Route::middleware(['auth', 'role:kadus'])
+    ->prefix('kadus')
+    ->name('kadus.')
+    ->group(function () {
+        Route::get('/pengaduan', [PengaduanBencanaController::class, 'userIndex'])->name('pengaduan.index');
+        Route::get('/pengaduan/create', [PengaduanBencanaController::class, 'userCreate'])->name('pengaduan.create');
+        Route::post('/pengaduan/store', [PengaduanBencanaController::class, 'userStore'])->name('pengaduan.store');
+        Route::get('/pengaduan/{id}', [PengaduanBencanaController::class, 'showUser'])->name('pengaduan.show');
     });
+
+// Desa
+Route::middleware(['auth', 'role:desa'])
+    ->prefix('desa')
+    ->name('desa.')
+    ->group(function () {
+        Route::get('/pengaduan', [PengaduanBencanaController::class, 'userIndex'])->name('pengaduan.index');
+        Route::get('/pengaduan/create', [PengaduanBencanaController::class, 'userCreate'])->name('pengaduan.create');
+        Route::post('/pengaduan/store', [PengaduanBencanaController::class, 'userStore'])->name('pengaduan.store');
+        Route::get('/pengaduan/{id}', [PengaduanBencanaController::class, 'showUser'])->name('pengaduan.show');
+
+        // KORBAN (VIEW ONLY)
+        Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])
+            ->name('korban.reviewPdf');
+
+        Route::resource('korban', KorbanController::class)
+            ->only(['index', 'show']);
+    });
+
+Route::get(
+    '/admin/management-distribusi/berita-acara/{id}',
+    [BAController::class, 'cetak']
+)->name('admin.management_distribusi.berita_acara.cetak');
+
+Route::get(
+    '/admin/management-distribusi/berita-acara/{id}/download',
+    [BAController::class, 'download']
+)->name('admin.management_distribusi.berita_acara.download');

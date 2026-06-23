@@ -3,43 +3,29 @@
 @section('content')
 
 <div class="mx-3">
-
     <h2 class="text-2xl font-bold">
         Edit Data Pengambilan
     </h2>
-
     <p class="text-gray-500 text-sm">
         Perbarui data pengambilan barang
     </p>
-
 </div>
 
 <div class="bg-white rounded-xl p-6 m-3 mt-5 shadow">
 
     {{-- Error --}}
     @if ($errors->any())
-
         <div class="mb-5 bg-red-100 text-red-700 p-4 rounded-lg">
-
             <ul class="list-disc pl-5">
-
                 @foreach ($errors->all() as $error)
-
                     <li>{{ $error }}</li>
-
                 @endforeach
-
             </ul>
-
         </div>
-
     @endif
 
     {{-- Form --}}
-    <form action="{{ route('management_barang.pengambilan.update', $data->id) }}"
-          method="POST"
-          class="space-y-8">
-
+    <form action="{{ route('admin.management_barang.pengambilan.update', $data->id) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -48,500 +34,378 @@
 
             {{-- Bencana --}}
             <div>
-
                 <label class="block font-medium mb-2">
                     Bencana
                 </label>
-
-                <select name="bencana_id"
-                        class="w-full border rounded-lg p-3">
-
+                <select name="bencana_id" class="w-full border rounded-lg p-3">
                     <option value="">
                         -- Pilih Bencana --
                     </option>
-
                     @foreach($bencana as $b)
-
-                    <option value="{{ $b->id }}"
-                        {{ old('bencana_id', $data->bencana_id) == $b->id ? 'selected' : '' }}>
-
-                        {{ $b->nama_bencana ?? 'Bencana '.$b->id }}
-
-                    </option>
-
+                        <option value="{{ $b->id }}"
+                            {{ old('bencana_id', $data->bencana_id) == $b->id ? 'selected' : '' }}>
+                            {{ $b->nama_bencana ?? 'Bencana '.$b->id }}
+                        </option>
                     @endforeach
-
                 </select>
-
             </div>
 
             {{-- Petugas --}}
             <div>
-
                 <label class="block font-medium mb-2">
                     Petugas
                 </label>
-
-                <select name="petugas_id"
-                        class="w-full border rounded-lg p-3">
-
+                <select name="petugas_id" class="w-full border rounded-lg p-3">
                     <option value="">
                         -- Pilih Petugas --
                     </option>
-
                     @foreach($petugas as $pt)
-
-                    <option value="{{ $pt->id }}"
-                        {{ old('petugas_id', $data->petugas_id) == $pt->id ? 'selected' : '' }}>
-
-                        {{ $pt->nama_petugas }}
-
-                    </option>
-
+                        <option value="{{ $pt->id }}"
+                            {{ old('petugas_id', $data->petugas_id) == $pt->id ? 'selected' : '' }}>
+                            {{ $pt->nama_petugas }}
+                        </option>
                     @endforeach
-
                 </select>
-
             </div>
 
             {{-- Tanggal --}}
             <div>
-
                 <label class="block font-medium mb-2">
                     Tanggal Pengambilan
                 </label>
-
                 <input type="date"
                        name="tanggal_pengambilan"
                        value="{{ old('tanggal_pengambilan', $data->tanggal_pengambilan) }}"
                        class="w-full border rounded-lg p-3">
-
             </div>
 
             {{-- Posko --}}
             <div>
-
                 <label class="block font-medium mb-2">
                     Posko
                 </label>
-
-                <select name="posko_id"
-                        class="w-full border rounded-lg p-3">
-
+                <select name="posko_id" class="w-full border rounded-lg p-3">
                     <option value="">
                         -- Pilih Posko --
                     </option>
-
                     @foreach($posko as $p)
-
-                    <option value="{{ $p->id }}"
-                        {{ old('posko_id', $data->posko_id) == $p->id ? 'selected' : '' }}>
-
-                        {{ $p->nama_posko }}
-
-                    </option>
-
+                        <option value="{{ $p->id }}"
+                            {{ old('posko_id', $data->posko_id) == $p->id ? 'selected' : '' }}>
+                            {{ $p->nama_posko }}
+                        </option>
                     @endforeach
-
                 </select>
-
             </div>
 
             {{-- Tujuan --}}
             <div class="md:col-span-2">
-
                 <label class="block font-medium mb-2">
                     Tujuan
                 </label>
-
                 <textarea name="tujuan"
                           rows="3"
                           class="w-full border rounded-lg p-3">{{ old('tujuan', $data->tujuan) }}</textarea>
-
             </div>
 
         </div>
 
         {{-- Data Barang --}}
-        <div>
+        <div class="mt-6">
 
             <div class="flex justify-between items-center mb-4">
-
                 <h3 class="text-lg font-semibold">
                     Data Barang
                 </h3>
-
                 <button type="button"
                         id="tambahRow"
                         class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
-
                     + Tambah Barang
-
                 </button>
-
             </div>
 
             <div class="overflow-x-auto">
-
-                <table class="w-full border text-sm"
-                       id="tableBarang">
-
+                <table class="w-full border text-sm" id="tableBarang">
                     <thead class="bg-gray-100">
-
                         <tr>
-
-                            <th class="p-3 text-left">
-                                Barang
-                            </th>
-
-                            <th class="p-3 text-center">
-                                Stok
-                            </th>
-
-                            <th class="p-3 text-center">
-                                Jumlah Ambil
-                            </th>
-
-                            <th class="p-3 text-center">
-                                Aksi
-                            </th>
-
+                            <th class="p-3 text-left">Barang</th>
+                            <th class="p-3 text-center">Stok</th>
+                            <th class="p-3 text-center">Jumlah Ambil</th>
+                            <th class="p-3 text-center">Aksi</th>
                         </tr>
-
                     </thead>
-
                     <tbody>
 
-                        @php
-                            $barangPengambilan = \App\Models\Pengambilan::where(
-                                'tanggal_pengambilan',
-                                $data->tanggal_pengambilan
-                            )
-                            ->where('petugas_id', $data->petugas_id)
-                            ->where('tujuan', $data->tujuan)
-                            ->get();
-                        @endphp
+    {{-- Jika validasi gagal --}}
+    @if(old('barang_id'))
 
-                        @foreach($barangPengambilan as $item)
+        @foreach(old('barang_id') as $index => $oldBarangId)
+        <tr>
+            <td class="p-3">
+                <select name="barang_id[]" class="w-full border rounded-lg p-2 barang-select">
+                    <option value="">-- Pilih Barang --</option>
 
-                        <tr>
+                    @foreach($barang as $br)
+                    <option value="{{ $br->id_barang }}"
+                        data-stok="{{ $br->stok }}"
+                        {{ $oldBarangId == $br->id_barang ? 'selected' : '' }}>
+                        {{ $br->nama_barang }}
+                    </option>
+                    @endforeach
 
-                            {{-- Barang --}}
-                            <td class="p-3">
+                </select>
+            </td>
 
-                                <select name="barang_id[]"
-                                        class="w-full border rounded-lg p-2 barang-select">
+            <td class="p-3 text-center stok-text">
+                @php
+                    $currentBarang = $barang->firstWhere('id_barang', $oldBarangId);
+                @endphp
+                {{ $currentBarang ? $currentBarang->stok : 0 }}
+            </td>
 
-                                    <option value="">
-                                        -- Pilih Barang --
-                                    </option>
+            <td class="p-3">
+                <input type="number"
+                    name="jumlah_ambil[]"
+                    value="{{ old('jumlah_ambil.'.$index,1) }}"
+                    min="1"
+                    class="w-full border rounded-lg p-2 jumlah-input">
+            </td>
 
-                                    @foreach($barang as $br)
+            <td class="p-3 text-center">
+                <button type="button"
+                    class="hapusRow text-red-500 hover:text-red-700">
+                    Hapus
+                </button>
+            </td>
+        </tr>
+        @endforeach
 
-                                    <option value="{{ $br->id }}"
-                                            data-stok="{{ $br->stok }}"
-                                            {{ $item->barang_id == $br->id ? 'selected' : '' }}>
+    {{-- Data dari database --}}
+    @elseif($barangPengambilan->count() > 0)
 
-                                        {{ $br->nama_barang }}
+        @foreach($barangPengambilan as $item)
+        <tr>
 
-                                    </option>
+            <td class="p-3">
+                <select name="barang_id[]" class="w-full border rounded-lg p-2 barang-select">
 
-                                    @endforeach
+                    <option value="">-- Pilih Barang --</option>
 
-                                </select>
+                    @foreach($barang as $br)
+                    <option value="{{ $br->id_barang }}"
+                        data-stok="{{ $br->stok }}"
+                        {{ $item->barang_id == $br->id_barang ? 'selected' : '' }}>
+                        {{ $br->nama_barang }}
+                    </option>
+                    @endforeach
 
-                            </td>
+                </select>
+            </td>
 
-                            {{-- Stok --}}
-                            <td class="p-3 text-center stok-text">
+            <td class="p-3 text-center stok-text">
+                {{ $item->barang->stok ?? 0 }}
+            </td>
 
-                                {{ $item->barang->stok ?? 0 }}
+            <td class="p-3">
+                <input type="number"
+                    name="jumlah_ambil[]"
+                    value="{{ $item->jumlah_ambil }}"
+                    min="1"
+                    class="w-full border rounded-lg p-2 jumlah-input">
+            </td>
 
-                            </td>
+            <td class="p-3 text-center">
+                <button type="button"
+                    class="hapusRow text-red-500 hover:text-red-700">
+                    Hapus
+                </button>
+            </td>
 
-                            {{-- Jumlah --}}
-                            <td class="p-3">
+        </tr>
+        @endforeach
 
-                                <input type="number"
-                                       name="jumlah_ambil[]"
-                                       value="{{ $item->jumlah_ambil }}"
-                                       min="0"
-                                       class="w-full border rounded-lg p-2 jumlah-input">
+    {{-- Fallback --}}
+    @else
 
-                            </td>
+        <tr>
 
-                            {{-- Hapus --}}
-                            <td class="p-3 text-center">
+            <td class="p-3">
+                <select name="barang_id[]" class="w-full border rounded-lg p-2 barang-select">
 
-                                <button type="button"
-                                        class="hapusRow text-red-500 hover:text-red-700">
+                    <option value="">-- Pilih Barang --</option>
 
-                                    Hapus
+                    @foreach($barang as $br)
+                    <option value="{{ $br->id_barang }}"
+                        data-stok="{{ $br->stok }}"
+                        {{ $data->barang_id == $br->id_barang ? 'selected' : '' }}>
+                        {{ $br->nama_barang }}
+                    </option>
+                    @endforeach
 
-                                </button>
+                </select>
+            </td>
 
-                            </td>
+            <td class="p-3 text-center stok-text">
+                {{ $data->barang->stok ?? 0 }}
+            </td>
 
-                        </tr>
+            <td class="p-3">
+                <input type="number"
+                    name="jumlah_ambil[]"
+                    value="{{ $data->jumlah_ambil }}"
+                    min="1"
+                    class="w-full border rounded-lg p-2 jumlah-input">
+            </td>
 
-                        @endforeach
+            <td class="p-3 text-center">
+                <button type="button"
+                    class="hapusRow text-red-500 hover:text-red-700">
+                    Hapus
+                </button>
+            </td>
 
-                    </tbody>
+        </tr>
 
+    @endif
+
+</tbody>
                 </table>
-
             </div>
 
         </div>
 
         {{-- Status --}}
-        <div>
-
+        <div class="mt-6">
             <label class="block font-medium mb-3">
                 Status
             </label>
-
             <div class="flex gap-3 flex-wrap">
-
                 @foreach(['Ditangani','Selesai','Dibatalkan'] as $s)
-
                 <label class="cursor-pointer">
-
                     <input type="radio"
                            name="status"
                            value="{{ $s }}"
                            {{ old('status', $data->status) == $s ? 'checked' : '' }}
                            class="hidden peer">
-
                     <span class="px-4 py-2 rounded-full font-semibold
                         bg-gray-100 text-gray-700
                         peer-checked:bg-blue-600 peer-checked:text-white">
-
                         {{ $s }}
-
                     </span>
-
                 </label>
-
                 @endforeach
-
             </div>
-
         </div>
 
-        {{-- Button --}}
-        <div class="flex justify-between">
-
-            <a href="{{ route('management_barang.pengambilan.index') }}"
+        {{-- Button Action --}}
+        <div class="flex justify-between mt-8">
+            <a href="{{ route('admin.management_barang.pengambilan.index') }}"
                class="px-5 py-2 bg-gray-300 rounded-lg">
-
                 Kembali
-
             </a>
-
-            <button type="submit"
-                    class="px-6 py-2 bg-yellow-500 text-white rounded-lg">
-
+            <button type="submit" class="px-6 py-2 bg-yellow-500 text-white rounded-lg">
                 Update
-
             </button>
-
         </div>
 
     </form>
-
 </div>
 
 {{-- SCRIPT --}}
 <script>
+    document.getElementById('tambahRow').addEventListener('click', function () {
+        let table = document.querySelector('#tableBarang tbody');
+        let row = table.rows[0].cloneNode(true);
 
-    // tambah row
-    document.getElementById('tambahRow')
-        .addEventListener('click', function () {
+        row.querySelectorAll('select').forEach(select => {
+            select.selectedIndex = 0;
+        });
 
-        let table =
-            document.querySelector('#tableBarang tbody');
+        row.querySelectorAll('input').forEach(input => {
+            if (input.name === 'jumlah_ambil[]') {
+                let status = document.querySelector('input[name="status"]:checked')?.value;
+                input.value = (status === 'Dibatalkan') ? 0 : 1;
+                input.readOnly = (status === 'Dibatalkan');
+            } else {
+                input.value = '';
+            }
+        });
 
-        let row =
-            table.rows[0].cloneNode(true);
+        let stokText = row.querySelector('.stok-text');
+        if (stokText) {
+            stokText.innerText = '0';
+        }
 
-        // reset input
-        row.querySelectorAll('input')
-            .forEach(input => {
-
-                if(input.type !== 'radio') {
-
-                    if(input.name === 'jumlah_ambil[]') {
-
-                        let status =
-                            document.querySelector(
-                                'input[name="status"]:checked'
-                            )?.value;
-
-                        input.value =
-                            status === 'Dibatalkan'
-                            ? 0
-                            : 1;
-
-                    } else {
-
-                        input.value = '';
-
-                    }
-
-                }
-
-            });
-
-        // reset select
-        row.querySelectorAll('select')
-            .forEach(select => {
-                select.selectedIndex = 0;
-            });
-
-        // reset stok
-        row.querySelector('.stok-text')
-            .innerText = '0';
+        let hapusBtn = row.querySelector('.hapusRow');
+        if (hapusBtn) {
+            hapusBtn.disabled = false;
+            hapusBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+        }
 
         table.appendChild(row);
-
         checkStatusBatal();
     });
 
-    // stok otomatis
-    document.addEventListener('change', function(e){
-
-        if(e.target.classList.contains('barang-select')) {
-
-            let stok =
-                e.target.options[e.target.selectedIndex]
-                    .getAttribute('data-stok');
-
-            e.target.closest('tr')
-                .querySelector('.stok-text')
-                .innerText = stok;
+    document.addEventListener('change', function(e) {
+        if (e.target.classList.contains('barang-select')) {
+            let selectedOption = e.target.options[e.target.selectedIndex];
+            let stok = selectedOption.getAttribute('data-stok') || 0;
+            e.target.closest('tr').querySelector('.stok-text').innerText = stok;
         }
     });
 
-    // hapus row
-    document.addEventListener('click', function(e){
-
-        if(e.target.classList.contains('hapusRow')) {
-
-            let rows =
-                document.querySelectorAll('#tableBarang tbody tr');
-
-            if(rows.length > 1) {
-
+    document.addEventListener('click', function(e) {
+        if (e.target.classList.contains('hapusRow')) {
+            let rows = document.querySelectorAll('#tableBarang tbody tr');
+            if (rows.length > 1) {
                 e.target.closest('tr').remove();
-
+            } else {
+                alert('Gagal menghapus! Minimal harus ada 1 barang terdaftar dalam pengajuan.');
             }
         }
     });
 
-    // status batal
     function checkStatusBatal() {
+        let status = document.querySelector('input[name="status"]:checked')?.value;
+        let jumlahInputs = document.querySelectorAll('.jumlah-input');
+        let tombolTambah = document.getElementById('tambahRow');
+        let tombolHapus = document.querySelectorAll('.hapusRow');
 
-        let status =
-            document.querySelector(
-                'input[name="status"]:checked'
-            )?.value;
-
-        let jumlahInputs =
-            document.querySelectorAll('.jumlah-input');
-
-        let tombolTambah =
-            document.getElementById('tambahRow');
-
-        let tombolHapus =
-            document.querySelectorAll('.hapusRow');
-
-        if(status === 'Dibatalkan') {
-
+        if (status === 'Dibatalkan') {
             jumlahInputs.forEach(input => {
-
                 input.value = 0;
-
                 input.readOnly = true;
-
-                input.classList.add(
-                    'bg-gray-100',
-                    'cursor-not-allowed'
-                );
-
+                input.classList.add('bg-gray-100', 'cursor-not-allowed');
             });
-
             tombolTambah.disabled = true;
-
-            tombolTambah.classList.add(
-                'opacity-50',
-                'cursor-not-allowed'
-            );
-
+            tombolTambah.classList.add('opacity-50', 'cursor-not-allowed');
             tombolHapus.forEach(btn => {
-
                 btn.disabled = true;
-
-                btn.classList.add(
-                    'opacity-50',
-                    'cursor-not-allowed'
-                );
-
+                btn.classList.add('opacity-50', 'cursor-not-allowed');
             });
-
         } else {
-
             jumlahInputs.forEach(input => {
-
-                if(input.value == 0) {
+                if (input.value == 0) {
                     input.value = 1;
                 }
-
                 input.readOnly = false;
-
-                input.classList.remove(
-                    'bg-gray-100',
-                    'cursor-not-allowed'
-                );
-
+                input.classList.remove('bg-gray-100', 'cursor-not-allowed');
             });
-
             tombolTambah.disabled = false;
-
-            tombolTambah.classList.remove(
-                'opacity-50',
-                'cursor-not-allowed'
-            );
-
+            tombolTambah.classList.remove('opacity-50', 'cursor-not-allowed');
             tombolHapus.forEach(btn => {
-
                 btn.disabled = false;
-
-                btn.classList.remove(
-                    'opacity-50',
-                    'cursor-not-allowed'
-                );
-
+                btn.classList.remove('opacity-50', 'cursor-not-allowed');
             });
-
         }
     }
 
-    // trigger status
-    document.querySelectorAll(
-        'input[name="status"]'
-    ).forEach(radio => {
-
-        radio.addEventListener(
-            'change',
-            checkStatusBatal
-        );
-
+    document.querySelectorAll('input[name="status"]').forEach(radio => {
+        radio.addEventListener('change', checkStatusBatal);
     });
 
-    // pertama load
-    checkStatusBatal();
-
+    document.addEventListener('DOMContentLoaded', function() {
+        checkStatusBatal();
+    });
 </script>
 
 @endsection

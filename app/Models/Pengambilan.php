@@ -39,9 +39,10 @@ class Pengambilan extends Model
      * Relasi ke tabel petugas
      */
     public function petugas()
-    {
-        return $this->belongsTo(Petugas::class, 'petugas_id');
-    }
+{
+    return $this->belongsTo(Petugas::class, 'petugas_id')
+                ->withTrashed();
+}
 
     /**
      * Relasi ke tabel posko

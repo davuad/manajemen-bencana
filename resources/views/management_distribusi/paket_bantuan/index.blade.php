@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $routePrefix = request()->segment(1);
+@endphp
     <div class="bg-white rounded-xl shadow p-6">
 
         <div class="flex justify-between items-center mb-6">
@@ -12,7 +15,7 @@
                 </p>
             </div>
 
-            <a href="{{ route('admin.management_distribusi.paket_bantuan.create') }}"
+            <a href="{{ route($routePrefix .'.management_distribusi.paket_bantuan.create') }}"
                 class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
                 + Tambah Paket Bantuan
             </a>
@@ -20,7 +23,7 @@
         </div>
 
         {{-- FILTER --}}
-        <form method="GET" action="{{ route('admin.management_distribusi.paket_bantuan.index') }}">
+        <form method="GET" action="{{ route($routePrefix .'.management_distribusi.paket_bantuan.index') }}">
             <div class="flex gap-4 mb-6">
 
                 <input type="text" name="search" value="{{ request('search') }}"
@@ -93,12 +96,12 @@
                             </td>
 
                             <td class="flex gap-2 py-4">
-                                <a href="{{ route('admin.management_distribusi.detail_paket.index', ['paket_bantuan_id' => $p->id]) }}"
+                                <a href="{{ route($routePrefix .'.management_distribusi.detail_paket.index', ['paket_bantuan_id' => $p->id]) }}"
                                     class="text-green-600">
                                     <x-heroicon-o-clipboard-document-list class="w-5 h-5" />
                                 </a>
                                 
-                                <a href="{{ route('admin.management_distribusi.paket_bantuan.edit', $p->id) }}"
+                                <a href="{{ route($routePrefix .'.management_distribusi.paket_bantuan.edit', $p->id) }}"
                                     class="text-blue-500">
                                     <x-heroicon-o-pencil-square class="w-5 h-5" />
                                 </a>
@@ -182,7 +185,7 @@
 
             document.getElementById('namaPaket').innerText = `"${nama}"`;
 
-            let url = "{{ route('admin.management_distribusi.paket_bantuan.destroy', ':id') }}";
+            let url = "{{ route($routePrefix .'.management_distribusi.paket_bantuan.destroy', ':id') }}";
             url = url.replace(':id', id);
 
             document.getElementById('deleteForm').action = url;

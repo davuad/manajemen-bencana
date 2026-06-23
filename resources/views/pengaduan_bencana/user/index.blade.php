@@ -2,181 +2,237 @@
 
 @section('content')
 
-<div class="container-fluid">
-<div class="d-flex justify-content-between align-items-center mb-4">
-    <h3 class="fw-bold">
-        Data Pengaduan Saya
-    </h3>
+<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+
+{{-- Header --}}
+<div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
+
+    <div>
+        <h2 class="text-2xl font-bold text-gray-800">
+            Pengaduan Saya
+        </h2>
+
+        <p class="text-sm text-gray-500 mt-1">
+            Daftar pengaduan bencana yang telah Anda laporkan.
+        </p>
+    </div>
 
     <a href="{{ route('user.pengaduan.create') }}"
-       class="btn btn-primary">
-        <i class="fas fa-plus"></i>
-        Buat Pengaduan
+        class="bg-indigo-700 hover:bg-indigo-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium shadow-sm transition duration-200">
+
+        + Buat Pengaduan
+
     </a>
+
 </div>
 
+{{-- Alert --}}
 @if(session('success'))
-    <div class="alert alert-success alert-dismissible fade show">
+
+    <div class="mb-6 rounded-xl bg-green-100 border border-green-300 text-green-700 px-4 py-3">
+
         {{ session('success') }}
 
-        <button type="button"
-                class="btn-close"
-                data-bs-dismiss="alert">
-        </button>
     </div>
+
 @endif
 
-<div class="card shadow-sm border-0 mb-4">
-    <div class="card-body">
+{{-- Filter --}}
+<form method="GET"
+      action="{{ route('user.pengaduan.index') }}"
+      class="mb-6">
 
-        <form method="GET"
-              action="{{ route('user.pengaduan.index') }}">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-4">
 
-            <div class="row">
+        <div class="md:col-span-5">
 
-                <div class="col-md-5 mb-2">
-                    <input type="text"
-                           name="search"
-                           class="form-control"
-                           placeholder="Cari desa atau deskripsi..."
-                           value="{{ request('search') }}">
-                </div>
+            <input
+                type="text"
+                name="search"
+                value="{{ request('search') }}"
+                placeholder="Cari desa atau deskripsi..."
+                class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
 
-                <div class="col-md-4 mb-2">
-                    <select name="status"
-                            class="form-select">
+        </div>
 
-                        <option value="">
-                            Semua Status
-                        </option>
+        <div class="md:col-span-4">
 
-                        <option value="BELUM_DITANGANI"
-                            {{ request('status') == 'BELUM_DITANGANI' ? 'selected' : '' }}>
-                            Belum Ditangani
-                        </option>
+            <select
+                name="status"
+                class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
 
-                        <option value="DITANGANI"
-                            {{ request('status') == 'DITANGANI' ? 'selected' : '' }}>
-                            Ditangani
-                        </option>
+                <option value="">Semua Status</option>
 
-                        <option value="SELESAI"
-                            {{ request('status') == 'SELESAI' ? 'selected' : '' }}>
-                            Selesai
-                        </option>
+                <option value="BELUM_DITANGANI"
+                    {{ request('status')=='BELUM_DITANGANI' ? 'selected' : '' }}>
+                    Belum Ditangani
+                </option>
 
-                    </select>
-                </div>
+                <option value="DITANGANI"
+                    {{ request('status')=='DITANGANI' ? 'selected' : '' }}>
+                    Ditangani
+                </option>
 
-                <div class="col-md-3 mb-2">
-                    <button class="btn btn-success w-100">
-                        Cari
-                    </button>
-                </div>
+                <option value="SELESAI"
+                    {{ request('status')=='SELESAI' ? 'selected' : '' }}>
+                    Selesai
+                </option>
 
-            </div>
+            </select>
 
-        </form>
+        </div>
 
-    </div>
-</div>
+        <div class="md:col-span-3">
 
-<div class="card shadow-sm border-0">
-    <div class="card-body">
+            <button
+                type="submit"
+                class="w-full bg-green-600 hover:bg-green-700 text-white rounded-xl px-4 py-2.5 transition">
 
-        <div class="table-responsive">
+                Cari
 
-            <table class="table table-bordered align-middle">
-
-                <thead class="table-dark">
-                <tr>
-                    <th width="60">No</th>
-                    <th>Kategori</th>
-                    <th>Desa</th>
-                    <th>Deskripsi</th>
-                    <th>Status</th>
-                    <th>Tanggal</th>
-                    <th width="120">Aksi</th>
-                </tr>
-                </thead>
-
-                <tbody>
-
-                @forelse($data as $item)
-
-                    <tr>
-
-                        <td>
-                            {{ $loop->iteration }}
-                        </td>
-
-                        <td>
-                            {{ $item->kategori->nama_kategori ?? '-' }}
-                        </td>
-
-                        <td>
-                            {{ $item->desa }}
-                        </td>
-
-                        <td>
-                            {{ Str::limit($item->deskripsi, 50) }}
-                        </td>
-
-                        <td>
-
-                            @if($item->status_pengaduan == 'BELUM_DITANGANI')
-                                <span class="badge bg-warning text-dark">
-                                    Belum Ditangani
-                                </span>
-
-                            @elseif($item->status_pengaduan == 'DITANGANI')
-                                <span class="badge bg-primary">
-                                    Ditangani
-                                </span>
-
-                            @elseif($item->status_pengaduan == 'SELESAI')
-                                <span class="badge bg-success">
-                                    Selesai
-                                </span>
-                            @endif
-
-                        </td>
-
-                        <td>
-                            {{ $item->created_at->format('d-m-Y') }}
-                        </td>
-
-                        <td>
-
-                            <a href="{{ route('user.pengaduan.show', $item->id) }}"
-                               class="btn btn-info btn-sm">
-
-                                Detail
-
-                            </a>
-
-                        </td>
-
-                    </tr>
-
-                @empty
-
-                    <tr>
-                        <td colspan="7"
-                            class="text-center">
-                            Belum ada data pengaduan.
-                        </td>
-                    </tr>
-
-                @endforelse
-
-                </tbody>
-
-            </table>
+            </button>
 
         </div>
 
     </div>
+
+</form>
+
+{{-- Table --}}
+<div class="overflow-x-auto rounded-xl border border-gray-200">
+
+    <table class="min-w-full divide-y divide-gray-200">
+
+        <thead class="bg-gray-50">
+
+            <tr>
+
+                <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-600">
+                    No
+                </th>
+
+                <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-600">
+                    Kategori
+                </th>
+
+                <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-600">
+                    Desa
+                </th>
+
+                <th class="px-4 py-3 text-left text-xs font-semibold uppercase text-gray-600">
+                    Deskripsi
+                </th>
+
+                <th class="px-4 py-3 text-center text-xs font-semibold uppercase text-gray-600">
+                    Status
+                </th>
+
+                <th class="px-4 py-3 text-center text-xs font-semibold uppercase text-gray-600">
+                    Tanggal
+                </th>
+
+                <th class="px-4 py-3 text-center text-xs font-semibold uppercase text-gray-600">
+                    Aksi
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody class="divide-y divide-gray-100 bg-white">
+
+        @forelse($data as $item)
+
+            <tr class="hover:bg-gray-50">
+
+                <td class="px-4 py-3">
+
+                    {{ $loop->iteration }}
+
+                </td>
+
+                <td class="px-4 py-3">
+
+                    {{ $item->kategori->nama_kategori ?? '-' }}
+
+                </td>
+
+                <td class="px-4 py-3">
+
+                    {{ $item->desa }}
+
+                </td>
+
+                <td class="px-4 py-3">
+
+                    {{ \Illuminate\Support\Str::limit($item->deskripsi, 60) }}
+
+                </td>
+
+                <td class="px-4 py-3 text-center">
+
+                    @if($item->status_pengaduan == 'BELUM_DITANGANI')
+
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">
+                            Belum Ditangani
+                        </span>
+
+                    @elseif($item->status_pengaduan == 'DITANGANI')
+
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 text-blue-700">
+                            Ditangani
+                        </span>
+
+                    @else
+
+                        <span class="px-3 py-1 rounded-full text-xs font-semibold bg-green-100 text-green-700">
+                            Selesai
+                        </span>
+
+                    @endif
+
+                </td>
+
+                <td class="px-4 py-3 text-center">
+
+                    {{ $item->created_at->format('d-m-Y') }}
+
+                </td>
+
+                <td class="px-4 py-3 text-center">
+
+                    <a href="{{ route('user.pengaduan.show',$item->id) }}"
+                        class="inline-flex items-center px-3 py-2 rounded-lg bg-sky-500 hover:bg-sky-600 text-white text-sm transition">
+
+                        Detail
+
+                    </a>
+
+                </td>
+
+            </tr>
+
+        @empty
+
+            <tr>
+
+                <td colspan="7"
+                    class="text-center py-10 text-gray-500">
+
+                    Belum ada data pengaduan.
+
+                </td>
+
+            </tr>
+
+        @endforelse
+
+        </tbody>
+
+    </table>
+
 </div>
+
 </div>
+
 @endsection

@@ -17,7 +17,7 @@
             </p>
         </div>
 
-        <a href="{{ route('management_barang.pengambilan.create') }}"
+        <a href="{{ route('admin.management_barang.pengambilan.create') }}"
            class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
 
             + Tambah Pengambilan
@@ -28,7 +28,7 @@
 
     {{-- Search --}}
     <form method="GET"
-          action="{{ route('management_barang.pengambilan.index') }}">
+          action="{{ route('admin.management_barang.pengambilan.index') }}">
 
         <div class="flex gap-4 mb-6">
 
@@ -185,49 +185,39 @@
                     </td>
 
                     {{-- Aksi --}}
-                    <td class="p-3">
+                   <td class="p-3 text-center flex justify-center gap-2">
+   
+    <a href="{{ route('admin.management_barang.pengambilan.show', $item->id) }}" 
+       class="text-blue-500 hover:text-blue-700" 
+       title="Detail">
+        🔍
+    </a>
 
-                        <div class="flex justify-center gap-3">
+    @if($item->status != 'Dibatalkan')
+        <a href="{{ route('admin.management_barang.pengambilan.edit', $item->id) }}" 
+           class="text-yellow-500 hover:text-yellow-700" 
+           title="Edit">
+            ✏️
+        </a>
+    @else
+        <span class="text-gray-300 cursor-not-allowed" title="Tidak bisa edit data yang dibatalkan">✏️</span>
+    @endif
 
-                            {{-- Detail --}}
-                            <a href="{{ route('management_barang.pengambilan.show', $item->id) }}"
-                               class="text-green-600 hover:text-green-800">
-
-                                🔍
-
-                            </a>
-
-                            {{-- Edit --}}
-                            <a href="{{ route('management_barang.pengambilan.edit', $item->id) }}"
-                               class="text-blue-500 hover:text-blue-700">
-
-                                ✏️
-
-                            </a>
-
-                            {{-- Batal --}}
-                            @if($item->status != 'Dibatalkan')
-
-                            <form action="{{ route('management_barang.pengambilan.batal', $item->id) }}"
-                                  method="POST"
-                                  onsubmit="return confirm('Yakin dibatalkan?')">
-
-                                @csrf
-                                @method('PUT')
-
-                                <button type="submit"
-                                        class="text-red-500 hover:text-red-700">
-
-                                    ❌
-
-                                </button>
-
-                            </form>
-
-                            @endif
-
-                        </div>
-
+    @if($item->status != 'Dibatalkan')
+        <form action="{{ route('admin.management_barang.pengambilan.batal', $item->id) }}" 
+              method="POST" 
+              onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pengambilan ini? Stok akan dikembalikan.');"
+              class="inline">
+            @csrf
+            @method('POST') {{-- Sesuaikan dengan method di route kamu, biasanya POST atau PUT --}}
+            <button type="submit" class="text-red-500 hover:text-red-700" title="Batalkan Pengambilan">
+                ❌
+            </button>
+        </form>
+    @else
+        <span class="text-gray-300 cursor-not-allowed" title="Sudah dibatalkan">❌</span>
+    @endif
+</td>
                     </td>
 
                 </tr>

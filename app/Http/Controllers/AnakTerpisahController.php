@@ -18,8 +18,9 @@ class AnakTerpisahController extends Controller
 
             $query->where(function ($q) use ($search) {
                 $q->where('nama_anak', 'like', '%' . $search . '%')
-                    ->orWhere('nama_ortu_wali', 'like', '%' . $search . '%')
-                    ->orWhere('lokasi_ditemukan', 'like', '%' . $search . '%');
+                ->orWhere('nama_bapak', 'like', '%' . $search . '%')
+                ->orWhere('nama_ibu', 'like', '%' . $search . '%')
+                ->orWhere('lokasi_ditemukan', 'like', '%' . $search . '%');
             });
         }
 
@@ -33,13 +34,13 @@ class AnakTerpisahController extends Controller
 
         $data = $query->get();
 
-        return view('anak_terpisah.index', compact('data'));
+        return view('management_korban.anak_terpisah.index', compact('data'));
     }
 
     // Form tambah data
     public function create()
     {
-        return view('anak_terpisah.create');
+        return view('management_korban.anak_terpisah.create');
     }
 
     // Simpan data
@@ -47,13 +48,14 @@ class AnakTerpisahController extends Controller
     {
         $request->validate([
             'nama_anak' => 'required',
+            'nama_bapak' => 'nullable|string',
+            'nama_ibu' => 'nullable|string',
             'jenis_kelamin' => 'required|in:L,P',
             'umur' => 'nullable|integer',
             'tanggal_lahir' => 'nullable|date',
             'alamat_asal' => 'nullable|string',
             'lokasi_ditemukan' => 'required|string',
             'tanggal_ditemukan' => 'required|date',
-            'nama_ortu_wali' => 'nullable|string',
             'kontak_keluarga' => 'nullable|string',
             'status_anak' => 'required|in:belum_dijemput,sudah_dijemput,dalam_proses',
             'foto_anak' => 'required|image|mimes:jpg,jpeg,png|max:2048',
@@ -63,17 +65,17 @@ class AnakTerpisahController extends Controller
 
         AnakTerpisah::create([
             'nama_anak' => $request->nama_anak,
+            'nama_bapak' => $request->nama_bapak,
+            'nama_ibu'   => $request->nama_ibu,
             'jenis_kelamin' => $request->jenis_kelamin,
             'umur' => $request->umur,
             'tanggal_lahir' => $request->tanggal_lahir,
             'alamat_asal' => $request->alamat_asal,
             'lokasi_ditemukan' => $request->lokasi_ditemukan,
             'tanggal_ditemukan' => $request->tanggal_ditemukan,
-            'nama_ortu_wali' => $request->nama_ortu_wali,
             'kontak_keluarga' => $request->kontak_keluarga,
             'status_anak' => $request->status_anak,
             'foto_anak' => $foto,
-            'bencana_id' => $request->bencana_id,
         ]);
 
         return redirect()
@@ -86,7 +88,7 @@ class AnakTerpisahController extends Controller
     {
         $anak = AnakTerpisah::findOrFail($id);
 
-        return view('anak_terpisah.show', compact('anak'));
+        return view('management_korban.anak_terpisah.show', compact('anak'));
     }
 
     // Form edit
@@ -94,7 +96,7 @@ class AnakTerpisahController extends Controller
     {
         $anak = AnakTerpisah::findOrFail($id);
 
-        return view('anak_terpisah.edit', compact('anak'));
+        return view('management_korban.anak_terpisah.edit', compact('anak'));
     }
 
     // Update data
@@ -104,13 +106,14 @@ class AnakTerpisahController extends Controller
 
         $request->validate([
             'nama_anak' => 'required',
+            'nama_bapak' => 'nullable|string',
+            'nama_ibu' => 'nullable|string',
             'jenis_kelamin' => 'required|in:L,P',
             'umur' => 'nullable|integer',
             'tanggal_lahir' => 'nullable|date',
             'alamat_asal' => 'nullable|string',
             'lokasi_ditemukan' => 'required|string',
             'tanggal_ditemukan' => 'required|date',
-            'nama_ortu_wali' => 'nullable|string',
             'kontak_keluarga' => 'nullable|string',
             'status_anak' => 'required|in:belum_dijemput,sudah_dijemput,dalam_proses',
             'foto_anak' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',

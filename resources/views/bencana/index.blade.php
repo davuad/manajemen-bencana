@@ -22,7 +22,9 @@
                 <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari kategori..."
                     class="flex-1 border rounded-lg px-4 py-2">
 
-                <select name="kategori_id" class="border rounded-lg px-3 py-2">
+                <select
+                name="kategori_id"
+                class="border rounded-lg px-4 py-2 pr-10 appearance-none bg-white">
                     <option value="">Semua Kategori</option>
                     @foreach ($kategori as $k)
                         <option value="{{ $k->id }}" {{ request('kategori_id') == $k->id ? 'selected' : '' }}>
@@ -31,7 +33,7 @@
                     @endforeach
                 </select>
 
-                <select name="tingkat_kerusakan" class="border rounded-lg px-3 py-2">
+                <select name="tingkat_kerusakan" class="border rounded-lg px-4 py-2 pr-10 appearance-none bg-white">
                     <option value="">Semua Kerusakan</option>
                     <option value="ringan">Ringan</option>
                     <option value="sedang">Sedang</option>

@@ -300,37 +300,39 @@ class PengaduanBencanaController extends Controller
     // SIMPAN VERIFIKASI
     // =====================================
 
-    public function simpanVerifikasi(Request $request, $id)
-    {
-        $request->validate([
-            'status_pengaduan' => 'required',
-        ]);
+public function simpanVerifikasi(Request $request, $id)
+{
+    $request->validate([
+        'status_pengaduan' => 'required',
+    ]);
 
-        $pengaduan = PengaduanBencana::findOrFail($id);
+    $pengaduan = PengaduanBencana::findOrFail($id);
 
-        $pengaduan->update([
-            'status_pengaduan' => $request->status_pengaduan,
-            'keterangan_verifikasi' => $request->keterangan_verifikasi,
-        ]);
+    // Update status pengaduan
+    $pengaduan->update([
+        'status_pengaduan' => $request->status_pengaduan,
+    ]);
 
-        if ($pengaduan->kebutuhan) {
+    // Cari atau buat data kebutuhan
+    $kebutuhan = KebutuhanPengaduan::firstOrNew([
+        'pengaduan_bencana_id' => $pengaduan->id,
+    ]);
 
-            $pengaduan->kebutuhan->update([
-                'dapur_umum' => $request->dapur_umum ?? 'Tidak',
-                'psikososial' => $request->psikososial ?? 'Tidak',
-                'logistik_rentan' => $request->logistik_rentan ?? 'Tidak',
-                'logistik_makanan' => $request->logistik_makanan ?? 'Tidak',
-                'logistik_penampungan' => $request->logistik_penampungan ?? 'Tidak',
-                'keterangan' => $request->keterangan_kebutuhan,
-            ]);
+    $kebutuhan->dapur_umum = $request->filled('dapur_umum') ? 'Butuh' : 'Tidak';
+    $kebutuhan->psikososial = $request->filled('psikososial') ? 'Butuh' : 'Tidak';
+    $kebutuhan->logistik_rentan = $request->filled('logistik_rentan') ? 'Butuh' : 'Tidak';
+    $kebutuhan->logistik_makanan = $request->filled('logistik_makanan') ? 'Butuh' : 'Tidak';
+    $kebutuhan->logistik_penampungan = $request->filled('logistik_penampungan') ? 'Butuh' : 'Tidak';
 
-        }
+    // Keterangan kebutuhan
+    $kebutuhan->keterangan = $request->keterangan;
 
-        return redirect()
-            ->route('kabid.pengaduan.index')
-            ->with('success', 'Verifikasi berhasil disimpan');
-    }
+    $kebutuhan->save();
 
+    return redirect()
+        ->route('kabid.pengaduan.index')
+        ->with('success', 'Verifikasi berhasil disimpan.');
+}
     // =====================================
     // KETUA TIM - MONITORING
     // =====================================

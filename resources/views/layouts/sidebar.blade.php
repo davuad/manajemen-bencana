@@ -62,13 +62,36 @@
                 </span>
 
             </a>
-        @elseif(auth()->user()->hasRole('relawan') || auth()->user()->hasRole('kadus') || auth()->user()->hasRole('desa'))
-            <a href="{{ route('user.pengaduan.index') }}"
-                class="flex items-center gap-3 px-3 py-2 rounded hover:bg-blue-800">
+        @elseif(auth()->user()->hasRole('relawan'))
+            <a href="{{ route('relawan.pengaduan.index') }}"
+                class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+        {{ request()->routeIs('relawan.pengaduan.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
 
-                <span>
-                    <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
+                <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
+
+                <span x-show="sidebarOpen">
+                    Pengaduan Saya
                 </span>
+
+            </a>
+        @elseif(auth()->user()->hasRole('kadus'))
+            <a href="{{ route('kadus.pengaduan.index') }}"
+                class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+        {{ request()->routeIs('kadus.pengaduan.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+
+                <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
+
+                <span x-show="sidebarOpen">
+                    Pengaduan Saya
+                </span>
+
+            </a>
+        @elseif(auth()->user()->hasRole('desa'))
+            <a href="{{ route('desa.pengaduan.index') }}"
+                class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+        {{ request()->routeIs('desa.pengaduan.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+
+                <x-heroicon-o-exclamation-triangle class="w-5 h-5" />
 
                 <span x-show="sidebarOpen">
                     Pengaduan Saya
@@ -191,27 +214,27 @@
         </a>
 
 
-      <a href="{{ route('admin.desa.index') }}"
-    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+        <a href="{{ route('admin.desa.index') }}"
+            class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
     {{ request()->routeIs('admin.desa.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
 
-    <x-heroicon-o-map class="w-5 h-5" />
+            <x-heroicon-o-map class="w-5 h-5" />
 
-    <span x-show="sidebarOpen" x-transition>
-        Data Desa
-    </span>
-</a>
+            <span x-show="sidebarOpen" x-transition>
+                Data Desa
+            </span>
+        </a>
 
-<a href="{{ route('admin.warga.index') }}"
-    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+        <a href="{{ route('admin.warga.index') }}"
+            class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
     {{ request()->routeIs('admin.warga.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
 
-    <x-heroicon-o-users class="w-5 h-5" />
+            <x-heroicon-o-users class="w-5 h-5" />
 
-    <span x-show="sidebarOpen" x-transition>
-        Data Warga Terdampak
-    </span>
-</a>
+            <span x-show="sidebarOpen" x-transition>
+                Data Warga Terdampak
+            </span>
+        </a>
 
 
         @if (auth()->user()->hasRole('admin'))
@@ -343,6 +366,57 @@
                     </a>
                 </div>
             </div>
+        </div>
+        @elseif(auth()->user()->hasRole('pegawai'))
+            <div x-data="{ openMenu: {{ request()->routeIs('pegawai.management_posko.*') || request()->routeIs('pegawai.dapur_umum.*') ? 'true' : 'false' }} }" class="rounded">
+
+                <div @click="openMenu = !openMenu"
+                    class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
+                    :class="openMenu ? 'bg-orange-500' : 'hover:bg-blue-800'">
+                    <span>
+                        <x-heroicon-o-home-modern class="w-5 h-5" />
+                    </span>
+                    <span x-show="sidebarOpen" x-transition>
+                        Informasi Posko
+                    </span>
+                </div>
+
+                <div x-show="openMenu" x-transition class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
+                    <a href="{{ route('pegawai.management_posko.posko.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('pegawai.management_posko.posko.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                        Data Posko
+                    </a>
+                    <a href="{{ route('pegawai.management_posko.dapur_umum.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('pegawai.management_posko.dapur_umum.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                        Dapur Umum
+                    </a>
+                </div>
+            </div>
+        @elseif(auth()->user()->hasRole('petugas'))
+            <div x-data="{ openMenu: {{ request()->routeIs('petugas.management_posko.*') || request()->routeIs('petugas.dapur_umum.*') ? 'true' : 'false' }} }" class="rounded">
+
+                <div @click="openMenu = !openMenu"
+                    class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
+                    :class="openMenu ? 'bg-orange-500' : 'hover:bg-blue-800'">
+                    <span>
+                        <x-heroicon-o-home-modern class="w-5 h-5" />
+                    </span>
+                    <span x-show="sidebarOpen" x-transition>
+                        Informasi Posko
+                    </span>
+                </div>
+
+                <div x-show="openMenu" x-transition class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
+                    <a href="{{ route('petugas.management_posko.posko.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('petugas.management_posko.posko.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                        Data Posko
+                    </a>
+                    <a href="{{ route('petugas.management_posko.dapur_umum.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('petugas.management_posko.dapur_umum.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                        Dapur Umum
+                    </a>
+                </div>
+            </div>
         @endif
 
         <!-- ================= MANAGEMENT BARANG ================= -->
@@ -386,58 +460,203 @@
         </div>
 
         <!-- ================= MANAGEMEN DISTRIBUSI (BARU) ================= -->
-        <div x-data="{ openMenuDistribusi: {{ request()->routeIs('management_distribusi.*') ? 'true' : 'false' }} }" class="rounded">
-            <div @click="openMenuDistribusi = !openMenuDistribusi"
-                class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
-                :class="openMenuDistribusi
-                    ?
-                    'bg-orange-500' :
-                    'hover:bg-blue-800'">
-                <span>
+        <!-- ================= MANAGEMEN DISTRIBUSI ================= -->
+
+        @if (auth()->user()->hasRole('admin'))
+            <div x-data="{ openMenuDistribusi: {{ request()->routeIs('admin.management_distribusi.*') ? 'true' : 'false' }} }" class="rounded">
+
+                <div @click="openMenuDistribusi = !openMenuDistribusi"
+                    class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
+                    :class="openMenuDistribusi ? 'bg-orange-500' : 'hover:bg-blue-800'">
+
                     <x-heroicon-o-truck class="w-5 h-5" />
-                </span>
-                <span x-show="sidebarOpen" x-transition>
-                    Manajemen Distribusi
-                </span>
+
+                    <span x-show="sidebarOpen">
+                        Manajemen Distribusi
+                    </span>
+                </div>
+
+                <div x-show="openMenuDistribusi" x-transition
+                    class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
+
+                    <a href="{{ route('admin.management_distribusi.distribusi.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.management_distribusi.distribusi.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                        Distribusi
+                    </a>
+
+                    <a href="{{ route('admin.management_distribusi.penerima.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.management_distribusi.penerima.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                        Penerima Distribusi
+                    </a>
+
+                    <a href="{{ route('admin.management_distribusi.paket_bantuan.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.management_distribusi.paket_bantuan.*') || request()->routeIs('admin.management_distribusi.detail_paket.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                        Paket Bantuan
+                    </a>
+
+                    <a href="{{ route('admin.management_distribusi.distribusi_paket.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.management_distribusi.distribusi_paket.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                        Distribusi Pasca Bencana
+                    </a>
+
+                </div>
             </div>
+        @elseif(auth()->user()->hasRole('pegawai'))
+            <div x-data="{ openMenuDistribusi: {{ request()->routeIs('pegawai.management_distribusi.*') ? 'true' : 'false' }} }" class="rounded">
 
-            <div x-show="openMenuDistribusi" x-transition class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
+                <div @click="openMenuDistribusi = !openMenuDistribusi"
+                    class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
+                    :class="openMenuDistribusi ? 'bg-orange-500' : 'hover:bg-blue-800'">
 
-                <a href="{{ route('admin.management_distribusi.distribusi.index') }}"
-                    class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.management_distribusi.distribusi.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
-                    Distribusi
-                </a>
-                <a href="{{ route('admin.management_distribusi.penerima.index') }}"
-                    class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.management_distribusi.penerima_distribusi.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
-                    Penerima Distribusi
-                </a>
-                <a href="{{ route('admin.management_distribusi.paket_bantuan.index') }}"
-                    class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.management_distribusi.paket_bantuan.*') || request()->routeIs('admin.management_distribusi.detail_paket.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
-                    Paket Bantuan
-                </a>
-                <a href="{{ route('admin.management_distribusi.distribusi_paket.index') }}"
-                    class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.management_distribusi.distribusi_paket.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
-                    Distribusi Pasca Bencana
-                </a>
+                    <x-heroicon-o-truck class="w-5 h-5" />
 
+                    <span x-show="sidebarOpen">
+                        Manajemen Distribusi
+                    </span>
+                </div>
 
+                <div x-show="openMenuDistribusi" x-transition
+                    class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
+
+                    <a href="{{ route('pegawai.management_distribusi.paket_bantuan.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('pegawai.management_distribusi.paket_bantuan.*') || request()->routeIs('pegawai.management_distribusi.detail_paket.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                        Paket Bantuan
+                    </a>
+
+                    <a href="{{ route('pegawai.management_distribusi.distribusi_paket.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('pegawai.management_distribusi.distribusi_paket.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                        Distribusi Pasca Bencana
+                    </a>
+
+                </div>
             </div>
-        </div>
+        @elseif(auth()->user()->hasRole('petugas'))
+            <div x-data="{ openMenuDistribusi: {{ request()->routeIs('petugas.management_distribusi.*') ? 'true' : 'false' }} }" class="rounded">
+
+                <div @click="openMenuDistribusi = !openMenuDistribusi"
+                    class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
+                    :class="openMenuDistribusi ? 'bg-orange-500' : 'hover:bg-blue-800'">
+
+                    <x-heroicon-o-truck class="w-5 h-5" />
+
+                    <span x-show="sidebarOpen">
+                        Distribusi Bantuan
+                    </span>
+                </div>
+
+                <div x-show="openMenuDistribusi" x-transition
+                    class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
+
+                    <a href="{{ route('petugas.management_distribusi.distribusi_paket.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('petugas.management_distribusi.distribusi_paket.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                        Distribusi Pasca Bencana
+                    </a>
+
+                </div>
+            </div>
+        @endif
 
         <!-- ================= DATA KORBAN ================= -->
-        <a href="{{ route('admin.management_korban.korban.index') }}"
-            class="flex items-center gap-3 px-3 py-2 rounded 
-        {{ request()->routeIs('admin.management_korban.korban.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+    <div x-data="{ openKorban: {{
+        request()->routeIs('admin.korban.*') ||
+        request()->routeIs('admin.anak_terpisah.*') ||
+        request()->routeIs('admin.penjemputan.*') ||
+        request()->routeIs('petugas.korban.*') ||
+        request()->routeIs('petugas.anak_terpisah.*') ||
+        request()->routeIs('petugas.penjemputan.*') ||
+        request()->routeIs('relawan.korban.*') ||
+        request()->routeIs('relawan.anak_terpisah.*') ||
+        request()->routeIs('relawan.penjemputan.*') ||
+        request()->routeIs('desa.korban.*') 
+        ? 'true'
+        : 'false'
+    }} }" class="rounded">
 
-            <span>
-                <x-heroicon-o-user-group class="w-5 h-5" />
-            </span>
+    <div @click="openKorban = !openKorban"
+        class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
+        :class="openKorban ? 'bg-orange-500' : 'hover:bg-blue-800'">
 
-            <span x-show="sidebarOpen" x-transition>
-                Data Korban
-            </span>
+        <span>
+            <x-heroicon-o-user-group class="w-5 h-5" />
+        </span>
+
+        <span x-show="sidebarOpen" x-transition>
+            Data Korban
+        </span>
+    </div>
+
+    <div x-show="openKorban" x-transition
+    class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
+
+    @if(auth()->user()->hasRole('admin'))
+
+        <a href="{{ route('admin.korban.index') }}"
+            class="block px-3 py-2 text-sm rounded
+            {{ request()->routeIs('admin.korban.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Data Korban
         </a>
 
+        <a href="{{ route('admin.anak_terpisah.index') }}"
+            class="block px-3 py-2 text-sm rounded
+            {{ request()->routeIs('admin.anak_terpisah.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Anak Terpisah
+        </a>
+
+        <a href="{{ route('admin.penjemputan.index') }}"
+            class="block px-3 py-2 text-sm rounded
+            {{ request()->routeIs('admin.penjemputan.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Penjemputan Anak
+        </a>
+
+    @elseif(auth()->user()->hasRole('petugas'))
+        <a href="{{ route('petugas.korban.index') }}"
+            class="block px-3 py-2 text-sm rounded
+            {{ request()->routeIs('petugas.korban.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Data Korban
+        </a>
+
+        <a href="{{ route('petugas.anak_terpisah.index') }}"
+            class="block px-3 py-2 text-sm rounded
+            {{ request()->routeIs('petugas.anak_terpisah.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Anak Terpisah
+        </a>
+
+        <a href="{{ route('petugas.penjemputan.index') }}"
+            class="block px-3 py-2 text-sm rounded
+            {{ request()->routeIs('petugas.penjemputan.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Penjemputan Anak
+        </a>
+
+    @elseif(auth()->user()->hasRole('relawan'))
+        <a href="{{ route('relawan.korban.index') }}"
+            class="block px-3 py-2 text-sm rounded
+            {{ request()->routeIs('relawan.korban.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Data Korban
+        </a>
+
+        <a href="{{ route('relawan.anak_terpisah.index') }}"
+            class="block px-3 py-2 text-sm rounded
+            {{ request()->routeIs('relawan.anak_terpisah.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Anak Terpisah
+        </a>
+
+        <a href="{{ route('relawan.penjemputan.index') }}"
+            class="block px-3 py-2 text-sm rounded
+            {{ request()->routeIs('relawan.penjemputan.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Penjemputan Anak
+        </a>
+
+    @elseif(auth()->user()->hasRole('desa'))
+        <a href="{{ route('desa.korban.index') }}"
+            class="block px-3 py-2 text-sm rounded
+            {{ request()->routeIs('desa.korban.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+            Data Korban
+
+    @endif
+
+</div>
+
+</div>
         <!-- ================= JADWAL LAYANAN PASCA BENCANA  ================= -->
         @if (auth()->user()->hasRole('admin'))
             <a href="{{ route('admin.jadwal.index') }}"
