@@ -90,17 +90,17 @@ Route::middleware(['auth', 'role:admin'])
 
         // --- Management Posko ---
         Route::prefix('management-posko')->name('management_posko.')->group(function () {
-            Route::resource('posko', PoskoController::class);
-            Route::resource('dapur_umum', DapurUmumController::class);
+            // Route::resource('posko', PoskoController::class);
+            // Route::resource('dapur_umum', DapurUmumController::class);
 
-            Route::prefix('kebutuhan_harian')->name('kebutuhan_harian.')->group(function () {
-                Route::get('/{dapur}', [KebutuhanHarianController::class, 'index'])->name('index');
-                Route::get('/{dapur}/create', [KebutuhanHarianController::class, 'create'])->name('create');
-                Route::post('/{dapur}', [KebutuhanHarianController::class, 'store'])->name('store');
-                Route::get('/edit/{id}', [KebutuhanHarianController::class, 'edit'])->name('edit');
-                Route::put('/update/{id}', [KebutuhanHarianController::class, 'update'])->name('update');
-                Route::delete('/delete/{id}', [KebutuhanHarianController::class, 'destroy'])->name('destroy');
-            });
+            // Route::prefix('kebutuhan_harian')->name('kebutuhan_harian.')->group(function () {
+            //     Route::get('/{dapur}', [KebutuhanHarianController::class, 'index'])->name('index');
+            //     Route::get('/{dapur}/create', [KebutuhanHarianController::class, 'create'])->name('create');
+            //     Route::post('/{dapur}', [KebutuhanHarianController::class, 'store'])->name('store');
+            //     Route::get('/edit/{id}', [KebutuhanHarianController::class, 'edit'])->name('edit');
+            //     Route::put('/update/{id}', [KebutuhanHarianController::class, 'update'])->name('update');
+            //     Route::delete('/delete/{id}', [KebutuhanHarianController::class, 'destroy'])->name('destroy');
+            // });
         });
 
         // --- Jadwal Layanan ---
@@ -242,25 +242,25 @@ Route::prefix('ketua_tim')->name('ketua_tim.')->middleware(['auth', 'role:ketua_
 // 6. ROUTE JADWAL PETUGAS (HANYA LIHAT)
 Route::prefix('petugas')->name('petugas.')->middleware(['auth', 'role:petugas'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
-    Route::prefix('management-posko')->name('management_posko.')->group(function () {
-        Route::get('/posko', [PoskoController::class, 'index'])
-            ->name('posko.index');
+    // Route::prefix('management-posko')->name('management_posko.')->group(function () {
+    //     Route::get('/posko', [PoskoController::class, 'index'])
+    //         ->name('posko.index');
 
-        Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
-            ->name('dapur_umum.index');
-    });
+    //     Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
+    //         ->name('dapur_umum.index');
+    // });
 });
 
 // 7. ROUTE JADWAL PEGAWAI (HANYA LIHAT)
 Route::prefix('pegawai')->name('pegawai.')->middleware(['auth', 'role:pegawai'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
-    Route::prefix('management-posko')->name('management_posko.')->group(function () {
-        Route::get('/posko', [PoskoController::class, 'index'])
-            ->name('posko.index');
+    // Route::prefix('management-posko')->name('management_posko.')->group(function () {
+    //     Route::get('/posko', [PoskoController::class, 'index'])
+    //         ->name('posko.index');
 
-        Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
-            ->name('dapur_umum.index');
-    });
+    //     Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
+    //         ->name('dapur_umum.index');
+    // });
 });
 // --- Role Placeholders (Kosong) ---
 Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')->group(function () {
@@ -276,10 +276,6 @@ Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')
     Route::resource('data-desa', DesaController::class)->names('desa');
     Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
     Route::post('warga/{id}/ubah-status', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
-
-    Route::prefix('kebutuhan_harian')->name('kebutuhan_harian.')->group(function () {
-        Route::get('/{dapur}', [KebutuhanHarianController::class, 'index'])->name('kebutuhan_harian.index');
-    });
 });
 
 
@@ -473,14 +469,24 @@ Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')
 
 Route::middleware([
     'auth',
-    'role:admin|petugas|pegawai|relawan'
+    'role:admin|petugas|pegawai'
 ])->prefix('{role}/management-posko')
     ->name('management_posko.')
     ->group(function () {
 
         Route::resource('posko', PoskoController::class);
         Route::resource('dapur_umum', DapurUmumController::class);
-    })->where(['role' => 'admin|petugas|pegawai|relawan']);
+
+        // --- UBAH MENJADI FLAT SEPERTI INI ---
+        Route::get('kebutuhan_harian/{dapur}', [KebutuhanHarianController::class, 'index'])->name('kebutuhan_harian.index');
+        Route::get('kebutuhan_harian/{dapur}/create', [KebutuhanHarianController::class, 'create'])->name('kebutuhan_harian.create');
+        Route::post('kebutuhan_harian/{dapur}', [KebutuhanHarianController::class, 'store'])->name('kebutuhan_harian.store');
+
+        // Untuk edit, update, destroy: tambahkan parameter {dapur} agar urutan parameter URL konsisten!
+        Route::get('kebutuhan_harian/{dapur}/edit/{id}', [KebutuhanHarianController::class, 'edit'])->name('kebutuhan_harian.edit');
+        Route::put('kebutuhan_harian/{dapur}/update/{id}', [KebutuhanHarianController::class, 'update'])->name('kebutuhan_harian.update');
+        Route::delete('kebutuhan_harian/{dapur}/delete/{id}', [KebutuhanHarianController::class, 'destroy'])->name('kebutuhan_harian.destroy');
+    })->where(['role' => 'admin|petugas|pegawai']);
 
 // Relawan
 Route::middleware(['auth', 'role:relawan'])

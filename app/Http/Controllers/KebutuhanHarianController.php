@@ -8,11 +8,7 @@ use Illuminate\Http\Request;
 
 class KebutuhanHarianController extends Controller
 {
-    /**
-     * INDEX
-     * Menampilkan kebutuhan berdasarkan dapur umum tertentu
-     */
-    public function index(Request $request, $dapur)
+    public function index(Request $request, $role, $dapur)
     {
         $dapur = DapurUmum::findOrFail($dapur);
 
@@ -38,10 +34,7 @@ class KebutuhanHarianController extends Controller
         );
     }
 
-    /**
-     * FORM CREATE
-     */
-    public function create($dapur)
+    public function create($role, $dapur)
     {
         $dapur = DapurUmum::findOrFail($dapur);
 
@@ -54,7 +47,7 @@ class KebutuhanHarianController extends Controller
     /**
      * STORE
      */
-    public function store(Request $request, $dapur)
+    public function store(Request $request, $role, $dapur)
     {
         $dapur = DapurUmum::findOrFail($dapur);
 
@@ -77,8 +70,11 @@ class KebutuhanHarianController extends Controller
 
         return redirect()
             ->route(
-                'admin.management_posko.kebutuhan_harian.index',
-                $dapur->id
+                'management_posko.kebutuhan_harian.index',
+                [
+                    'role'  => $role,
+                    'dapur' => $dapur->id
+                ]
             )
             ->with(
                 'success',
@@ -89,7 +85,7 @@ class KebutuhanHarianController extends Controller
     /**
      * FORM EDIT
      */
-    public function edit($id)
+    public function edit($role, $dapur, $id)
     {
         $kebutuhan = KebutuhanHarian::with('dapur_umum')
             ->findOrFail($id);
@@ -104,7 +100,7 @@ class KebutuhanHarianController extends Controller
     /**
      * UPDATE
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $role, $dapur, $id)
     {
         $kebutuhan = KebutuhanHarian::findOrFail($id);
 
@@ -126,8 +122,11 @@ class KebutuhanHarianController extends Controller
 
         return redirect()
             ->route(
-                'admin.management_posko.kebutuhan_harian.index',
-                $kebutuhan->dapur_umum_id
+                'management_posko.kebutuhan_harian.index',
+                [
+                    $kebutuhan->dapur_umum_id,
+                    'role' => $role
+                ]
             )
             ->with(
                 'success',
@@ -138,7 +137,7 @@ class KebutuhanHarianController extends Controller
     /**
      * DELETE
      */
-    public function destroy($id)
+    public function destroy($role, $dapur, $id)
     {
         $kebutuhan = KebutuhanHarian::findOrFail($id);
 
@@ -148,8 +147,9 @@ class KebutuhanHarianController extends Controller
 
         return redirect()
             ->route(
-                'admin.management_posko.kebutuhan_harian.index',
-                $dapurId
+                'management_posko.kebutuhan_harian.index', [
+                $dapurId,
+                'role' => $role]
             )
             ->with(
                 'success',
