@@ -16,7 +16,7 @@
                  <option value="">-- Pilih Role --</option>
                 <option value="relawan" {{ old('role') === 'relawan' ? 'selected' : '' }}>Relawan</option>
                 <option value="desa" {{ old('role') === 'desa' ? 'selected' : '' }}>Desa</option>
-                <option value="kabid" {{ old('role') === 'kabid' ? 'selected' : '' }}>Kabid</option>
+                <option value="kadus" {{ old('role') === 'kadus' ? 'selected' : '' }}>Kadus</option>
             </select>
             <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>

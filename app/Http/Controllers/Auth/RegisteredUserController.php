@@ -25,7 +25,7 @@ class RegisteredUserController extends Controller
             'nik' => ['required', 'string', 'size:16', 'unique:' . User::class],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'string', 'in:relawan,desa,kabid']
+            'role' => ['required', 'string', 'in:relawan,desa,kadus']
         ]);
 
         $user = User::create([
