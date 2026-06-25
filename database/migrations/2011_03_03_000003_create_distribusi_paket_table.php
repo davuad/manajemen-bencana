@@ -24,8 +24,8 @@ return new class extends Migration
             $table->integer('jumlah_paket');
             $table->date('tanggal_distribusi');
 
-            $table->foreignId('pegawai_id')
-                ->constrained('pegawai', 'id_pegawai')
+            $table->foreignId('petugas_id')
+                ->constrained('petugas')
                 ->restrictOnDelete()
                 ->cascadeOnUpdate();
 

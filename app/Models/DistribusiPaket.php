@@ -13,7 +13,7 @@ class DistribusiPaket extends Model
         'paket_bantuan_id',
         'jumlah_paket',
         'tanggal_distribusi',
-        'pegawai_id',
+        'petugas_id',
         'status_distribusi',
     ];
 
@@ -31,8 +31,8 @@ class DistribusiPaket extends Model
         return $this->belongsTo(PaketBantuan::class, 'paket_bantuan_id');
     }
 
-    public function pegawai()
+    public function petugas()
     {
-        return $this->belongsTo(Pegawai::class, 'pegawai_id', 'id_pegawai');
+        return $this->belongsTo(Petugas::class, 'petugas_id');
     }
 }

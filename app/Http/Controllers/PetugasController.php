@@ -9,12 +9,35 @@ use App\Models\Posko;
 class PetugasController extends Controller
 {
     // INDEX
-    public function index()
-    {
-        $data = Petugas::with('posko')->latest()->paginate(10);
+   // Tambahkan Request $request di dalam parameter index
+public function index(Request $request)
+{
+    // Mulai query dengan eager loading relasi 'posko'
+    $query = Petugas::with('posko');
 
-        return view('management_barang.petugas.index', compact('data'));
+    // Jika ada parameter search dari input teks
+    if ($request->filled('search')) {
+        $search = $request->search;
+
+        $query->where(function ($q) use ($search) {
+            $q->where('nama_petugas', 'like', "%$search%")
+              ->orWhere('jabatan', 'like', "%$search%")
+              ->orWhere('no_hp', 'like', "%$search%")
+              ->orWhere('tahun', 'like', "%$search%");
+              
+            // Opsional: Jika ingin bisa mencari berdasarkan nama posko juga
+            $q->orWhereHas('posko', function ($p) use ($search) {
+                $p->where('nama_posko', 'like', "%$search%");
+            });
+        });
     }
+
+    // Ambil data terbaru dengan paginasi 10 data
+    $data = $query->latest()->paginate(10);
+
+    // Kirim data ke view (bawa juga request search-nya agar paginasi tidak patah)
+    return view('management_barang.petugas.index', compact('data'))->with('search', $request->search);
+}
 
     // CREATE
     public function create()
@@ -38,7 +61,7 @@ class PetugasController extends Controller
 
         Petugas::create($validated);
 
-        return redirect()->route('management_barang.petugas.index')
+        return redirect()->route('admin.management_barang.petugas.index')
             ->with('success', 'Data petugas berhasil ditambahkan');
     }
 
@@ -74,7 +97,7 @@ class PetugasController extends Controller
 
         $petugas->update($validated);
 
-        return redirect()->route('management_barang.petugas.index')
+        return redirect()->route('admin.management_barang.petugas.index')
             ->with('success', 'Data petugas berhasil diupdate');
     }
 
@@ -84,7 +107,7 @@ class PetugasController extends Controller
         $petugas = Petugas::findOrFail($id);
         $petugas->delete();
 
-        return redirect()->route('management_barang.petugas.index')
+        return redirect()->route('admin.management_barang.petugas.index')
             ->with('success', 'Data petugas berhasil dihapus');
     }
 }

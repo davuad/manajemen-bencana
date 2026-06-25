@@ -86,7 +86,9 @@ class DetailPaketController extends Controller
             'jumlah' => $request->jumlah,
         ]);
 
-        return redirect()->route('admin.management_distribusi.detail_paket.index', [
+        $prefix = request()->segment(1);
+
+        return redirect()->route($prefix . '.management_distribusi.detail_paket.index', [
             'paket_bantuan_id' => $request->paket_bantuan_id
         ])->with('success', 'Detail paket berhasil ditambahkan');
     }
@@ -149,7 +151,9 @@ class DetailPaketController extends Controller
             'jumlah' => $request->jumlah,
         ]);
 
-        return redirect()->route('admin.management_distribusi.detail_paket.index', [
+        $prefix = request()->segment(1);
+
+        return redirect()->route($prefix . '.management_distribusi.detail_paket.index', [
             'paket_bantuan_id' => $request->paket_bantuan_id
         ])->with('success', 'Detail paket berhasil diperbarui');
     }
@@ -162,7 +166,9 @@ class DetailPaketController extends Controller
 
         $detail_paket->delete();
 
-        return redirect()->route('admin.management_distribusi.detail_paket.index', [
+        $prefix = request()->segment(1);
+
+        return redirect()->route($prefix . '.management_distribusi.detail_paket.index', [
             'paket_bantuan_id' => $paket_bantuan_id
         ])->with('success', 'Detail paket berhasil dihapus');
     }

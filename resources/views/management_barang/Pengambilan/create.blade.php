@@ -26,7 +26,7 @@
         </div>
     @endif
 
-    <form action="{{ route('management_barang.pengambilan.store') }}"
+    <form action="{{ route('admin.management_barang.pengambilan.store') }}"
           method="POST">
 
         @csrf
@@ -186,14 +186,15 @@
                             <td class="p-3">
 
                                 <select name="barang_id[]"
-                                        class="w-full border rounded-lg px-3 py-2 barang-select">
-
+                                        class="w-full border rounded-lg px-3 py-2 barang-select"
+                                        required>
+                                        
                                     <option value="">
                                         -- Pilih Barang --
                                     </option>
 
                                     @foreach($barang as $item)
-                                    <option value="{{ $item->id }}"
+                                    <option value="{{ $item->id_barang }}"
                                             data-stok="{{ $item->stok }}">
 
                                         {{ $item->nama_barang }}
@@ -252,7 +253,7 @@
 
             </button>
 
-            <a href="{{ route('management_barang.pengambilan.index') }}"
+            <a href="{{ route('admin.management_barang.pengambilan.index') }}"
                class="bg-gray-300 text-gray-700 px-6 py-2 rounded-lg">
 
                 Kembali
