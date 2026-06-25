@@ -21,7 +21,7 @@
                 Cetak Laporan
             </button>
 
-            <a href="{{ route('distribusi_bantuan.pengajuan.create') }}"
+            <a href="{{ route('admin.management_distribusi.pengajuan_barang.create') }}"
                class="bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-2 rounded-lg text-sm font-semibold transition shadow-sm">
                 + Tambah Pengajuan
             </a>
@@ -29,7 +29,7 @@
     </div>
 
     {{-- Form Filter Dinamis --}}
-    <form method="GET" id="filterForm" action="{{ route('distribusi_bantuan.pengajuan.index') }}" class="mb-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
+    <form method="GET" id="filterForm" action="{{ route('admin.management_distribusi.pengajuan_barang.index') }}" class="mb-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             
             {{-- Search Nama Bencana atau Lokasi --}}
@@ -86,7 +86,7 @@
                     Filter
                 </button>
                 @if(request()->anyFilled(['nama_bencana', 'tahun', 'bulan', 'status', 'search']))
-                    <a href="{{ route('distribusi_bantuan.pengajuan.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-600 px-4 py-2 rounded-lg text-sm transition flex items-center justify-center">
+                    <a href="{{ route('admin.management_distribusi.pengajuan_barang.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-600 px-4 py-2 rounded-lg text-sm transition flex items-center justify-center">
                         Reset
                     </a>
                 @endif
@@ -157,15 +157,15 @@
                 <td class="p-4">
                     <div class="flex gap-1 items-center">
                         {{-- Tombol Detail --}}
-                        <a href="{{ route('distribusi_bantuan.pengajuan.show', $item->id) }}" 
-                           class="text-blue-500 hover:text-blue-700 transition" 
-                           title="Lihat Detail">
-                            <x-heroicon-o-eye class="w-5 h-5" />
-                        </a>
+                        <a href="{{ route('admin.management_distribusi.pengajuan_barang.show', $item->id) }}" 
+   class="text-blue-500 hover:text-blue-700 transition" 
+   title="Lihat Detail">
+    <x-heroicon-o-eye class="w-5 h-5" />
+</a>
 
                         @if($item->status_pengajuan === 'pending')
                             {{-- Tombol Edit --}}
-                            <a href="{{ route('distribusi_bantuan.pengajuan.edit', $item->id) }}" 
+                            <a href="{{ route('admin.management_distribusi.pengajuan_barang.edit', $item->id) }}" 
                                class="text-yellow-500 hover:text-yellow-700 transition"
                                title="Edit Data">
                                 <x-heroicon-o-pencil-square class="w-5 h-5" />
@@ -244,7 +244,7 @@
         modal.classList.remove('hidden');
         modal.classList.add('flex');
         document.getElementById('namaItem').innerText = nama;
-        let url = "{{ route('distribusi_bantuan.pengajuan.destroy', ':id') }}";
+        let url = "{{ route('admin.management_distribusi.pengajuan_barang.destroy', ':id') }}";
         url = url.replace(':id', id);
         document.getElementById('deleteForm').action = url;
     }

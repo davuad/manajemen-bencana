@@ -12,7 +12,7 @@
         <h2 class="text-xl font-bold text-gray-800">Tambah Pengajuan & Barang</h2>
         <p class="text-gray-500 text-sm">Input data pengajuan beserta daftar kebutuhan logistik.</p>
     </div>
-    <a href="{{ route('distribusi_bantuan.pengajuan.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm transition font-medium">
+    <a href="{{ route('admin.management_distribusi.pengajuan_barang.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm transition font-medium">
         &larr; Batal
     </a>
 </div>
@@ -46,7 +46,7 @@
             </div>
         </div>
         
-        <form action="{{ route('distribusi_bantuan.pengajuan.preview_import') }}" method="POST" enctype="multipart/form-data" class="flex items-center gap-2">
+        <form action="{{ route('admin.management_distribusi.pengajuan_barang.preview_import') }}" method="POST" enctype="multipart/form-data" class="flex items-center gap-2">
             @csrf
             <input type="file" name="file_excel" required class="block w-full text-xs text-gray-500
                 file:mr-4 file:py-2 file:px-4
@@ -76,7 +76,7 @@
 </div>
 
 
-    <form id="createForm" action="{{ route('distribusi_bantuan.pengajuan.store') }}" method="POST">
+    <form id="createForm" action="{{ route('admin.management_distribusi.pengajuan_barang.store') }}" method="POST">
         @csrf
         
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
@@ -98,11 +98,24 @@
                 </select>
             </div>
 
-            <div>
+            {{-- <div>
                 <label class="block font-bold text-gray-700 mb-1 text-sm">Pegawai Pengaju *</label>
                 <select name="pegawai_id" class="w-full border rounded-lg p-2.5 shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none" required>
                     @foreach($pegawai as $p)
                         <option value="{{ $p->id }}">{{ $p->nama_pegawai }}</option>
+                    @endforeach
+                </select>
+            </div> --}}
+
+            <div>
+                <label class="block font-bold text-gray-700 mb-1 text-sm">Pegawai Pengaju *</label>
+                <select name="pegawai_id" class="w-full border rounded-lg p-2.5 shadow-sm focus:ring-2 focus:ring-indigo-500 outline-none" required>
+                    {{-- Opsi kosong sebagai placeholder awal --}}
+                    <option value="">-- Pilih Pegawai --</option>
+                    
+                    @foreach($pegawai as $p)
+                        {{-- 🟢 UBAH DI SINI: dari $p->id menjadi $p->id_pegawai --}}
+                        <option value="{{ $p->id_pegawai }}">{{ $p->nama_pegawai }}</option>
                     @endforeach
                 </select>
             </div>
@@ -142,7 +155,8 @@
                                 <select name="barang_id[]" class="w-full border-gray-200 rounded-lg p-2 text-sm focus:ring-indigo-500" required>
                                     <option value="">-- Pilih Barang --</option>
                                     @foreach($barang as $item)
-                                        <option value="{{ $item->id }}">{{ $item->nama_barang }} ({{ $item->satuan }})</option>
+                                        {{-- 🟢 UBAH DI SINI: dari $item->id menjadi $item->id_barang --}}
+                                        <option value="{{ $item->id_barang }}">{{ $item->nama_barang }} ({{ $item->satuan }})</option>
                                     @endforeach
                                 </select>
                             </td>
@@ -302,7 +316,7 @@ document.getElementById('uploadExcel').addEventListener('change', function(e) {
     btn.innerText = "Memproses...";
     btn.disabled = true;
 
-    fetch("{{ route('distribusi_bantuan.pengajuan.import') }}", {
+    fetch("{{ route('admin.management_distribusi.pengajuan_barang.import') }}", {
         method: "POST",
         body: formData
     })

@@ -31,12 +31,12 @@
         <h2 class="text-xl font-bold text-gray-800">Detail Pengajuan #{{ $data->id }}</h2>
         <p class="text-gray-500 text-sm">Informasi lengkap terkait permintaan barang logistik</p>
     </div>
-    <a href="{{ route('distribusi_bantuan.pengajuan.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm transition font-medium">
+    <a href="{{ route('admin.management_distribusi.pengajuan_barang.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm transition font-medium">
         &larr; Kembali ke Daftar
     </a>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 m-3 mt-5 pb-24"> {{-- pb-24 agar tidak tertutup sticky bar --}}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 m-3 mt-5 pb-24"> 
     
     <div class="lg:col-span-1 space-y-6">
         {{-- Informasi Pengajuan --}}
@@ -78,7 +78,7 @@
                     </p>
                 </div>
 
-                {{-- CATATAN DARI ADMIN (Hanya muncul jika sudah di ACC/Tolak) --}}
+                {{-- CATATAN DARI ADMIN --}}
                 @if($data->status_pengajuan !== 'pending')
                 <div class="pt-3 border-t">
                     <label class="text-blue-500 block uppercase text-[10px] font-bold mb-1">Catatan Admin / Alasan</label>
@@ -149,6 +149,7 @@
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-gray-100">
+                        {{-- 🟢 PERBAIKAN: Struktur forelse dibersihkan dari token endempty ganda --}}
                         @forelse($data->detailPengajuan as $detail)
                         <tr class="hover:bg-gray-50 transition">
                             <td class="p-3 font-medium text-gray-700">
@@ -187,11 +188,12 @@
                     <p class="text-[10px] text-blue-400 italic">ID User: #{{ $data->updated_by }}</p>
                 </div>
                 <div>
-                    <label class="text-blue-400 block text-[10px] font-bold uppercase">Waktu Keputusan</label>
+                    <label class="text-blue-400 block text-[10px] font-bold uppercase">Waktu Keputusan (WIB)</label>
                     <p class="font-bold text-blue-900 text-base">
-                        {{ \Carbon\Carbon::parse($data->updated_at)->format('d/m/Y, H:i') }} WIB
+                        {{-- 🟢 SINKRONISASI ASIA/JAKARTA (GMT+7) --}}
+                        {{ \Carbon\Carbon::parse($data->updated_at)->timezone('Asia/Jakarta')->translatedFormat('d/m/Y, H:i') }} WIB
                     </p>
-                    <p class="text-[10px] text-blue-400 italic">Sesuai Waktu Server</p>
+                    <p class="text-[10px] text-blue-400 italic">Konversi Otomatis Sistem BPBD</p>
                 </div>
             </div>
         </div>
@@ -199,7 +201,7 @@
     </div>
 </div>
 
-{{-- STICKY ACTION BAR (Strategic Location) --}}
+{{-- STICKY ACTION BAR --}}
 @if($data->status_pengajuan == 'pending')
 <div class="fixed bottom-0 inset-x-0 md:left-64 bg-white border-t shadow-[0_-4px_10px_-2px_rgba(0,0,0,0.1)] p-4 z-40">
     <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
@@ -234,14 +236,12 @@
 <div id="decisionModal" class="fixed inset-0 backdrop-blur-sm bg-black/30 hidden items-center justify-center z-50">
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-6 transform transition-all">
         <div class="text-center">
-            <div id="modalIcon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                {{-- Icon via JS --}}
-            </div>
+            <div id="modalIcon" class="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4"></div>
             <h3 id="modalTitle" class="text-xl font-bold text-gray-900 mb-2"></h3>
             <p id="modalDescription" class="text-sm text-gray-500 mb-6"></p>
         </div>
 
-        <form action="{{ route('distribusi_bantuan.pengajuan.update', $data->id) }}" method="POST">
+        <form action="{{ route('admin.management_distribusi.pengajuan_barang.update', $data->id) }}" method="POST">
             @csrf
             @method('PUT')
             
@@ -304,6 +304,8 @@
 
     function closeDecisionModal() {
         const modal = document.getElementById('decisionModal');
+        const statusInput = document.getElementById('status_input');
+        statusInput.value = '';
         modal.classList.add('hidden');
         modal.classList.remove('flex');
     }

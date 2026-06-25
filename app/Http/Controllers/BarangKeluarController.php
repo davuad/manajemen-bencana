@@ -82,7 +82,7 @@ public function getDetailPengajuan($id)
 }
 
 
-    public function store(Request $request)
+public function store(Request $request)
     {
         $request->validate([
             'gudang_id' => 'required',
@@ -93,6 +93,7 @@ public function getDetailPengajuan($id)
             'barang_id' => 'required|array',
             'jumlah' => 'required|array', // Ini jumlah permintaan asli
             'jumlah_keluar' => 'required|array', // Ini jumlah realisasi gudang
+            'catatan_barang' => 'nullable|array', // 🟢 Tambahkan validasi array catatan item
         ]);
 
         try {
@@ -110,14 +111,16 @@ public function getDetailPengajuan($id)
                 foreach ($request->barang_id as $index => $id_barang) {
                     DetailBarangKeluar::create([
                         'barang_keluar_id' => $bk->id,
-                        'barang_id' => $id_barang,
-                        'jumlah' => $request->jumlah[$index], // Angka permintaan
-                        'jumlah_keluar' => $request->jumlah_keluar[$index], // Angka realisasi
+                        'barang_id'        => $id_barang,
+                        'jumlah'           => $request->jumlah[$index], 
+                        'jumlah_keluar'    => $request->jumlah_keluar[$index], 
+                        // 🟢 PERBAIKAN UTAMA: Tangkap input catatan item dari form create
+                        'catatan'          => $request->catatan_barang[$index] ?? null, 
                     ]);
                 }
             });
 
-            return redirect()->route('distribusi_bantuan.barang_keluar.index')->with('success', 'Data berhasil disimpan');
+            return redirect()->route('admin.management_distribusi.barang_keluar.index')->with('success', 'Data pengeluaran barang berhasil disimpan');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal Simpan: ' . $e->getMessage());
         }
@@ -152,58 +155,69 @@ public function update(Request $request, $id)
 {
     $bk = BarangKeluar::findOrFail($id);
 
+    // Jika data sudah final (selesai / dibatalkan), tidak boleh diotak-atik lagi
     if (in_array($bk->status_proses, ['selesai', 'dibatalkan'])) {
-        return redirect()->back()->with('error', 'Gagal! Data sudah bersifat final.');
+        return redirect()->back()->with('error', 'Gagal! Data distribusi ini sudah bersifat final.');
     }
 
     $request->validate([
-        'status_proses' => 'required|in:diproses,dikirim,selesai,dibatalkan',
-        'gudang_id' => 'required|exists:gudang,id',
-        'petugas_gudang_id' => 'required|exists:pegawai,id',
-        'barang_id' => 'required|array',
-        'jumlah_keluar' => 'required|array',
+        'status_proses'     => 'required|in:diproses,dikirim,selesai,dibatalkan',
+        'gudang_id'         => 'required|exists:gudang,id',
+        'petugas_gudang_id' => 'required|exists:pegawai,id_pegawai',
+        'barang_id'         => 'required|array',
+        'jumlah_keluar'     => 'required|array',
     ]);
 
     try {
         DB::transaction(function () use ($request, $bk) {
-            $isChangingToSelesai = ($request->status_proses === 'selesai');
+            $oldStatus = $bk->status_proses;
+            $newStatus = $request->status_proses;
 
+            // 🟢 ATURAN BISNIS BARU: Stok terpotong jika berubah dari 'diproses' MENJADI 'dikirim'
+            $isChangingToDikirim = ($oldStatus === 'diproses' && $newStatus === 'dikirim');
+
+            // 1. Update data induk barang keluar
             $bk->update([
-                'status_proses' => $request->status_proses,
-                'gudang_id' => $request->gudang_id,
+                'status_proses'     => $newStatus,
+                'gudang_id'         => $request->gudang_id,
                 'petugas_gudang_id' => $request->petugas_gudang_id,
-                'catatan' => $request->catatan, 
-                'updated_by' => Auth::id() ?? 1,
+                'catatan'           => $request->catatan, 
+                'updated_by'        => Auth::id() ?? 1,
             ]);
 
+            // 2. Perbarui detail barang & manajemen stok
             foreach ($request->barang_id as $index => $id_barang) {
                 $qtyRealisasi = $request->jumlah_keluar[$index];
-                $catatanItem = $request->catatan_barang[$index] ?? null;
+                $catatanItem  = $request->catatan_barang[$index] ?? null;
 
+                // Update angka realisasi kuantitas & catatan per item barang
                 DetailBarangKeluar::where('barang_keluar_id', $bk->id)
                     ->where('barang_id', $id_barang)
                     ->update([
                         'jumlah_keluar' => $qtyRealisasi,
-                        'catatan' => $catatanItem // Catatan Per Barang
+                        'catatan'       => $catatanItem
                     ]);
 
-                if ($isChangingToSelesai) {
-                    $barang = Barang::lockForUpdate()->findOrFail($id_barang);
+                // Eksekusi pengurangan stok master barang di gudang
+                if ($isChangingToDikirim) {
+                    $barang = Barang::lockForUpdate()->where('id_barang', $id_barang)->firstOrFail();
                     
+                    // Validasi pengaman: Pastikan stok di rak gudang mencukupi
                     if ($barang->stok < $qtyRealisasi) {
-                        throw new \Exception("Stok '{$barang->nama_barang}' tidak cukup! (Sisa: {$barang->stok})");
+                        throw new \Exception("Stok barang '{$barang->nama_barang}' di gudang tidak mencukupi! (Sisa Stok: {$barang->stok}, Diminta keluar: {$qtyRealisasi})");
                     }
 
+                    // Potong stok permanen karena barang mulai masuk ke armada truk pengiriman
                     $barang->decrement('stok', $qtyRealisasi);
                 }
             }
         });
 
-        return redirect()->route('distribusi_bantuan.barang_keluar.index')
-                         ->with('success', 'Data distribusi dan stok berhasil diperbarui.');
+        return redirect()->route('admin.management_distribusi.barang_keluar.index')
+                         ->with('success', 'Status distribusi pengeluaran logistik dan stok gudang berhasil diperbarui.');
 
     } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Gagal: ' . $e->getMessage());
+        return redirect()->back()->with('error', 'Gagal Perbarui: ' . $e->getMessage());
     }
 }
 

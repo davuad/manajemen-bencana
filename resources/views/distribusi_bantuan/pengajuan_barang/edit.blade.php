@@ -8,9 +8,9 @@
 <div class="mx-3 flex justify-between items-center mb-5">
     <div>
         <h2 class="text-xl font-bold text-gray-800">Perbaiki Rincian Pengajuan</h2>
-        <p class="text-gray-500 text-sm">Sesuaikan rincian barang. Identitas pengaju dan waktu asli tetap dipertahankan.</p>
+        <p class="text-gray-500 text-sm">Sesuaikan rincian barang. Identitas pengaju dan waktu asli tetap dipertahaman.</p>
     </div>
-    <a href="{{ route('distribusi_bantuan.pengajuan.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm transition font-medium">
+    <a href="{{ route('admin.management_distribusi.pengajuan_barang.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-lg text-sm transition font-medium">
         &larr; Batal
     </a>
 </div>
@@ -42,7 +42,19 @@
         </div>
     </div>
 
-    <form id="editForm" action="{{ route('distribusi_bantuan.pengajuan.update', $data->id) }}" method="POST">
+    {{-- 🟢 PROTEKSI STATUS: Jika status sudah bukan pending, kunci form dan tampilkan peringatan --}}
+    @if($data->status_pengajuan !== 'pending')
+        <div class="p-6 bg-amber-50 border border-amber-200 rounded-2xl text-center">
+            <x-heroicon-o-lock-closed class="w-12 h-12 text-amber-600 mx-auto mb-3"/>
+            <h4 class="text-lg font-bold text-amber-900 uppercase">Dokumen Telah Dikunci</h4>
+            <p class="text-sm text-amber-700 mt-1">
+                Pengajuan ini sudah berstatus <b class="uppercase">[{{ $data->status_pengajuan }}]</b>. Data yang telah diproses oleh pimpinan atau masuk ke gudang tidak diperbolehkan untuk diubah kembali demi validitas laporan.
+            </p>
+            <a href="{{ route('admin.management_distribusi.pengajuan_barang.index') }}" class="mt-4 inline-block px-6 py-2.5 bg-amber-600 text-white font-bold rounded-xl text-xs uppercase tracking-widest hover:bg-amber-700 transition">Kembali ke Index</a>
+        </div>
+    @else
+
+    <form id="editForm" action="{{ route('admin.management_distribusi.pengajuan_barang.update', $data->id) }}" method="POST">
         @csrf
         @method('PUT')
         
@@ -85,32 +97,18 @@
                 <input type="hidden" name="tgl_pengajuan" value="{{ $data->tgl_pengajuan }}">
             </div>
 
-<div>
-    <label class="block font-bold text-gray-700 mb-1 text-sm uppercase tracking-tight">Status Pengajuan</label>
-    @php
-        $statusClasses = [
-            'pending' => 'bg-amber-100 text-amber-700 border-amber-200',
-            'disetujui' => 'bg-emerald-100 text-emerald-700 border-emerald-200',
-            'ditolak' => 'bg-rose-100 text-rose-700 border-rose-200',
-        ];
-        $currentClass = $statusClasses[$data->status_pengajuan] ?? 'bg-gray-100 text-gray-700 border-gray-200';
-    @endphp
-    
-    <div class="w-full {{ $currentClass }} border rounded-xl p-3 font-black text-sm flex items-center justify-between shadow-sm">
-        <span class="flex items-center gap-2 uppercase tracking-widest">
-            @if($data->status_pengajuan == 'pending')
-                <span class="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
-            @endif
-            {{ $data->status_pengajuan }}
-        </span>
-        <x-heroicon-o-shield-check class="w-5 h-5 opacity-50"/>
-    </div>
-    <input type="hidden" name="status_pengajuan" value="{{ $data->status_pengajuan }}">
-</div>
-
-
+            <div>
+                <label class="block font-bold text-gray-700 mb-1 text-sm uppercase tracking-tight">Status Pengajuan</label>
+                <div class="w-full bg-amber-100 text-amber-700 border border-amber-200 rounded-xl p-3 font-black text-sm flex items-center justify-between shadow-sm">
+                    <span class="flex items-center gap-2 uppercase tracking-widest">
+                        <span class="w-2 h-2 bg-amber-500 rounded-full animate-pulse"></span>
+                        {{ $data->status_pengajuan }}
+                    </span>
+                    <x-heroicon-o-shield-check class="w-5 h-5 opacity-50"/>
+                </div>
+                <input type="hidden" name="status_pengajuan" value="{{ $data->status_pengajuan }}">
+            </div>
         </div>
-
 
         {{-- Section Daftar Barang --}}
         <div class="border-t border-gray-100 pt-8">
@@ -142,7 +140,8 @@
                                 <select name="barang_id[]" class="w-full border-gray-200 rounded-xl p-2.5 text-sm focus:ring-2 focus:ring-indigo-500 outline-none" required>
                                     <option value="">-- Pilih Barang --</option>
                                     @foreach($barang as $b)
-                                        <option value="{{ $b->id }}" {{ $detail->barang_id == $b->id ? 'selected' : '' }}>
+                                        {{-- 🟢 PERBAIKAN: Ganti dari $b->id menjadi $b->id_barang sesuai Primary Key Database --}}
+                                        <option value="{{ $b->id_barang }}" {{ $detail->barang_id == $b->id_barang ? 'selected' : '' }}>
                                             {{ $b->nama_barang }} ({{ $b->satuan }})
                                         </option>
                                     @endforeach
@@ -178,13 +177,13 @@
         </div>
 
         <div class="flex justify-end gap-3 mt-10 border-t pt-8">
-            <input type="hidden" name="status_pengajuan" value="{{ $data->status_pengajuan }}">
-            <a href="{{ route('distribusi_bantuan.pengajuan.index') }}" class="px-8 py-3 bg-gray-100 text-gray-600 rounded-xl text-sm font-bold uppercase tracking-widest hover:bg-gray-200 transition">Batal</a>
+            <a href="{{ route('admin.management_distribusi.pengajuan_barang.index') }}" class="px-8 py-3 bg-gray-100 text-gray-600 rounded-xl text-sm font-bold uppercase tracking-widest hover:bg-gray-200 transition">Batal</a>
             <button type="submit" class="px-10 py-3 bg-indigo-600 text-white rounded-xl shadow-xl hover:bg-indigo-700 font-bold uppercase tracking-widest text-sm transition">
                 Simpan Perubahan
             </button>
         </div>
     </form>
+    @endif
 </div>
 
 {{-- MODAL KONFIRMASI --}}
@@ -209,10 +208,10 @@
     <tbody id="row-template">
         <tr class="item-row hover:bg-gray-50/50 transition">
             <td class="p-3 border-b">
-                <select name="barang_id[]" class="w-full border-gray-200 rounded-xl p-2.5 text-sm" required>
+                <select name="barang_id[]" class="w-full border-gray-200 rounded-lg p-2 text-sm focus:ring-indigo-500" required>
                     <option value="">-- Pilih Barang --</option>
-                    @foreach($barang as $b)
-                        <option value="{{ $b->id }}">{{ $b->nama_barang }} ({{ $b->satuan }})</option>
+                    @foreach($barang as $item)
+                        <option value="{{ $item->id_barang }}">{{ $item->nama_barang }} ({{ $item->satuan }})</option>
                     @endforeach
                 </select>
             </td>
@@ -280,10 +279,11 @@
         });
 
         document.getElementById('barang-body').addEventListener('click', function(e) {
-            if (e.target.classList.contains('remove-row')) {
+            if (e.target.classList.contains('remove-row') || e.target.closest('.remove-row')) {
                 const rows = document.querySelectorAll('#barang-body .item-row');
                 if(rows.length > 1) {
-                    e.target.closest('tr').remove();
+                    const targetRow = e.target.closest('tr');
+                    targetRow.remove();
                 } else {
                     alert('Minimal harus ada satu rincian barang.');
                 }
@@ -294,11 +294,13 @@
         const editForm = document.getElementById('editForm');
         const saveModal = document.getElementById('saveModal');
 
-        editForm.addEventListener('submit', function(e) {
-            e.preventDefault(); 
-            saveModal.classList.remove('hidden');
-            saveModal.classList.add('flex');
-        });
+        if(editForm) {
+            editForm.addEventListener('submit', function(e) {
+                e.preventDefault(); 
+                saveModal.classList.remove('hidden');
+                saveModal.classList.add('flex');
+            });
+        }
     });
 
     function closeSaveModal() {
