@@ -181,7 +181,9 @@
                     '-' .
                     $item->tanggal_pengembalian .
                     '-' .
-                    optional($item->pengambilan)->tujuan;
+                    optional($item->pengambilan)->tujuan.
+                     '-' .
+                    $item->status;
 
             });
 

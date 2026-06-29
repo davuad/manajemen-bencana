@@ -141,7 +141,7 @@
             <div class="flex justify-between items-center mb-3">
 
                 <h3 class="text-lg font-semibold">
-                    Data Barang Inventaris
+                    Data Barang 
                 </h3>
 
                 <button type="button"
