@@ -414,6 +414,8 @@ Route::middleware(['auth', 'role:relawan|kadus|desa'])
 // --- Pegawai ---
 Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')->group(function () {
     Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
+        Route::resource('distribusi', DistribusiController::class);
+        Route::get('distribusi/{id}/ba', [DistribusiController::class, 'generateBA'])->name('distribusi.ba');
         Route::resource('paket_bantuan', PaketBantuanController::class);
         Route::resource('detail_paket', DetailPaketController::class);
         Route::resource('distribusi_paket', DistribusiPaketController::class);
@@ -432,6 +434,8 @@ Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')
 // --- Pegawai ---
 Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')->group(function () {
     Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
+        Route::resource('distribusi', DistribusiController::class);
+        Route::get('distribusi/{id}/ba', [DistribusiController::class, 'generateBA'])->name('distribusi.ba');
         Route::resource('paket_bantuan', PaketBantuanController::class);
         Route::resource('detail_paket', DetailPaketController::class);
         Route::resource('distribusi_paket', DistribusiPaketController::class);
