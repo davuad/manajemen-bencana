@@ -242,6 +242,10 @@
                     <span x-show="sidebarOpen">Manajemen Distribusi</span>
                 </div>
                 <div x-show="openMenuDistribusi" x-transition class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
+                    <a href="{{ route('pegawai.management_distribusi.distribusi.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('pegawai.management_distribusi.distribusi.*') ? 'bg-white/10 text-orange-400 font-semibold' : 'hover:bg-blue-700' }}">
+                        Distribusi
+                    </a>
                     <a href="{{ route('pegawai.management_distribusi.paket_bantuan.index') }}"
                         class="block px-3 py-2 text-sm rounded {{ request()->routeIs('pegawai.management_distribusi.paket_bantuan.*') || request()->routeIs('pegawai.management_distribusi.detail_paket.*') ? 'bg-white/10 text-orange-400 font-semibold' : 'hover:bg-blue-700' }}">
                         Paket Bantuan

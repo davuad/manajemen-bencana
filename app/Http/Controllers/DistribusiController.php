@@ -47,11 +47,24 @@ class DistribusiController extends Controller
             });
         }
 
+        if ($request->filled('bulan')) {
+            $query->whereMonth('tanggal_distribusi', $request->bulan);
+        }
+
+        if ($request->filled('tahun')) {
+            $query->whereYear('tanggal_distribusi', $request->tahun);
+        }
+
+        $tahunSekarang = now()->year;
+        $tahunList = collect([$tahunSekarang, $tahunSekarang - 1, $tahunSekarang - 2]);
+
         $distribusi = $query->latest()->get();
+
+        $totalData = $distribusi->count();
 
         return view(
             'management_distribusi.distribusi.index',
-            compact('distribusi')
+            compact('distribusi', 'totalData', 'tahunList')
         );
     }
 
