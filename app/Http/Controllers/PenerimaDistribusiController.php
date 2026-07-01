@@ -46,6 +46,14 @@ class PenerimaDistribusiController extends Controller
         $query->where('status', $request->status);
     }
 
+   if ($request->filled('bulan')) {
+        $query->whereMonth('created_at', $request->bulan);
+    }
+
+    if ($request->filled('tahun')) {
+        $query->whereYear('created_at', $request->tahun);
+    }
+
     $data = $query
             ->latest()
             ->get();
@@ -108,8 +116,8 @@ public function store(Request $request)
     ]);
 
     return redirect()
-        ->route('admin.management_distribusi.penerima.index')
-        ->with('success', 'Data penerima berhasil ditambahkan.');
+    ->route($this->routePrefix().'.management_distribusi.penerima.index')
+    ->with('success', 'Data penerima berhasil ditambahkan.');
 }
     /**
      * Display the specified resource.
@@ -181,9 +189,14 @@ public function update(Request $request, $id)
         'status'               => $request->status,
     ]);
 
-    return redirect()
-        ->route('admin.management_distribusi.penerima.index')
-        ->with('success', 'Data penerima berhasil diperbarui.');
+     return redirect()
+        ->route(
+            $this->routePrefix() . '.management_distribusi.penerima.index'
+        )
+        ->with(
+            'success',
+            'Data penerima berhasil diperbarui.'
+        );
 }
 
     /**
@@ -196,5 +209,10 @@ public function destroy($id)
     $data->delete();
 
         return redirect()->route('admin.management_distribusi.penerima.index')->with('success','Data berhasil dihapus.');
+}
+
+private function routePrefix()
+{
+    return auth()->user()->getRoleNames()->first();
 }
 }

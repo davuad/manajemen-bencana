@@ -270,6 +270,16 @@
                         Distribusi Pasca Bencana
                     </a>
                 </div>
+                <div x-show="openMenuDistribusi" x-transition class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
+                    <a href="{{ route('petugas.management_distribusi.penerima.index') }}"
+                    class="block px-3 py-2 text-sm rounded
+                    {{ request()->routeIs('petugas.management_distribusi.penerima.*')
+                        ? 'bg-white/10 text-orange-400 font-semibold'
+                        : 'hover:bg-blue-700' }}">
+
+                    Penerima Distribusi
+                    </a>
+                </div>
             </div>
         @endif
 
