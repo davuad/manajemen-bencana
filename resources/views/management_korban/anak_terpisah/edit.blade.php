@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $prefix = auth()->user()->hasRole('petugas') ? 'petugas' : 'admin';
+@endphp
+
 <div class="bg-slate-200 min-h-screen p-4 md:p-6">
 
     {{-- Header --}}
@@ -12,7 +16,7 @@
             </p>
         </div>
 
-        <a href="{{ route('admin.anak_terpisah.index') }}"
+        <a href="{{ route($prefix.'.anak_terpisah.index') }}"
            class="bg-gray-500 hover:bg-gray-600 text-white px-6 py-3 rounded-lg shadow">
             Kembali
         </a>
@@ -29,7 +33,7 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.anak_terpisah.update', $anak->id) }}"
+    <form action="{{ route($prefix.'.anak_terpisah.update', $anak->id) }}"
           method="POST"
           enctype="multipart/form-data">
 
@@ -43,6 +47,25 @@
 
                 {{-- KIRI --}}
                 <div class="space-y-5">
+
+                    <div>
+                        <label class="font-semibold">Bencana</label>
+
+                        <select name="bencana_id"
+                                class="w-full border rounded-xl px-4 py-3"
+                                required>
+
+                            <option value="">Pilih Bencana</option>
+
+                            @foreach($bencana as $b)
+                                <option value="{{ $b->id }}"
+                                    {{ old('bencana_id', $anak->bencana_id) == $b->id ? 'selected' : '' }}>
+                                    {{ $b->nama_bencana }}
+                                </option>
+                            @endforeach
+
+                        </select>
+                    </div>
 
                     <div>
                         <label class="font-semibold">Nama Anak</label>
@@ -144,7 +167,7 @@
             {{-- BUTTON --}}
             <div class="flex justify-end gap-3 mt-10">
 
-                <a href="{{ route('admin.anak_terpisah.index') }}"
+                <a href="{{ route($prefix.'.anak_terpisah.index') }}"
                    class="bg-gray-300 hover:bg-gray-400 px-6 py-3 rounded-lg">
                     Batal
                 </a>

@@ -1,13 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $prefix = auth()->user()->hasRole('petugas') ? 'petugas' : 'admin';
+@endphp
 <div class="bg-slate-200 min-h-screen p-4 md:p-6">
 
     {{-- Header --}}
     <div class="bg-white px-6 py-4 flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-black">Form Anak Terpisah</h1>
 
-        <a href="{{ route('admin.anak_terpisah.index') }}"
+        <a href="{{ route($prefix.'.anak_terpisah.index') }}"
            class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg shadow">
             Kembali
         </a>
@@ -24,7 +27,7 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.anak_terpisah.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route($prefix.'.anak_terpisah.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
       <div class="bg-white p-6 md:p-10">
@@ -48,7 +51,7 @@
                 <input type="file"
                     name="foto_anak"
                     id="foto_anak"
-                    class="hidden"
+                    class="opacity-0 absolute w-0 h-0"
                     accept=".jpg,.jpeg,.png"
                     required>
             </label>
@@ -57,6 +60,25 @@
 
         {{-- FORM KANAN --}}
         <div class="md:col-span-9 space-y-4">
+
+            <div>
+                <label class="block font-medium">Bencana *</label>
+
+                <select name="bencana_id"
+                        class="w-full border rounded-lg p-3"
+                        required>
+
+                    <option value="">Pilih Bencana</option>
+
+                    @foreach($bencana as $b)
+                        <option value="{{ $b->id }}"
+                            {{ old('bencana_id') == $b->id ? 'selected' : '' }}>
+                            {{ $b->nama_bencana }}
+                        </option>
+                    @endforeach
+
+                </select>
+            </div>
 
             <div>
                 <label class="block font-medium">Nama Anak *</label>
@@ -186,7 +208,7 @@
         {{-- BUTTON --}}
     <div class="flex justify-end gap-3 mt-8">
 
-        <a href="{{ route('admin.anak_terpisah.index') }}"
+        <a href="{{ route($prefix.'.anak_terpisah.index') }}"
             class="px-4 py-2 bg-gray-300 rounded-lg">
             Batal
         </a>

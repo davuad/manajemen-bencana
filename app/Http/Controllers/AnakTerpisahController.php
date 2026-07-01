@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\AnakTerpisah;
+use App\Models\Bencana;
 use Illuminate\Support\Facades\Storage;
 
 class AnakTerpisahController extends Controller
@@ -11,8 +13,9 @@ class AnakTerpisahController extends Controller
     // Tampilkan semua data anak terpisah
     public function index(Request $request)
     {
-        $query = AnakTerpisah::query();
-
+        $query = AnakTerpisah::with('bencana')
+            ->orderByDesc('id');
+            
         if ($request->filled('search')) {
             $search = $request->search;
 
@@ -40,13 +43,16 @@ class AnakTerpisahController extends Controller
     // Form tambah data
     public function create()
     {
-        return view('management_korban.anak_terpisah.create');
+        $bencana = Bencana::orderBy('nama_bencana')->get();
+        
+        return view('management_korban.anak_terpisah.create', compact('bencana'));
     }
 
     // Simpan data
     public function store(Request $request)
     {
         $request->validate([
+            'bencana_id' => 'required|exists:bencana,id',
             'nama_anak' => 'required',
             'nama_bapak' => 'nullable|string',
             'nama_ibu' => 'nullable|string',
@@ -64,6 +70,7 @@ class AnakTerpisahController extends Controller
         $foto = $request->file('foto_anak')->store('foto_anak', 'public');
 
         AnakTerpisah::create([
+            'bencana_id' => $request->bencana_id,
             'nama_anak' => $request->nama_anak,
             'nama_bapak' => $request->nama_bapak,
             'nama_ibu'   => $request->nama_ibu,
@@ -78,25 +85,34 @@ class AnakTerpisahController extends Controller
             'foto_anak' => $foto,
         ]);
 
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        $route = $user->hasRole('petugas')
+            ? 'petugas.anak_terpisah.index'
+            : 'admin.anak_terpisah.index';
+
         return redirect()
-            ->route('admin.anak_terpisah.index')
+            ->route($route)
             ->with('success', 'Data berhasil disimpan');
     }
 
     // Detail data
     public function show($id)
-    {
-        $anak = AnakTerpisah::findOrFail($id);
+{
+    $anak = AnakTerpisah::with('bencana')->findOrFail($id);
 
-        return view('management_korban.anak_terpisah.show', compact('anak'));
-    }
+    return view('management_korban.anak_terpisah.show', compact('anak'));
+}
 
     // Form edit
     public function edit($id)
     {
         $anak = AnakTerpisah::findOrFail($id);
 
-        return view('management_korban.anak_terpisah.edit', compact('anak'));
+        $bencana = Bencana::orderBy('nama_bencana')->get();
+
+        return view('management_korban.anak_terpisah.edit', compact('anak', 'bencana'));
     }
 
     // Update data
@@ -105,6 +121,7 @@ class AnakTerpisahController extends Controller
         $anak = AnakTerpisah::findOrFail($id);
 
         $request->validate([
+            'bencana_id' => 'required|exists:bencana,id',
             'nama_anak' => 'required',
             'nama_bapak' => 'nullable|string',
             'nama_ibu' => 'nullable|string',
@@ -137,8 +154,19 @@ class AnakTerpisahController extends Controller
 
         $anak->update($data);
 
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+            if ($user->hasRole('petugas')) {
+    $route = 'petugas.anak_terpisah.index';
+} elseif ($user->hasRole('relawan')) {
+    $route = 'relawan.anak_terpisah.index';
+} else {
+    $route = 'admin.anak_terpisah.index';
+}
+
         return redirect()
-            ->route('admin.anak_terpisah.index')
+            ->route($route)
             ->with('success', 'Data berhasil diupdate');
     }
 
@@ -147,17 +175,39 @@ class AnakTerpisahController extends Controller
     {
         $anak = AnakTerpisah::findOrFail($id);
 
-        if (
-            $anak->foto_anak &&
-            Storage::disk('public')->exists($anak->foto_anak)
-        ) {
+        // Hapus data penjemputan jika ada
+        if ($anak->penjemputan) {
+
+            if ($anak->penjemputan->bukti_dokumen) {
+                Storage::disk('public')->delete($anak->penjemputan->bukti_dokumen);
+            }
+
+            if ($anak->penjemputan->berita_acara) {
+                Storage::disk('public')->delete($anak->penjemputan->berita_acara);
+            }
+
+            $anak->penjemputan()->delete();
+        }
+
+        // Hapus foto anak
+        if ($anak->foto_anak &&
+            Storage::disk('public')->exists($anak->foto_anak)) {
+
             Storage::disk('public')->delete($anak->foto_anak);
         }
 
+        // Hapus anak
         $anak->delete();
 
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        $route = $user->hasRole('petugas')
+            ? 'petugas.anak_terpisah.index'
+            : 'admin.anak_terpisah.index';
+
         return redirect()
-            ->route('admin.anak_terpisah.index')
+            ->route($route)
             ->with('success', 'Data berhasil dihapus');
     }
 }

@@ -13,13 +13,9 @@
         </p>
     </div>
 
-<<<<<<< HEAD
-    <div class="bg-white rounded-xl p-5 m-3 mt-5">
-        <form action="{{ route('management_posko.dapur_umum.store') }}" method="POST" class="space-y-6">
-=======
+
     <div class="bg-white rounded-xl p-5 m-3 mt-5 shadow-sm">
         <form action="{{ route('management_posko.dapur_umum.store', ['role' => $userRole]) }}" method="POST" class="space-y-6">
->>>>>>> origin/main
             @csrf
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -76,12 +72,9 @@
             </div>
 
             <div class="flex justify-end gap-3">
-<<<<<<< HEAD
-                <a href="{{ route('management_posko.dapur_umum.index') }}" class="px-4 py-2 bg-gray-300 rounded-lg">
-=======
+
                 <a href="{{ route('management_posko.dapur_umum.index', ['role' => $userRole]) }}" 
                     class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg transition duration-200">
->>>>>>> origin/main
                     Batal
                 </a>
 

@@ -443,8 +443,8 @@ Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')
             ->name('penjemputan.store');
 
         Route::get('penjemputan/{id}', [PenjemputanAnakController::class, 'show'])
-            ->name('penjemputan.show');           
-
+            ->name('penjemputan.show');     
+            
         // KORBAN
         Route::get('korban/review-pdf', [KorbanController::class, 'reviewPdf'])
             ->name('korban.reviewPdf');

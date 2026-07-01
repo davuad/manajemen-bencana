@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $prefix = auth()->user()->hasRole('petugas') ? 'petugas' : 'admin';
+@endphp
 
 <div class="bg-white rounded-xl shadow p-6">
 
@@ -128,6 +131,7 @@
                     <th>Nama Anak</th>
                     <th>Jenis Kelamin</th>
                     <th>Umur</th>
+                    <th>Bencana</th>
                     <th>Lokasi</th>
                     <th>Status</th>
                     <th class="text-center">Aksi</th>
@@ -159,11 +163,15 @@
                         {{ $d->umur ?? '-' }}
                     </td>
 
+                    <td>
+                        {{ $d->bencana->nama_bencana ?? '-' }}
+                    </td>
+
                     <td class="p-2">
                         {{ $d->lokasi_ditemukan }}
                     </td>
 
-                    <td class="p-2">
+                    {{-- <td class="p-2">
                         @if($d->status_anak == 'sudah_dijemput')
                             <span class="px-2 py-1 rounded text-white text-xs bg-green-500">
                                 Sudah Dijemput
@@ -177,7 +185,10 @@
                                 Belum Dijemput
                             </span>
                         @endif
-                    </td>
+                    </td> --}}
+                    <td class="p-2">
+    {{ ''.$d->status_anak.'' }}
+</td>
 
                     <td class="flex gap-2 py-4">
 
@@ -239,6 +250,49 @@
     </div>
 
 </div>
+
+<div id="deleteModal" class="fixed inset-0 backdrop-blur-sm bg-black/30 hidden items-center justify-center z-50">
+    <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-6">
+        <h2 class="text-lg font-semibold mb-2">Hapus Data</h2>
+
+        <p class="text-sm text-gray-500">
+            Yakin ingin menghapus 
+            <span id="namaAnak" class="font-semibold"></span>?
+        </p>
+
+        <div class="flex justify-end gap-3 mt-6">
+            <button onclick="closeModal()" class="px-4 py-2 bg-gray-200 rounded-lg">
+                Batal
+            </button>
+
+            <form id="deleteForm" method="POST">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="px-4 py-2 bg-red-500 text-white rounded-lg">
+                    Hapus
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+function openModal(id, nama) {
+    document.getElementById('deleteModal').classList.remove('hidden');
+    document.getElementById('deleteModal').classList.add('flex');
+
+    document.getElementById('namaAnak').innerText = `"${nama}"`;
+
+    document.getElementById('deleteForm').action =
+    "{{ url($prefix.'/anak_terpisah') }}/" + id;
+}
+
+function closeModal() {
+    document.getElementById('deleteModal').classList.add('hidden');
+    document.getElementById('deleteModal').classList.remove('flex');
+}
+</script>
+
 
 @endsection
 

@@ -1,6 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    if(auth()->user()->hasRole('petugas')){
+        $prefix = 'petugas';
+    }elseif(auth()->user()->hasRole('relawan')){
+        $prefix = 'relawan';
+    }else{
+        $prefix = 'admin';
+    }
+@endphp
+
 <div class="bg-slate-200 min-h-screen p-4 md:p-6">
 
     {{-- Header --}}
@@ -11,15 +21,17 @@
         </div>
 
         <div class="flex gap-2">
-            <a href="{{ route('admin.anak_terpisah.index') }}"
+            <a href="{{ route($prefix.'.anak_terpisah.index') }}"
                class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded-lg">
                 Kembali
             </a>
 
-            <a href="{{ route('admin.anak_terpisah.edit', $anak->id) }}"
-               class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg">
-                Edit
-            </a>
+            @if(auth()->user()->hasRole('admin') || auth()->user()->hasRole('petugas'))
+                <a href="{{ route($prefix.'.anak_terpisah.edit', $anak->id) }}"
+                class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg">
+                    Edit
+                </a>
+            @endif
         </div>
     </div>
 
@@ -42,6 +54,7 @@
                 <p><span class="font-semibold">Nama:</span> {{ $anak->nama_anak }}</p>
                 <p><span class="font-semibold">Jenis Kelamin:</span> {{ $anak->jenis_kelamin }}</p>
                 <p><span class="font-semibold">Umur:</span> {{ $anak->umur ?? '-' }}</p>
+                <p><span class="font-semibold">Bencana:</span> {{ $anak->bencana->nama_bencana ?? '-' }}</p>
                 <p><span class="font-semibold">Nama Bapak:</span> {{ $anak->nama_bapak ?? '-' }}</p>
                 <p><span class="font-semibold">Nama Ibu:</span> {{ $anak->nama_ibu ?? '-' }}</p>
             </div>
@@ -58,6 +71,11 @@
                 <div>
                     <p class="font-semibold">Nama Anak</p>
                     <p>{{ $anak->nama_anak }}</p>
+                </div>
+
+                <div>
+                    <p class="font-semibold">Bencana</p>
+                    <p>{{ $anak->bencana->nama_bencana ?? '-' }}</p>
                 </div>
 
                 <div>

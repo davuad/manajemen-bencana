@@ -16,11 +16,7 @@
                 </p>
             </div>
             @hasanyrole('admin|pegawai|petugas|relawan')
-<<<<<<< HEAD
                 <a href="{{ route('management_posko.posko.create') }}"
-=======
-                <a href="{{ route('management_posko.posko.create', ['role' => $userRole]) }}"
->>>>>>> origin/main
                     class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
                     + Tambah Data Posko
                 </a>
@@ -63,11 +59,8 @@
                         <th class="text-left">Tanggal</th>
                         <th class="text-left pl-4">Status</th>
                         @hasanyrole('admin|pegawai|petugas|relawan')
-<<<<<<< HEAD
-                            <th class="text-left">Aksi</th>
-=======
+
                             <th class="text-center">Aksi</th>
->>>>>>> origin/main
                         @endhasanyrole
                     </tr>
                 </thead>
@@ -94,13 +87,7 @@
                                 @endif
                             </td>
                             @hasanyrole('admin|pegawai|petugas|relawan')
-<<<<<<< HEAD
-                            <td class="flex gap-1 py-4">
-                                <a href="{{ route('management_posko.posko.edit', $p->id) }}"
-                                    class="text-blue-500">
-                                    <x-heroicon-o-pencil-square class="w-5 h-5" />
-                                </a>
-=======
+
                             <td class="p-3">
                                 <div class="flex justify-center gap-3">
                                     {{-- PERBAIKAN EDIT: Menggunakan parameter 'posko' sesuai Resource standarisasi Laravel --}}
@@ -108,7 +95,6 @@
                                         class="text-blue-500 hover:text-blue-700">
                                         <x-heroicon-o-pencil-square class="w-5 h-5" />
                                     </a>
->>>>>>> origin/main
 
                                     <button onclick="openModal('{{ $p->id }}', '{{ $p->nama_posko }}')"
                                         class="text-red-500 hover:text-red-700">
