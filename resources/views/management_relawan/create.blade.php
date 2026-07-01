@@ -11,7 +11,9 @@
         </p>
     </div>
 
-<form action="{{ route('admin.management_pegawai.relawan.store') }}" method="POST" class="space-y-4">
+<form action="{{ route('admin.management_pegawai.relawan.store') }}"
+      method="POST"
+      enctype="multipart/form-data">
         @csrf
 
         <!-- Nama Relawan -->
@@ -77,6 +79,19 @@
                 <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
             @enderror
         </div>
+
+        <div>
+    <label class="block text-sm font-medium mb-1">Foto Relawan</label>
+
+    <input
+        type="file"
+        name="foto"
+        class="w-full border rounded-lg px-3 py-2">
+
+    @error('foto')
+        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+    @enderror
+</div>
 
         <!-- Button -->
         <div class="flex gap-2 pt-4">

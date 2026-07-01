@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Relawan;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class RelawanController extends Controller
 {
@@ -20,12 +21,18 @@ public function create()
     public function store(Request $request)
     {
         $request->validate([
-            'nama_relawan' => 'required|max:100',
-            'jenis_psks'   => 'required',
-            'kecamatan'    => 'required|max:100',
-            'no_hp'        => 'required|max:20',
-            'alamat'       => 'required',
+            'nama_relawan' => 'required',
+    'jenis_psks' => 'required',
+    'kecamatan' => 'required',
+    'no_hp' => 'required',
+    'alamat' => 'required',
+    'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
+        $foto = null;
+
+if ($request->hasFile('foto')) {
+    $foto = $request->file('foto')->store('relawan', 'public');
+}
 
         Relawan::create([
             'nama_relawan' => $request->nama_relawan,
@@ -33,6 +40,7 @@ public function create()
             'kecamatan'    => $request->kecamatan,
             'no_hp'        => $request->no_hp,
             'alamat'       => $request->alamat,
+            'foto' => $foto,
         ]);
 
         return redirect()->route('admin.management_pegawai.relawan.index')
@@ -53,9 +61,19 @@ public function create()
             'kecamatan'    => 'required|max:100',
             'no_hp'        => 'required|max:20',
             'alamat'       => 'required',
+             'foto'         => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $relawan = Relawan::findOrFail($id);
+
+        if ($request->hasFile('foto')) {
+
+    if ($relawan->foto) {
+        Storage::disk('public')->delete($relawan->foto);
+    }
+
+    $relawan->foto = $request->file('foto')->store('relawan', 'public');
+}
 
         $relawan->update([
             'nama_relawan' => $request->nama_relawan,
@@ -63,6 +81,7 @@ public function create()
             'kecamatan'    => $request->kecamatan,
             'no_hp'        => $request->no_hp,
             'alamat'       => $request->alamat,
+             'foto'         => $relawan->foto,
         ]);
 
         return redirect()->route('admin.management_pegawai.relawan.index')
