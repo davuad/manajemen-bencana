@@ -1,7 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-
+@php
+    $prefix = auth()->user()->getRoleNames()->first();
+@endphp
 <div class="max-w-7xl mx-auto">
 
     {{-- Header --}}
@@ -17,7 +19,7 @@
 
     <div class="bg-white rounded-xl shadow-lg p-6">
 
-        <form action="{{ route('admin.management_distribusi.penerima.store') }}"
+        <form action="{{ route($prefix.'.management_distribusi.penerima.store') }}"
             method="POST">
 
             @csrf
@@ -303,7 +305,7 @@
             <div class="flex justify-end gap-3 mt-8">
 
                 <a
-                    href="{{ route('admin.management_distribusi.penerima.index') }}"
+                    href="{{ route($prefix.'.management_distribusi.penerima.index') }}"
                     class="px-5 py-2 rounded-lg bg-gray-300 hover:bg-gray-400">
 
                     Batal

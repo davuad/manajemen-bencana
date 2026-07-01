@@ -1,7 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-
+@php
+    $prefix = auth()->user()->getRoleNames()->first();
+@endphp
 <div class="max-w-7xl mx-auto">
 
     <div class="mb-6">
@@ -16,7 +18,7 @@
 
     <div class="bg-white rounded-xl shadow-lg p-6">
 
-        <form action="{{ route('admin.management_distribusi.penerima.update', $data->penerima_id) }}" method="POST">
+        <form action="{{ route($prefix.'.management_distribusi.penerima.update', $data->penerima_id) }}" method="POST">
 
             @csrf
             @method('PUT')
@@ -314,7 +316,7 @@
                 <div class="md:col-span-2 flex justify-end gap-3 mt-4">
 
                     <a
-                        href="{{ route('admin.management_distribusi.penerima.index') }}"
+                        href="{{ route($prefix.'.management_distribusi.penerima.index') }}"
                         class="px-5 py-2 bg-gray-300 rounded-lg hover:bg-gray-400">
 
                         Batal
