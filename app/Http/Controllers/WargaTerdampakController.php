@@ -6,9 +6,20 @@ use App\Models\Desa;
 use App\Models\Bencana;
 use App\Models\WargaTerdampak;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class WargaTerdampakController extends Controller
 {
+    /**
+     * Helper untuk redirect ke route sesuai role user yang login.
+     * Contoh: redirectRoute('index') -> admin.warga.index / relawan.warga.index
+     */
+   private function redirectRoute($suffix)
+{
+    $role = Auth::user()->roles->first()->name ?? 'admin';
+    return redirect()->route($role . '.desa.' . $suffix);
+}
+
     public function index(Request $request)
     {
         $search = $request->search;
@@ -102,7 +113,7 @@ class WargaTerdampakController extends Controller
             'tanggal_penyaluran' => $request->tanggal_penyaluran,
         ]);
 
-        return redirect()->route('admin.warga.index')
+        return $this->redirectRoute('index')
             ->with('success', 'Data warga terdampak berhasil ditambahkan.');
     }
 
@@ -154,32 +165,30 @@ class WargaTerdampakController extends Controller
             'tanggal_penyaluran' => $request->tanggal_penyaluran,
         ]);
 
-        return redirect()->route('admin.warga.index')
+        return $this->redirectRoute('index')
             ->with('success', 'Data warga terdampak berhasil diupdate.');
     }
 
     public function destroy($id)
     {
-        // Diubah menjadi find() untuk mencegah crash ganda
         $warga = WargaTerdampak::find($id);
 
         if ($warga) {
             $warga->delete();
-            return redirect()->route('admin.warga.index')
+            return $this->redirectRoute('index')
                 ->with('success', 'Data warga terdampak berhasil dihapus.');
         }
 
-        return redirect()->route('admin.warga.index')
+        return $this->redirectRoute('index')
             ->with('success', 'Data warga terdampak sudah berhasil dihapus.');
     }
 
     public function ubahStatus($id)
     {
-        // Diubah menjadi find() agar aman jika status di-klik beruntun
         $warga = WargaTerdampak::find($id);
 
         if (!$warga) {
-            return redirect()->route('admin.warga.index')
+            return $this->redirectRoute('index')
                 ->with('success', 'Proses ubah status selesai.');
         }
 
@@ -192,7 +201,7 @@ class WargaTerdampakController extends Controller
 
             $warga->save();
 
-            return redirect()->route('admin.warga.index')
+            return $this->redirectRoute('index')
                 ->with('success', 'Status berhasil diubah menjadi Proses Penyaluran.');
         }
 
@@ -205,11 +214,11 @@ class WargaTerdampakController extends Controller
 
             $warga->save();
 
-            return redirect()->route('admin.warga.index')
+            return $this->redirectRoute('index')
                 ->with('success', 'Status berhasil diubah menjadi Sudah Disalurkan.');
         }
 
-        return redirect()->route('admin.warga.index')
+        return $this->redirectRoute('index')
             ->with('success', 'Status sudah final dan tidak bisa diubah lagi.');
     }
 }

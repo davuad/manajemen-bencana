@@ -138,21 +138,22 @@
             <span x-show="sidebarOpen">Stok Gudang</span>
         </a>
 
-        {{-- DATA DESA --}}
-        <a href="{{ route('admin.desa.index') }}"
-            class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
-            {{ request()->routeIs('admin.desa.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
-            <span><x-heroicon-o-map class="w-5 h-5" /></span>
-            <span x-show="sidebarOpen" x-transition>Data Desa</span>
-        </a>
+{{-- DATA DESA --}}
+@php $userRole = auth()->user()->roles->first()->name ?? 'admin'; @endphp
+<a href="{{ route($userRole . '.desa.index') }}"
+    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+    {{ request()->routeIs('*.desa.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+    <span><x-heroicon-o-map class="w-5 h-5" /></span>
+    <span x-show="sidebarOpen" x-transition>Data Desa</span>
+</a>
 
-        {{-- DATA WARGA TERDAMPAK --}}
-        <a href="{{ route('admin.warga.index') }}"
-            class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
-            {{ request()->routeIs('admin.warga.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
-            <span><x-heroicon-o-users class="w-5 h-5" /></span>
-            <span x-show="sidebarOpen" x-transition>Data Warga Terdampak</span>
-        </a>
+{{-- DATA WARGA TERDAMPAK --}}
+<a href="{{ route($userRole . '.warga.index') }}"
+    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+    {{ request()->routeIs('*.warga.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+    <span><x-heroicon-o-users class="w-5 h-5" /></span>
+    <span x-show="sidebarOpen" x-transition>Data Warga Terdampak</span>
+</a>
 
         {{-- MANAGEMENT POSKO (DROPDOWN MULTI ROLE) --}}
         @php
