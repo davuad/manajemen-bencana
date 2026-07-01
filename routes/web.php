@@ -416,6 +416,8 @@ Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')
     Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
         Route::resource('distribusi', DistribusiController::class);
         Route::get('distribusi/{id}/ba', [DistribusiController::class, 'generateBA'])->name('distribusi.ba');
+        Route::get('berita-acara/{id}', [BAController::class, 'cetak'])->name('berita_acara.cetak');
+        Route::get('berita-acara/{id}/download', [BAController::class, 'download'])->name('berita_acara.download');
         Route::resource('paket_bantuan', PaketBantuanController::class);
         Route::resource('detail_paket', DetailPaketController::class);
         Route::resource('distribusi_paket', DistribusiPaketController::class);
@@ -436,6 +438,8 @@ Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')
     Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
         Route::resource('distribusi', DistribusiController::class);
         Route::get('distribusi/{id}/ba', [DistribusiController::class, 'generateBA'])->name('distribusi.ba');
+        Route::get('berita-acara/{id}', [BAController::class, 'cetak'])->name('berita_acara.cetak');
+        Route::get('berita-acara/{id}/download', [BAController::class, 'download'])->name('berita_acara.download');
         Route::resource('paket_bantuan', PaketBantuanController::class);
         Route::resource('detail_paket', DetailPaketController::class);
         Route::resource('distribusi_paket', DistribusiPaketController::class);

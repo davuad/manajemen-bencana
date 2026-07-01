@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+@php $routePrefix = auth()->user()->hasRole('admin') ? 'admin' : 'pegawai'; @endphp
 
 <div class="mx-3">
     <h2 class="text-xl font-bold">Edit Data Distribusi</h2>
@@ -23,7 +24,7 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.management_distribusi.distribusi.update', $distribusi->id) }}" method="POST">
+    <form action="{{ route($routePrefix . '.management_distribusi.distribusi.update', $distribusi->id) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -266,7 +267,7 @@
 <!-- BUTTON -->
 <div class="flex justify-end gap-3 mt-6">
 
-    <a href="{{ route('admin.management_distribusi.distribusi.index') }}"
+    <a href="{{ route($routePrefix . '.management_distribusi.distribusi.index') }}"
        class="px-4 py-2 bg-gray-300 rounded-lg">
         Batal
     </a>

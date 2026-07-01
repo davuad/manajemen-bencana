@@ -155,8 +155,9 @@ class DistribusiController extends Controller
 
             DB::commit();
 
+            $prefix = auth()->user()->hasRole('admin') ? 'admin' : 'pegawai';
             return redirect()
-                ->route('admin.management_distribusi.distribusi.index')
+                ->route($prefix . '.management_distribusi.distribusi.index')
                 ->with('success', 'Data distribusi berhasil ditambahkan.');
         } catch (\Exception $e) {
 
@@ -326,8 +327,9 @@ class DistribusiController extends Controller
 
             DB::commit();
 
+            $prefix = auth()->user()->hasRole('admin') ? 'admin' : 'pegawai';
             return redirect()
-                ->route('admin.management_distribusi.distribusi.index')
+                ->route($prefix . '.management_distribusi.distribusi.index')
                 ->with('success', 'Data distribusi berhasil diperbarui.');
         } catch (\Exception $e) {
 
