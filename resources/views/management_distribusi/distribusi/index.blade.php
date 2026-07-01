@@ -200,7 +200,7 @@
                                     🗑
                                 </button>
 
-                                <a href="{{ route('admin.management_distribusi.berita_acara.cetak', $item->id) }}"
+                                <a href="{{ route($routePrefix . '.management_distribusi.berita_acara.cetak', $item->id) }}"
                                 target="_blank"
                                 class="p-2 bg-green-100 text-green-700 rounded"
                                 title="Cetak Berita Acara">

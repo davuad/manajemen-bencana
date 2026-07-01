@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+@php $routePrefix = auth()->user()?->hasRole('admin') ? 'admin' : 'pegawai'; @endphp
 
 <head>
     <meta charset="UTF-8">
@@ -119,7 +120,7 @@
     {{-- Tombol --}}
     <div class="toolbar">
 
-        <a href="{{ route('admin.management_distribusi.distribusi.index') }}"
+        <a href="{{ route($routePrefix . '.management_distribusi.distribusi.index') }}"
             class="btn btn-back">
             ← Kembali
         </a>
