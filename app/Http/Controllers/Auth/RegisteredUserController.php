@@ -4,10 +4,8 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
@@ -15,19 +13,11 @@ use Illuminate\View\View;
 
 class RegisteredUserController extends Controller
 {
-    /**
-     * Display the registration view.
-     */
     public function create(): View
     {
         return view('auth.register');
     }
 
-    /**
-     * Handle an incoming registration request.
-     *
-     * @throws ValidationException
-     */
     public function store(Request $request): RedirectResponse
     {
         $request->validate([
@@ -35,7 +25,7 @@ class RegisteredUserController extends Controller
             'nik' => ['required', 'string', 'size:16', 'unique:' . User::class],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'string', 'in:relawan,kadus,kabid,desa,ketua_tim']
+            'role' => ['required', 'string', 'in:relawan,desa,kadus']
         ]);
 
         $user = User::create([
@@ -43,14 +33,11 @@ class RegisteredUserController extends Controller
             'nik' => $request->nik,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'status' => 'nonaktif',
         ]);
 
         $user->assignRole($request->role);
 
-        event(new Registered($user));
-
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
+        return redirect()->route('login')->with('success', 'Akun berhasil didaftarkan. Silakan tunggu persetujuan admin untuk mengaktifkan akun Anda.');
     }
 }

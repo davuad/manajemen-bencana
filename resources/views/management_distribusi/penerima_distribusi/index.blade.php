@@ -1,7 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
-
+@php
+    $prefix = auth()->user()->getRoleNames()->first();
+@endphp
 <div class="bg-white rounded-xl shadow-lg p-6">
 
     {{-- Alert --}}
@@ -24,7 +26,7 @@
             </p>
         </div>
 
-        <a href="{{ route('admin.management_distribusi.penerima.create') }}"
+        <a href="{{ route($prefix.'.management_distribusi.penerima.create') }}"
            class="bg-indigo-600 hover:bg-indigo-700 transition text-white px-5 py-2 rounded-lg shadow">
 
             + Tambah Penerima
@@ -37,7 +39,7 @@
     {{-- Search --}}
     <form method="GET">
 
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        <div class="grid grid-cols-1 md:grid-cols-6 gap-4 mb-6">
 
             <input
                 type="text"
@@ -46,6 +48,57 @@
                 placeholder="Cari nama, posko, bencana..."
                 class="md:col-span-2 border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
 
+        <select
+            name="bulan"
+            class="border rounded-lg px-3 py-2">
+
+            <option value="">Semua Bulan</option>
+
+            @foreach([
+                1=>'Januari',
+                2=>'Februari',
+                3=>'Maret',
+                4=>'April',
+                5=>'Mei',
+                6=>'Juni',
+                7=>'Juli',
+                8=>'Agustus',
+                9=>'September',
+                10=>'Oktober',
+                11=>'November',
+                12=>'Desember'
+            ] as $key => $bulan)
+
+                <option
+                    value="{{ $key }}"
+                    {{ request('bulan') == $key ? 'selected' : '' }}>
+
+                    {{ $bulan }}
+
+                </option>
+
+            @endforeach
+
+        </select>
+        <select
+            name="tahun"
+            class="border rounded-lg px-3 py-2">
+
+            <option value="">Semua Tahun</option>
+
+            @for($i = date('Y'); $i >= 2025; $i--)
+
+                <option
+                    value="{{ $i }}"
+                    {{ request('tahun') == $i ? 'selected' : '' }}>
+
+                    {{ $i }}
+
+                </option>
+
+            @endfor
+
+        </select>
             <select
                 name="status"
                 class="border rounded-lg px-3 py-2">
@@ -212,7 +265,7 @@
                         <div class="flex justify-center gap-3">
 
                             <a
-                                href="{{ route('admin.management_distribusi.penerima.edit', $item->penerima_id) }}"     
+                                href="{{ route($prefix.'.management_distribusi.penerima.edit', $item->penerima_id) }}"
                                 class="text-blue-600 hover:text-blue-800">
 
                                 <x-heroicon-o-pencil class="w-5 h-5"/>
@@ -312,7 +365,7 @@ function openModal(id, nama)
     document.getElementById('namaData').innerHTML =
         '<span class="text-red-600">"' + nama + '"</span>';
 
-    llet url = "{{ route('admin.management_distribusi.penerima.destroy', ':id') }}";
+    let url = "{{ route('admin.management_distribusi.penerima.destroy', ':id') }}";
     url = url.replace(':id', id);
 
     document.getElementById('deleteForm').action = url;

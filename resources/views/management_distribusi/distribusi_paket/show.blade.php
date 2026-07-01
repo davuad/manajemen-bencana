@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+        $routePrefix = request()->segment(1);
+    @endphp
     <div class="space-y-6">
 
         {{-- HEADER --}}
@@ -15,7 +18,7 @@
             <div class="flex justify-end gap-3 mt-6">
 
                 {{-- Kembali --}}
-                <a href="{{ route('admin.management_distribusi.distribusi_paket.index') }}"
+                <a href="{{ route($routePrefix . '.management_distribusi.distribusi_paket.index') }}"
                     class="flex items-center gap-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg">
                     <x-heroicon-o-arrow-left class="w-5 h-5" />
                     Kembali
@@ -23,8 +26,9 @@
 
                 {{-- Sudah Disalurkan --}}
                 @if ($distribusi->status_distribusi == 'Proses Penyaluran')
-                    @if (auth()->user()->hasRole('admin') || auth()->user()->hasRole('petugas'))
-                        <form action="{{ route('admin.management_distribusi.distribusi_paket.selesai', $distribusi->id) }}"
+                    @hasanyrole('admin|petugas')
+                        <form
+                            action="{{ route($routePrefix . '.management_distribusi.distribusi_paket.selesai', $distribusi->id) }}"
                             method="POST">
 
                             @csrf
@@ -37,7 +41,7 @@
                             </button>
 
                         </form>
-                    @endif
+                    @endhasanyrole
                 @endif
 
             </div>
@@ -122,7 +126,7 @@
 
                     <div class="flex justify-between">
                         <span class="text-gray-500">Petugas</span>
-                        <span class="font-medium">{{ $distribusi->pegawai->nama_pegawai ?? '-' }}</span>
+                        <span class="font-medium">{{ $distribusi->petugas->nama_petugas ?? '-' }}</span>
                     </div>
 
                     <div class="flex justify-between items-center">

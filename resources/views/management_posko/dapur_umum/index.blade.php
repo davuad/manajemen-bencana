@@ -1,10 +1,14 @@
 @extends('layouts.app')
 
+@php
+    // Definisikan role user dinamis di bagian paling atas agar bisa dipakai di seluruh elemen rute
+    $userRole = auth()->user()->roles->first()->name ?? 'admin';
+@endphp
+
 @section('content')
     <div class="bg-white rounded-xl shadow p-6">
 
         <div class="flex justify-between items-center mb-6">
-
             <div>
                 <h2 class="text-xl font-bold">Olah Data Dapur Umum</h2>
                 <p class="text-gray-500 text-sm">
@@ -13,14 +17,24 @@
             </div>
 
             @hasanyrole('admin|pegawai|petugas')
+<<<<<<< HEAD
             <a href="{{ route('management_posko.dapur_umum.create') }}"
+=======
+            <!-- PERBAIKAN: Tambahkan parameter ['role' => $userRole] -->
+            <a href="{{ route('management_posko.dapur_umum.create', ['role' => $userRole]) }}"
+>>>>>>> origin/main
                 class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
                 + Tambah Data Dapur
             </a>
             @endhasanyrole
         </div>
 
+<<<<<<< HEAD
         <form method="GET" action="{{ route('management_posko.dapur_umum.index') }}">
+=======
+        <!-- PERBAIKAN: Form Action tambahkan parameter ['role' => $userRole] -->
+        <form method="GET" action="{{ route('management_posko.dapur_umum.index', ['role' => $userRole]) }}">
+>>>>>>> origin/main
             <div class="flex gap-4 mb-6">
 
                 <input type="text" name="search" value="{{ request('search') }}"
@@ -87,18 +101,23 @@
                             </td>
 
                             <td class="p-4">
-
                                 <div class="flex justify-center gap-2">
-
-                                    {{-- DETAIL KEBUTUHAN --}}
-                                    <a href="{{ route('admin.management_posko.kebutuhan_harian.index', $item->id) }}"
-                                        class="px-3 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">
-                                        Detail Kebutuhan
+                                    @hasanyrole('admin|pegawai|petugas')
+                                    
+                                    <!-- Detail Kebutuhan (Sudah Aman menggunakan rute flat baru) -->
+                                    <a href="{{ route('management_posko.kebutuhan_harian.index', ['role' => $userRole, 'dapur' => $item->id]) }}"
+                                    class="px-3 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700">
+                                    Detail Kebutuhan
                                     </a>
 
+<<<<<<< HEAD
                                     @hasanyrole('admin|pegawai|petugas')
                                     {{-- EDIT --}}
                                     <a href="{{ route('management_posko.dapur_umum.edit', $item->id) }}"
+=======
+                                    {{-- EDIT (PERBAIKAN: Tambahkan parameter 'role' dan ganti id menjadi dapur_umum sesuai standarisasi Resource Route Laravel) --}}
+                                    <a href="{{ route('management_posko.dapur_umum.edit', ['role' => $userRole, 'dapur_umum' => $item->id]) }}"
+>>>>>>> origin/main
                                         class="px-3 py-2 bg-yellow-500 text-white rounded-lg text-sm hover:bg-yellow-600">
                                         Edit
                                     </a>
@@ -125,8 +144,7 @@
 
         <div class="flex justify-between items-center mt-6 text-sm">
             <p class="text-gray-500">
-                Menampilkan {{ $dapur->firstItem() }} - {{ $dapur->lastItem() }}
-                dari {{ $dapur->total() }} data dapur umum
+                Menampilkan {{ $dapur->firstItem() }} - {{ $dapur->lastItem() }} dari {{ $dapur->total() }} data dapur umum
             </p>
             <div>
                 {{ $dapur->withQueryString()->links() }}
@@ -139,22 +157,29 @@
         class="fixed inset-0 backdrop-blur-sm bg-white/10 hidden items-center justify-center z-50">
 
         <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-6">
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/main
             <!-- Header -->
             <div class="flex items-start gap-3">
 
                 <div class="bg-red-100 p-2 rounded-full">
                     <x-heroicon-o-exclamation-triangle class="w-6 h-6 text-red-500" />
                 </div>
-
                 <div>
                     <h2 class="text-lg font-semibold text-gray-800">
                         Hapus Data Dapur Umum
                     </h2>
+<<<<<<< HEAD
 
                     <p class="text-sm text-gray-500 mt-1">
                         Apakah Anda yakin ingin menghapus data dapur umum
                         <span id="namaDapur" class="font-semibold"></span>?
+=======
+                    <p class="text-sm text-gray-500 mt-1">
+                        Apakah Anda yakin ingin menghapus data dapur umum <span id="namaDapur" class="font-semibold"></span>?
+>>>>>>> origin/main
                         Tindakan ini tidak dapat dibatalkan.
                     </p>
                 </div>
@@ -163,9 +188,13 @@
 
             <!-- Action -->
             <div class="flex justify-end gap-3 mt-6">
+<<<<<<< HEAD
 
                 <button type="button"
                     onclick="closeModal()"
+=======
+                <button type="button" onclick="closeModal()"
+>>>>>>> origin/main
                     class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">
                     Batal
                 </button>
@@ -173,20 +202,24 @@
                 <form id="deleteForm" method="POST">
                     @csrf
                     @method('DELETE')
+<<<<<<< HEAD
 
                     <button type="submit"
                         class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600">
+=======
+                    <button type="submit" class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600">
+>>>>>>> origin/main
                         Hapus Data
                     </button>
                 </form>
 
             </div>
-
         </div>
     </div>
 
     <script>
     function openModal(id, nama) {
+<<<<<<< HEAD
 
         const modal = document.getElementById('deleteModal');
 
@@ -198,17 +231,34 @@
         let url = "{{ route('management_posko.dapur_umum.destroy', ':id') }}";
         url = url.replace(':id', id);
 
+=======
+        const modal = document.getElementById('deleteModal');
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+
+        document.getElementById('namaDapur').textContent = `"${nama}"`;
+
+        // PERBAIKAN: JavaScript URL Destruct juga wajib dipasangi skema parameter token role dinamis
+        let url = "{{ route('management_posko.dapur_umum.destroy', ['role' => $userRole, 'dapur_umum' => ':id']) }}";
+        url = url.replace(':id', id);
+
+>>>>>>> origin/main
         document.getElementById('deleteForm').action = url;
     }
 
     function closeModal() {
+<<<<<<< HEAD
 
         const modal = document.getElementById('deleteModal');
 
+=======
+        const modal = document.getElementById('deleteModal');
+>>>>>>> origin/main
         modal.classList.remove('flex');
         modal.classList.add('hidden');
     }
 
+<<<<<<< HEAD
     // Tutup modal saat klik area luar
         document.getElementById('deleteModal').addEventListener('click', function(e) {
 
@@ -216,5 +266,12 @@
                 closeModal();
             }
         });
+=======
+    document.getElementById('deleteModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+>>>>>>> origin/main
     </script>
 @endsection

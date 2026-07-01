@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $routePrefix = request()->segment(1);
+@endphp
 <div class="p-6">
     <div class="max-w-5xl mx-auto bg-white rounded-lg shadow p-6">
         <div class="mb-6">
@@ -26,7 +29,7 @@
             </div>
         @endif
 
-        <form action="{{ route('admin.management_distribusi.distribusi_paket.store') }}" method="POST">
+        <form action="{{ route($routePrefix .'.management_distribusi.distribusi_paket.store') }}" method="POST">
             @csrf
 
             <input type="hidden" name="warga_terdampak_id" value="{{ $warga->id }}">
@@ -106,11 +109,11 @@
 
                     <div class="md:col-span-2">
                         <label class="block text-sm font-medium text-gray-700 mb-1">Petugas Distribusi</label>
-                        <select name="pegawai_id" class="w-full border rounded px-3 py-2" required>
+                        <select name="petugas_id" class="w-full border rounded px-3 py-2" required>
                             <option value="">-- Pilih Petugas --</option>
-                            @foreach($pegawai as $item)
-                                <option value="{{ $item->id_pegawai }}" {{ old('pegawai_id') == $item->id_pegawai ? 'selected' : '' }}>
-                                    {{ $item->nama_pegawai }}
+                            @foreach($petugas as $item)
+                                <option value="{{ $item->id }}" {{ old('petugas_id') == $item->id ? 'selected' : '' }}>
+                                    {{ $item->nama_petugas }}
                                 </option>
                             @endforeach
                         </select>
@@ -120,7 +123,7 @@
 
             {{-- Tombol --}}
             <div class="flex items-center justify-end gap-3">
-                <a href="{{ route('admin.management_distribusi.distribusi_paket.index') }}"
+                <a href="{{ route($routePrefix .'.management_distribusi.distribusi_paket.index') }}"
                     class="flex items-center gap-2 px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg">
                     <x-heroicon-o-arrow-left class="w-5 h-5" />Kembali
                 </a>

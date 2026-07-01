@@ -16,7 +16,7 @@
         </div>
     @endif
 
-    <form action="{{ route('management_barang.petugas.update', $petugas->id) }}" method="POST">
+    <form action="{{ route('admin.management_barang.petugas.update', $petugas->id) }}" method="POST">
         @csrf
         @method('PUT')
 
@@ -83,7 +83,7 @@
 
         {{-- Tombol --}}
         <div class="flex justify-between">
-            <a href="{{ route('management_barang.petugas.index') }}"
+            <a href="{{ route('admin.management_barang.petugas.index') }}"
                 class="bg-gray-500 text-white px-4 py-2 rounded">
                 Kembali
             </a>

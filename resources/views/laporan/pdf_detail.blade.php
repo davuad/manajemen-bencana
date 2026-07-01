@@ -247,7 +247,7 @@
                                 </td> --}}
 
                                 <td>
-                                    {{ $detail->barangKeluar->detailBarangKeluar->first()->barang->nama_barang ?? '-' }}
+                                    {{ $detail->detailBarangKeluar->first()->barang->nama_barang ?? '-' }}
                                 </td>
 
                                 <td>

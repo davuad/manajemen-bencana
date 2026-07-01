@@ -17,7 +17,7 @@
 
     </div>
 
-    <form action="{{ route('management_barang.pengembalian.update', $data->id) }}"
+    <form action="{{ route('admin.management_barang.pengembalian.update', $data->id) }}"
           method="POST">
 
         @csrf
@@ -141,81 +141,66 @@
 
                     </thead>
 
-                    <tbody>
+                  <tbody>
 
-                        @php
-                            $groupPengambilan = \App\Models\Pengambilan::with('barang')
-                                ->where('tujuan', $data->pengambilan->tujuan)
-                                ->where('tanggal_pengambilan', $data->pengambilan->tanggal_pengambilan)
-                                ->where('posko_id', $data->pengambilan->posko_id)
-                                ->get();
-                        @endphp
+    @php
+        // Ambil semua data pengembalian yang memiliki kesamaan transaksi induk (bisa dicari melalui relasi pengambilan yang sama atau berdasarkan ID data yang sedang aktif)
+        $groupPengembalian = \App\Models\Pengembalian::where('tanggal_pengembalian', $data->tanggal_pengembalian)
+            ->where('petugas_id', $data->petugas_id)
+            ->where('posko_id', $data->posko_id)
+            ->with('pengambilan.barang')
+            ->get();
+    @endphp
 
-                        @foreach($groupPengambilan as $item)
+    @foreach($groupPengembalian as $item)
 
-                        @php
-                            $detailKembali = \App\Models\Pengembalian::where(
-                                'pengambilan_id',
-                                $item->id
-                            )->first();
-                        @endphp
+    <tr class="border-t">
 
-                        <tr class="border-t">
+        {{-- NO --}}
+        <td class="p-3 text-center">
+            {{ $loop->iteration }}
+        </td>
 
-                            {{-- NO --}}
-                            <td class="p-3 text-center">
+        {{-- BARANG --}}
+        <td class="p-3">
+            {{ $item->pengambilan->barang->nama_barang ?? '-' }}
 
-                                {{ $loop->iteration }}
+            <input type="hidden" 
+                   name="pengambilan_id[]" 
+                   value="{{ $item->pengambilan_id }}">
 
-                            </td>
+            <input type="hidden" 
+                   name="pengembalian_id[]" 
+                   value="{{ $item->id }}">
+        </td>
 
-                            {{-- BARANG --}}
-                            <td class="p-3">
+        {{-- SATUAN --}}
+        <td class="p-3 text-center">
+            {{ $item->pengambilan->barang->satuan ?? '-' }}
+        </td>
 
-                                {{ $item->barang->nama_barang ?? '-' }}
+        {{-- JUMLAH AMBIL --}}
+        <td class="p-3 text-center">
+            <span class="px-3 py-1 rounded-lg bg-blue-100 text-blue-700 font-semibold">
+                {{ $item->pengambilan->jumlah_ambil ?? 0 }}
+            </span>
+        </td>
 
-                                <input type="hidden"
-                                       name="pengambilan_id[]"
-                                       value="{{ $item->id }}">
+        {{-- JUMLAH KEMBALI --}}
+        <td class="p-3 text-center">
+            <input type="number"
+                   name="jumlah_kembali[]"
+                   min="0"
+                   max="{{ $item->pengambilan->jumlah_ambil ?? 1000 }}"
+                   value="{{ $item->jumlah_kembali ?? 0 }}"
+                   class="border rounded-lg p-2 w-24 text-center">
+        </td>
 
-                            </td>
+    </tr>
 
-                            {{-- SATUAN --}}
-                            <td class="p-3 text-center">
+    @endforeach
 
-                                {{ $item->barang->satuan ?? '-' }}
-
-                            </td>
-
-                            {{-- JUMLAH AMBIL --}}
-                            <td class="p-3 text-center">
-
-                                <span class="px-3 py-1 rounded-lg bg-blue-100 text-blue-700 font-semibold">
-
-                                    {{ $item->jumlah_ambil }}
-
-                                </span>
-
-                            </td>
-
-                            {{-- JUMLAH KEMBALI --}}
-                            <td class="p-3 text-center">
-
-                                <input type="number"
-                                       name="jumlah_kembali[]"
-                                       min="0"
-                                       max="{{ $item->jumlah_ambil }}"
-                                       value="{{ $detailKembali->jumlah_kembali ?? 0 }}"
-                                       class="border rounded-lg p-2 w-24 text-center">
-
-                            </td>
-
-                        </tr>
-
-                        @endforeach
-
-                    </tbody>
-
+</tbody>
                 </table>
 
             </div>
@@ -290,7 +275,7 @@
         {{-- BUTTON --}}
         <div class="mt-8 flex justify-between">
 
-            <a href="{{ route('management_barang.pengembalian.index') }}"
+            <a href="{{ route('admin.management_barang.pengembalian.index') }}"
                class="px-5 py-2 bg-gray-300 rounded-lg">
 
                 Kembali
@@ -322,7 +307,7 @@
 
     {{-- FORM DELETE --}}
     <form id="hapusForm"
-          action="{{ route('management_barang.pengembalian.destroy', $data->id) }}"
+          action="{{ route('admin.management_barang.pengembalian.destroy', $data->id) }}"
           method="POST"
           class="hidden">
 
