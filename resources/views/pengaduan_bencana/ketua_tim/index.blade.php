@@ -1,209 +1,369 @@
 @extends('layouts.app')
 
 @section('content')
+    <div class="bg-white rounded-xl shadow p-6">
 
-<div class="bg-white rounded-xl shadow p-6">
+        {{-- HEADER --}}
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center mb-6">
 
-{{-- HEADER --}}
-<div class="flex justify-between items-center mb-6">
+            <div>
 
-    <div>
-        <h2 class="text-xl font-bold">
-            MONITORING PENYELESAIAN PENGADUAN
-        </h2>
+                <h2 class="text-2xl font-bold text-gray-800">
+                    Monitoring Penyelesaian Pengaduan
+                </h2>
 
-        <p class="text-gray-500 text-sm">
-            Monitoring proses penyelesaian pengaduan bencana
-        </p>
-    </div>
+                <p class="text-gray-500 mt-1">
+                    Monitoring proses penyelesaian pengaduan bencana.
+                </p>
 
-</div>
+            </div>
 
-{{-- FILTER --}}
-<form method="GET">
+        </div>
 
-    <div class="flex flex-wrap gap-4 mb-6">
+        {{-- STATISTIK --}}
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5 mb-8">
 
-        <input type="text"
-               name="search"
-               value="{{ request('search') }}"
-               placeholder="Cari pelapor, desa, atau deskripsi..."
-               class="flex-1 border rounded-lg px-4 py-2">
+            {{-- Total --}}
+            <div class="bg-gradient-to-r from-blue-500 to-blue-600 rounded-xl shadow text-white p-6">
 
-        <select name="status"
-                class="border rounded-lg px-3 py-2">
+                <p class="text-sm opacity-90">
+                    Total Pengaduan
+                </p>
 
-            <option value="">
-                Semua Status
-            </option>
+                <h2 class="text-4xl font-bold mt-2">
 
-            <option value="DITANGANI"
-                {{ request('status') == 'DITANGANI' ? 'selected' : '' }}>
-                Ditangani
-            </option>
+                    {{ $totalPengaduan }}
 
-            <option value="SELESAI"
-                {{ request('status') == 'SELESAI' ? 'selected' : '' }}>
-                Selesai
-            </option>
+                </h2>
 
-        </select>
+            </div>
 
-        <button type="submit"
-                class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2 rounded-lg">
+            {{-- Selesai --}}
+            <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-xl shadow text-white p-6">
 
-            Filter
+                <p class="text-sm opacity-90">
+                    Sudah Selesai
+                </p>
 
-        </button>
+                <h2 class="text-4xl font-bold mt-2">
 
-    </div>
+                    {{ $totalSelesai }}
 
-</form>
+                </h2>
 
-{{-- TABLE --}}
-<div class="overflow-x-auto">
+            </div>
 
-    <table class="w-full text-sm">
+            {{-- Belum --}}
+            <div class="bg-gradient-to-r from-yellow-400 to-orange-500 rounded-xl shadow text-white p-6">
 
-        <thead class="bg-gray-100">
+                <p class="text-sm opacity-90">
+                    Belum Selesai
+                </p>
 
-            <tr>
-                <th class="p-3 text-center">ID</th>
-                <th class="text-center">Pelapor</th>
-                <th class="text-center">Kategori</th>
-                <th class="text-center">Lokasi</th>
-                <th class="text-center">Status</th>
-                <th class="text-center">Tanggal Selesai</th>
-                <th class="text-center">Aksi</th>
-            </tr>
+                <h2 class="text-4xl font-bold mt-2">
 
-        </thead>
+                    {{ $totalBelum }}
 
-        <tbody>
+                </h2>
 
-            @forelse($data as $d)
+            </div>
 
-            <tr class="border-t hover:bg-gray-50">
+        </div>
 
-                {{-- ID --}}
-                <td class="text-center p-3 font-semibold">
-                    #{{ $d->id }}
-                </td>
+        {{-- FILTER --}}
+        <form method="GET">
 
-                {{-- PELAPOR --}}
-                <td class="text-center">
-                    {{ $d->user->nama ?? '-' }}
-                </td>
+            <div class="grid grid-cols-1 md:grid-cols-6 gap-4 mb-8">
 
-                {{-- KATEGORI --}}
-                <td class="text-center">
-                    {{ $d->kategori->nama_kategori ?? '-' }}
-                </td>
+                {{-- Cari --}}
+                <div class="md:col-span-2">
 
-                {{-- LOKASI --}}
-                <td class="p-3">
+                    <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari pelapor, desa..."
+                        class="w-full border rounded-lg px-4 py-2 focus:ring focus:ring-indigo-200">
 
-                    <div class="font-semibold">
-                        {{ $d->desa }}
-                    </div>
+                </div>
 
-                    <div class="text-gray-500 text-xs mt-1">
-                        {{ \Illuminate\Support\Str::limit($d->deskripsi, 60) }}
-                    </div>
+                {{-- Status --}}
+                <div>
 
-                </td>
+                    <select name="status" class="w-full border rounded-lg px-3 py-2">
 
-                {{-- STATUS --}}
-                <td class="text-center">
+                        <option value="">
+                            Semua Status
+                        </option>
 
-                    @if($d->status_pengaduan == 'SELESAI')
+                        <option value="DITANGANI" {{ request('status') == 'DITANGANI' ? 'selected' : '' }}>
 
-                        <span class="bg-green-100 text-green-700 px-3 py-1 rounded-full text-xs font-semibold">
-                            Selesai
-                        </span>
-
-                    @elseif($d->status_pengaduan == 'DITANGANI')
-
-                        <span class="bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-semibold">
                             Ditangani
-                        </span>
 
-                    @else
+                        </option>
 
-                        <span class="bg-gray-100 text-gray-700 px-3 py-1 rounded-full text-xs font-semibold">
-                            {{ $d->status_pengaduan }}
-                        </span>
+                        <option value="SELESAI" {{ request('status') == 'SELESAI' ? 'selected' : '' }}>
 
-                    @endif
+                            Selesai
 
-                </td>
+                        </option>
 
-                {{-- TANGGAL SELESAI --}}
-                <td class="text-center">
+                    </select>
 
-                    @if($d->tanggal_selesai)
+                </div>
 
-                        {{ \Carbon\Carbon::parse($d->tanggal_selesai)->format('d M Y') }}
+                {{-- Bulan --}}
+                <div>
 
-                    @else
+                    <select name="bulan" class="w-full border rounded-lg px-3 py-2">
 
-                        -
+                        <option value="">
+                            Semua Bulan
+                        </option>
 
-                    @endif
+                        @foreach (range(1, 12) as $bulan)
+                            <option value="{{ $bulan }}" {{ request('bulan') == $bulan ? 'selected' : '' }}>
 
-                </td>
+                                {{ DateTime::createFromFormat('!m', $bulan)->format('F') }}
 
-                {{-- AKSI --}}
-                <td>
+                            </option>
+                        @endforeach
 
-                    <div class="flex justify-center">
+                    </select>
 
-                        @if($d->status_pengaduan == 'SELESAI')
+                </div>
 
-                            <span class="bg-green-100 text-green-700 px-4 py-2 rounded-lg text-xs font-semibold">
+                {{-- Tahun --}}
+                <div>
 
-                                Sudah Selesai
+                    <select name="tahun" class="w-full border rounded-lg px-3 py-2">
 
-                            </span>
+                        <option value="">
+                            Semua Tahun
+                        </option>
 
-                        @else
+                        @for ($i = date('Y'); $i >= 2023; $i--)
+                            <option value="{{ $i }}" {{ request('tahun') == $i ? 'selected' : '' }}>
 
-                            <a href="{{ route('ketua_tim.pengaduan.selesai', $d->id) }}"
-                               class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs">
+                                {{ $i }}
 
-                                Selesaikan
+                            </option>
+                        @endfor
 
-                            </a>
+                    </select>
 
-                        @endif
+                </div>
 
-                    </div>
+                {{-- Tombol --}}
+                <div class="flex gap-2">
 
-                </td>
+                    <button type="submit" class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg">
 
-            </tr>
+                        Filter
 
-            @empty
+                    </button>
 
-            <tr>
+                    <a href="{{ route('ketua_tim.pengaduan.index') }}"
+                        class="bg-gray-200 hover:bg-gray-300 px-4 rounded-lg flex items-center">
 
-                <td colspan="7"
-                    class="text-center p-6 text-gray-500">
+                        Reset
 
-                    Belum ada data pengaduan
+                    </a>
 
-                </td>
+                </div>
 
-            </tr>
+            </div>
 
-            @endforelse
+        </form>
 
-        </tbody>
+        {{-- TABLE --}}
+        <div class="overflow-x-auto">
 
-    </table>
+            <table class="min-w-full divide-y divide-gray-200">
 
-</div>
+                <thead class="bg-gray-100">
 
-</div>
+                    <tr>
 
+                        <th class="px-4 py-3 text-center">
+                            ID
+                        </th>
+
+                        <th class="px-4 py-3 text-center">
+                            Pelapor
+                        </th>
+
+                        <th class="px-4 py-3 text-center">
+                            Kategori
+                        </th>
+
+                        <th class="px-4 py-3 text-center">
+                            Lokasi
+                        </th>
+
+                        <th class="px-4 py-3 text-center">
+                            Status
+                        </th>
+
+                        <th class="px-4 py-3 text-center">
+                            Tanggal Selesai
+                        </th>
+
+                        <th class="px-4 py-3 text-center">
+                            Aksi
+                        </th>
+
+                    </tr>
+
+                </thead>
+
+                <tbody class="divide-y divide-gray-100 bg-white">
+                    @forelse($data as $d)
+                        <tr class="hover:bg-gray-50 transition">
+
+                            {{-- ID --}}
+                            <td class="px-4 py-4 text-center font-semibold text-gray-700">
+                                #{{ $d->id }}
+                            </td>
+
+                            {{-- Pelapor --}}
+                            <td class="px-4 py-4">
+
+                                <div class="font-semibold text-gray-800">
+                                    {{ $d->user->nama ?? '-' }}
+                                </div>
+
+                            </td>
+
+                            {{-- Kategori --}}
+                            <td class="px-4 py-4">
+
+                                <span
+                                    class="inline-flex px-3 py-1 rounded-full bg-blue-100 text-blue-700 text-xs font-semibold">
+
+                                    {{ $d->kategori->nama_kategori ?? '-' }}
+
+                                </span>
+
+                            </td>
+
+                            {{-- Lokasi --}}
+                            <td class="px-4 py-4">
+
+                                <div class="font-semibold text-gray-800">
+                                    {{ $d->desa }}
+                                </div>
+
+                                <div class="text-xs text-gray-500 mt-1">
+                                    {{ \Illuminate\Support\Str::limit($d->deskripsi, 70) }}
+                                </div>
+
+                            </td>
+
+                            {{-- Status --}}
+                            <td class="px-4 py-4 text-center">
+
+                                @if ($d->status_pengaduan == 'SELESAI')
+                                    <span
+                                        class="inline-flex items-center px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
+
+                                        ✓ Selesai
+
+                                    </span>
+                                @elseif($d->status_pengaduan == 'DITANGANI')
+                                    <span
+                                        class="inline-flex items-center px-3 py-1 rounded-full bg-yellow-100 text-yellow-700 text-xs font-semibold">
+
+                                        ⏳ Ditangani
+
+                                    </span>
+                                @else
+                                    <span
+                                        class="inline-flex items-center px-3 py-1 rounded-full bg-gray-100 text-gray-700 text-xs font-semibold">
+
+                                        {{ $d->status_pengaduan }}
+
+                                    </span>
+                                @endif
+
+                            </td>
+
+                            {{-- Tanggal --}}
+                            <td class="px-4 py-4 text-center">
+
+                                @if ($d->tanggal_selesai)
+                                    <div class="text-sm text-gray-700">
+
+                                        {{ \Carbon\Carbon::parse($d->tanggal_selesai)->format('d M Y') }}
+
+                                    </div>
+                                @else
+                                    <span class="text-gray-400">
+
+                                        -
+
+                                    </span>
+                                @endif
+
+                            </td>
+
+                            {{-- Aksi --}}
+                            <td class="px-4 py-4">
+
+                                <div class="flex justify-center">
+
+                                    @if ($d->status_pengaduan == 'SELESAI')
+                                        <span
+                                            class="inline-flex px-4 py-2 rounded-lg bg-green-100 text-green-700 text-xs font-semibold">
+
+                                            Sudah Selesai
+
+                                        </span>
+                                    @else
+                                        <a href="{{ route('ketua_tim.pengaduan.selesai', $d->id) }}"
+                                            class="inline-flex items-center gap-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-sm transition">
+
+                                            Selesaikan
+
+                                        </a>
+                                    @endif
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+
+                    @empty
+
+                        <tr>
+
+                            <td colspan="7" class="text-center py-12">
+
+                                <div class="flex flex-col items-center">
+
+                                    <svg class="w-12 h-12 text-gray-300 mb-3" fill="none" stroke="currentColor"
+                                        stroke-width="1.5" viewBox="0 0 24 24">
+
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M9 12h6m-6 4h6M7 4h10a2 2 0 012 2v12a2 2 0 01-2 2H7a2 2 0 01-2-2V6a2 2 0 012-2z" />
+
+                                    </svg>
+
+                                    <p class="text-gray-500">
+
+                                        Belum ada data pengaduan.
+
+                                    </p>
+
+                                </div>
+
+                            </td>
+
+                        </tr>
+                    @endforelse
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+    </div>
 @endsection
