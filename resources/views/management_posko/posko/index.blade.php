@@ -12,14 +12,14 @@
                 </p>
             </div>
             @hasanyrole('admin|pegawai|petugas|relawan')
-                <a href="{{ route('management_posko.posko.create') }}"
+                <a href="{{ route('admin.management_posko.posko.create') }}"
                     class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
                     + Tambah Data Posko
                 </a>
             @endhasanyrole
         </div>
 
-        <form method="GET" action="{{ route('management_posko.posko.index') }}">
+        <form method="GET" action="{{ route('admin.management_posko.posko.index') }}">
             <div class="flex gap-4 mb-6">
 
                 <input type="text" name="search" value="{{ request('search') }}"
@@ -87,7 +87,7 @@
                             </td>
                             @hasanyrole('admin|pegawai|petugas|relawan')
                             <td class="flex gap-1 py-4">
-                                <a href="{{ route('management_posko.posko.edit', $p->id) }}"
+                                <a href="{{ route('admin.management_posko.posko.edit', $p->id) }}"
                                     class="text-blue-500">
                                     <x-heroicon-o-pencil-square class="w-5 h-5" />
                                 </a>
@@ -176,7 +176,7 @@
             document.getElementById('namaPosko').innerText = `"${nama}"`;
 
             // route delete posko
-            let url = "{{ route('management_posko.posko.destroy', ':id') }}";
+            let url = "{{ route('admin.management_posko.posko.destroy', ':id') }}";
             url = url.replace(':id', id);
 
             document.getElementById('deleteForm').action = url;

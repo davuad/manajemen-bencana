@@ -16,7 +16,7 @@
         </div>
     @endif
 
-    <form action="{{ route('management_barang.petugas.update', $petugas->id) }}" method="POST">
+    <form action="{{ route('admin.management_barang.petugas.update', $petugas->id) }}" method="POST">
         @csrf
         @method('PUT')
 

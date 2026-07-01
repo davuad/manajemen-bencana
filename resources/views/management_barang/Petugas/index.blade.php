@@ -13,14 +13,14 @@
             </p>
         </div>
 
-        <a href="{{ route('management_barang.petugas.create') }}"
+        <a href="{{ route('admin.management_barang.petugas.create') }}"
            class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
             + Tambah Petugas
         </a>
 
     </div>
 
-<form method="GET" action="{{ route('management_barang.petugas.index') }}">
+<form method="GET" action="{{ route('admin.management_barang.petugas.index') }}">
     <div class="flex gap-4 mb-6">
 
         <input type="text"

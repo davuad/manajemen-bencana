@@ -214,28 +214,123 @@
         </a>
 
 
-        <a href="{{ route('admin.desa.index') }}"
-            class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
-    {{ request()->routeIs('admin.desa.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                    {{-- Data Desa --}}
+            @if(auth()->user()->hasRole('admin'))
+                <a href="{{ route('admin.desa.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+                    {{ request()->routeIs('admin.desa.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                    <x-heroicon-o-map class="w-5 h-5" />
+                    <span x-show="sidebarOpen" x-transition>Data Desa</span>
+                </a>
+            @elseif(auth()->user()->hasRole('relawan'))
+                <a href="{{ route('relawan.desa.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+                    {{ request()->routeIs('relawan.desa.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                    <x-heroicon-o-map class="w-5 h-5" />
+                    <span x-show="sidebarOpen" x-transition>Data Desa</span>
+                </a>
+            @elseif(auth()->user()->hasRole('kadus'))
+                <a href="{{ route('kadus.desa.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+                    {{ request()->routeIs('kadus.desa.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                    <x-heroicon-o-map class="w-5 h-5" />
+                    <span x-show="sidebarOpen" x-transition>Data Desa</span>
+                </a>
+            @elseif(auth()->user()->hasRole('kabid'))
+                <a href="{{ route('kabid.desa.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+                    {{ request()->routeIs('kabid.desa.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                    <x-heroicon-o-map class="w-5 h-5" />
+                    <span x-show="sidebarOpen" x-transition>Data Desa</span>
+                </a>
+            @elseif(auth()->user()->hasRole('desa'))
+                <a href="{{ route('desa.desa.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+                    {{ request()->routeIs('desa.desa.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                    <x-heroicon-o-map class="w-5 h-5" />
+                    <span x-show="sidebarOpen" x-transition>Data Desa</span>
+                </a>
+            @elseif(auth()->user()->hasRole('ketua_tim'))
+                <a href="{{ route('ketua_tim.desa.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+                    {{ request()->routeIs('ketua_tim.desa.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                    <x-heroicon-o-map class="w-5 h-5" />
+                    <span x-show="sidebarOpen" x-transition>Data Desa</span>
+                </a>
+            @elseif(auth()->user()->hasRole('pegawai'))
+                <a href="{{ route('pegawai.desa.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+                    {{ request()->routeIs('pegawai.desa.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                    <x-heroicon-o-map class="w-5 h-5" />
+                    <span x-show="sidebarOpen" x-transition>Data Desa</span>
+                </a>
+            @elseif(auth()->user()->hasRole('petugas'))
+                <a href="{{ route('petugas.desa.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+                    {{ request()->routeIs('petugas.desa.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                    <x-heroicon-o-map class="w-5 h-5" />
+                    <span x-show="sidebarOpen" x-transition>Data Desa</span>
+                </a>
+            @endif
 
-            <x-heroicon-o-map class="w-5 h-5" />
-
-            <span x-show="sidebarOpen" x-transition>
-                Data Desa
-            </span>
-        </a>
-
-        <a href="{{ route('admin.warga.index') }}"
-            class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
-    {{ request()->routeIs('admin.warga.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
-
-            <x-heroicon-o-users class="w-5 h-5" />
-
-            <span x-show="sidebarOpen" x-transition>
-                Data Warga Terdampak
-            </span>
-        </a>
-
+            {{-- Data Warga Terdampak --}}
+            @if(auth()->user()->hasRole('admin'))
+                <a href="{{ route('admin.warga.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+                    {{ request()->routeIs('admin.warga.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                    <x-heroicon-o-users class="w-5 h-5" />
+                    <span x-show="sidebarOpen" x-transition>Data Warga Terdampak</span>
+                </a>
+            @elseif(auth()->user()->hasRole('relawan'))
+                <a href="{{ route('relawan.warga.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+                    {{ request()->routeIs('relawan.warga.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                    <x-heroicon-o-users class="w-5 h-5" />
+                    <span x-show="sidebarOpen" x-transition>Data Warga Terdampak</span>
+                </a>
+            @elseif(auth()->user()->hasRole('kadus'))
+                <a href="{{ route('kadus.warga.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+                    {{ request()->routeIs('kadus.warga.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                    <x-heroicon-o-users class="w-5 h-5" />
+                    <span x-show="sidebarOpen" x-transition>Data Warga Terdampak</span>
+                </a>
+            @elseif(auth()->user()->hasRole('kabid'))
+                <a href="{{ route('kabid.warga.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+                    {{ request()->routeIs('kabid.warga.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                    <x-heroicon-o-users class="w-5 h-5" />
+                    <span x-show="sidebarOpen" x-transition>Data Warga Terdampak</span>
+                </a>
+            @elseif(auth()->user()->hasRole('desa'))
+                <a href="{{ route('desa.warga.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+                    {{ request()->routeIs('desa.warga.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                    <x-heroicon-o-users class="w-5 h-5" />
+                    <span x-show="sidebarOpen" x-transition>Data Warga Terdampak</span>
+                </a>
+            @elseif(auth()->user()->hasRole('ketua_tim'))
+                <a href="{{ route('ketua_tim.warga.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+                    {{ request()->routeIs('ketua_tim.warga.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                    <x-heroicon-o-users class="w-5 h-5" />
+                    <span x-show="sidebarOpen" x-transition>Data Warga Terdampak</span>
+                </a>
+            @elseif(auth()->user()->hasRole('pegawai'))
+                <a href="{{ route('pegawai.warga.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+                    {{ request()->routeIs('pegawai.warga.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                    <x-heroicon-o-users class="w-5 h-5" />
+                    <span x-show="sidebarOpen" x-transition>Data Warga Terdampak</span>
+                </a>
+            @elseif(auth()->user()->hasRole('petugas'))
+                <a href="{{ route('petugas.warga.index') }}"
+                    class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+                    {{ request()->routeIs('petugas.warga.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                    <x-heroicon-o-users class="w-5 h-5" />
+                    <span x-show="sidebarOpen" x-transition>Data Warga Terdampak</span>
+                </a>
+            @endif
 
         @if (auth()->user()->hasRole('admin'))
             <div x-data="{ openMenu: {{ request()->routeIs('admin.management_posko.*') ? 'true' : 'false' }} }" class="rounded">

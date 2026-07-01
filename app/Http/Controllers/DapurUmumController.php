@@ -30,14 +30,14 @@ class DapurUmumController extends Controller
         return view('management_posko.dapur_umum.index', compact('dapur', 'posko'));
     }
 
-    public function create($role)
+    public function create()
     {
         $posko = Posko::all();
 
         return view('management_posko.dapur_umum.create', compact('posko'));
     }
 
-    public function store(Request $request, $role)
+    public function store(Request $request)
     {
         $validated = $request->validate([
             'posko_id' => 'required|exists:posko,id',
@@ -49,11 +49,11 @@ class DapurUmumController extends Controller
 
         DapurUmum::create($validated);
 
-        return redirect()->route('management_posko.dapur_umum.index', ['role' => $role])
+        return redirect()->route('admin.management_posko.dapur_umum.index')
             -> with('success', 'Data dapur umum berhasil ditambahkan');;
     }
 
-    public function edit($role, $id)
+    public function edit( $id)
     {
         $dapur = DapurUmum::findOrFail($id);
         $posko = Posko::all();
@@ -61,7 +61,7 @@ class DapurUmumController extends Controller
         return view('management_posko.dapur_umum.edit', compact('dapur', 'posko'));
     }
 
-    public function update(Request $request, $role, $id)
+    public function update(Request $request, $id)
     {
         $validated = $request->validate([
             'posko_id' => 'required|exists:posko,id',
@@ -74,16 +74,16 @@ class DapurUmumController extends Controller
         $dapur = DapurUmum::findOrFail($id);
         $dapur->update($validated);
 
-        return redirect()->route('management_posko.dapur_umum.index', ['role' => $role])
+        return redirect()->route('admin.management_posko.dapur_umum.index')
             ->with('success', 'Data dapur umum berhasil diupdate');
     }
 
-    public function destroy($role, $id )
+    public function destroy( $id )
     {
         $dapur = DapurUmum::findOrFail($id);
         $dapur->delete();
 
-        return redirect()->route('management_posko.dapur_umum.index', ['role' => $role])
+        return redirect()->route('admin.management_posko.dapur_umum.index')
             ->with('success', 'Data dapur umum berhasil dihapus');
     }
 }
