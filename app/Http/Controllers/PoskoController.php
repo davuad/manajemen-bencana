@@ -33,7 +33,7 @@ class PoskoController extends Controller
         return view('management_posko.posko.index', compact('posko', 'desa', 'bencana'));
     }
 
-    public function create($role)
+    public function create()
     {
         $desa = Desa::all();
         $bencana = Bencana::all();
@@ -42,7 +42,7 @@ class PoskoController extends Controller
         return view('management_posko.posko.create', compact('desa', 'pengaduan', 'bencana'));
     }
 
-    public function store(Request $request, $role)
+    public function store(Request $request)
     {
         $request->validate([
             'nama_posko' => 'required|max:100',
@@ -63,11 +63,11 @@ class PoskoController extends Controller
             'status' => 'aktif'
         ]);
 
-        return redirect()->route('management_posko.posko.index', ['role' => $role])
+        return redirect()->route('admin.management_posko.posko.index')
             ->with('success', 'Data posko berhasil ditambahkan');
     }
 
-    public function edit($role, $id)
+    public function edit($id)
     {
         $posko = Posko::findOrFail($id);
         $desa = Desa::all();
@@ -77,7 +77,7 @@ class PoskoController extends Controller
         return view('management_posko.posko.edit', compact('posko', 'desa', 'pengaduan', 'bencana'));
     }
 
-    public function update(Request $request, $role, $id)
+    public function update(Request $request, $id)
     {
         $request->validate([
             'nama_posko' => 'required|max:100',
@@ -101,16 +101,16 @@ class PoskoController extends Controller
             'status' => $request->status
         ]);
 
-        return redirect()->route('management_posko.posko.index', ['role' => $role])
+        return redirect()->route('admin.management_posko.posko.index')
             ->with('success', 'Data posko berhasil diperbarui');
     }
 
-    public function destroy($role, $id)
+    public function destroy($id)
     {
         $posko = Posko::findOrFail($id);
         $posko->delete();
 
-        return redirect()->route('management_posko.posko.index', ['role' => $role])
+        return redirect()->route('admin.management_posko.posko.index')
             ->with('success', 'Data posko berhasil dihapus');
     }
 }

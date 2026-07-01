@@ -287,6 +287,10 @@ Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->grou
         Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
             ->name('dapur_umum.index');
     });
+
+        Route::resource('data-desa', DesaController::class)->names('desa');
+        Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
+        Route::post('warga/{id}/ubah-status', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 });
 Route::middleware(['auth', 'role:kabid'])
     ->prefix('kabid')
@@ -349,6 +353,10 @@ Route::middleware(['auth', 'role:kabid'])
             Route::get('/{id}/pdf', [LaporanController::class, 'pdfDetail'])
                 ->name('pdf.detail');
         });
+
+        Route::resource('data-desa', DesaController::class)->names('desa');
+        Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
+        Route::post('warga/{id}/ubah-status', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
     });
 
 Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(function () {
@@ -359,6 +367,10 @@ Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(f
         Route::get('/dapur-umum', [DapurUmumController::class, 'index'])
             ->name('dapur_umum.index');
     });
+
+        Route::resource('data-desa', DesaController::class)->names('desa');
+        Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
+        Route::post('warga/{id}/ubah-status', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 });
 Route::middleware(['auth', 'role:ketua_tim'])
     ->prefix('ketua_tim')
@@ -379,8 +391,10 @@ Route::middleware(['auth', 'role:ketua_tim'])
             '/pengaduan/{id}/selesai',
             [PengaduanBencanaController::class, 'simpanSelesai']
         )->name('pengaduan.simpan');
-    });
-
+        Route::resource('data-desa', DesaController::class)->names('desa');
+        Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
+        Route::post('warga/{id}/ubah-status', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
+});
 
 Route::middleware(['auth', 'role:relawan|kadus|desa'])
     ->prefix('user')
@@ -423,6 +437,10 @@ Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')
         Route::resource('distribusi_paket', DistribusiPaketController::class);
         Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
     });
+
+        Route::resource('data-desa', DesaController::class)->names('desa');
+        Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
+        Route::post('warga/{id}/ubah-status', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 });
 // --- Petugas ---
 Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')->group(function () {
@@ -431,6 +449,10 @@ Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')
         Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
         Route::patch('distribusi_paket/{id}/selesai', [DistribusiPaketController::class, 'selesai'])->name('distribusi_paket.selesai');
     });
+
+        Route::resource('data-desa', DesaController::class)->names('desa');
+        Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
+        Route::post('warga/{id}/ubah-status', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 });
 
 // --- Pegawai ---
