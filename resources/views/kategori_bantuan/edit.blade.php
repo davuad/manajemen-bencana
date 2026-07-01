@@ -25,7 +25,7 @@
                     <select name="id_sumber" class="w-full border rounded-lg p-3">
 
                         @foreach ($sumber as $s)
-                            <option value="{{ $s->id }}" {{ $kategori->id_sumber == $s->id ? 'selected' : '' }}>
+                            <option value="{{ $s->id_sumber }}" {{ $kategori->id_sumber == $s->id_sumber ? 'selected' : '' }}>
                                 {{ $s->nama_sumber }}
                             </option>
                         @endforeach
@@ -49,8 +49,10 @@
                         Keterangan
                     </label>
 
-                    <input type="text" name="keterangan" value="{{ old('keterangan', $kategori->keterangan) }}"
-                        class="w-full border rounded-lg p-3">
+                   <textarea
+                    name="keterangan"
+                    rows="4"
+                    class="w-full border rounded-lg p-3">{{ old('keterangan', $kategori->keterangan) }}</textarea>
                 </div>
 
             </div>

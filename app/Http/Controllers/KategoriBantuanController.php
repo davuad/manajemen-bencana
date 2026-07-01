@@ -36,7 +36,9 @@ class KategoriBantuanController extends Controller
 
         KategoriBantuan::create($request->all());
 
-        return redirect()->route('admin.kategori_bantuan.index');
+        return redirect()
+        ->route('admin.kategori_bantuan.index')
+        ->with('success','Kategori bantuan berhasil ditambahkan');
     }
 
     public function edit($id)
@@ -52,13 +54,15 @@ class KategoriBantuanController extends Controller
         $kategori = KategoriBantuan::findOrFail($id);
         $kategori->update($request->all());
 
-        return redirect()->route('admin.kategori_bantuan.index');
+        return redirect()->route('admin.kategori_bantuan.index')
+        ->with('success','Kategori bantuan berhasil diperbarui');
     }
 
     public function destroy($id)
     {
         KategoriBantuan::findOrFail($id)->delete();
 
-        return redirect()->route('admin.kategori_bantuan.index');
+        return redirect()->route('admin.kategori_bantuan.index')
+        ->with('success','Kategori bantuan berhasil dihapus');
     }
 }

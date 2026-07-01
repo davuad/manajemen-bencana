@@ -366,6 +366,57 @@
                     </a>
                 </div>
             </div>
+        </div>
+        @elseif(auth()->user()->hasRole('pegawai'))
+            <div x-data="{ openMenu: {{ request()->routeIs('pegawai.management_posko.*') || request()->routeIs('pegawai.dapur_umum.*') ? 'true' : 'false' }} }" class="rounded">
+
+                <div @click="openMenu = !openMenu"
+                    class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
+                    :class="openMenu ? 'bg-orange-500' : 'hover:bg-blue-800'">
+                    <span>
+                        <x-heroicon-o-home-modern class="w-5 h-5" />
+                    </span>
+                    <span x-show="sidebarOpen" x-transition>
+                        Informasi Posko
+                    </span>
+                </div>
+
+                <div x-show="openMenu" x-transition class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
+                    <a href="{{ route('pegawai.management_posko.posko.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('pegawai.management_posko.posko.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                        Data Posko
+                    </a>
+                    <a href="{{ route('pegawai.management_posko.dapur_umum.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('pegawai.management_posko.dapur_umum.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                        Dapur Umum
+                    </a>
+                </div>
+            </div>
+        @elseif(auth()->user()->hasRole('petugas'))
+            <div x-data="{ openMenu: {{ request()->routeIs('petugas.management_posko.*') || request()->routeIs('petugas.dapur_umum.*') ? 'true' : 'false' }} }" class="rounded">
+
+                <div @click="openMenu = !openMenu"
+                    class="flex items-center gap-3 px-3 py-2 cursor-pointer rounded transition-all duration-200"
+                    :class="openMenu ? 'bg-orange-500' : 'hover:bg-blue-800'">
+                    <span>
+                        <x-heroicon-o-home-modern class="w-5 h-5" />
+                    </span>
+                    <span x-show="sidebarOpen" x-transition>
+                        Informasi Posko
+                    </span>
+                </div>
+
+                <div x-show="openMenu" x-transition class="ml-2 mt-1 rounded bg-blue-800 overflow-hidden p-2">
+                    <a href="{{ route('petugas.management_posko.posko.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('petugas.management_posko.posko.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                        Data Posko
+                    </a>
+                    <a href="{{ route('petugas.management_posko.dapur_umum.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('petugas.management_posko.dapur_umum.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                        Dapur Umum
+                    </a>
+                </div>
+            </div>
         @endif
 
         <!-- ================= MANAGEMENT BARANG ================= -->
