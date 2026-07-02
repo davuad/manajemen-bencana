@@ -10,6 +10,7 @@ class AnakTerpisah extends Model
 
     protected $fillable = [
         'nama_anak',
+        'bencana_id',
         'nama_bapak',
         'nama_ibu',
         'jenis_kelamin',
@@ -27,4 +28,9 @@ class AnakTerpisah extends Model
     {
         return $this->hasOne(PenjemputanAnak::class, 'anak_id');
     }   
+
+    public function bencana()
+    {
+        return $this->belongsTo(Bencana::class, 'bencana_id');
+    }
 }

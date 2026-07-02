@@ -8,29 +8,61 @@ use App\Models\PenjemputanAnak;
 use App\Models\AnakTerpisah;
 use App\Models\Penjemput;
 use App\Models\Petugas;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 
 class PenjemputanAnakController extends Controller
 {
+    // public function index(Request $request)
+    // {
+    //     $query = AnakTerpisah::with(['penjemputan.penjemput', 'penjemputan.petugas']);
+
+    //     if ($request->filled('search')) {
+    //         $query->where('nama_anak', 'like', '%' . $request->search . '%');
+    //     }
+
+    //     if ($request->filled('status')) {
+    //         if ($request->status == 'valid') {
+    //             $query->where('status_anak', 'sudah_dijemput');
+    //         } else {
+    //             $query->where('status_anak', '!=', 'sudah_dijemput');
+    //         }
+    //     }
+
+    //     $data = $query->get();
+
+    //     return view('management_korban.penjemputan_anak.index', compact('data'));
+    // }
+
     public function index(Request $request)
-    {
-        $query = AnakTerpisah::with(['penjemputan.penjemput', 'penjemputan.petugas']);
+{
+    $query = AnakTerpisah::with([
+    'bencana',
+    'penjemputan',
+    'penjemputan.penjemput',
+    'penjemputan.petugas'
+])->latest();
 
-        if ($request->filled('search')) {
-            $query->where('nama_anak', 'like', '%' . $request->search . '%');
-        }
-
-        if ($request->filled('status')) {
-            if ($request->status == 'valid') {
-                $query->where('status_anak', 'sudah_dijemput');
-            } else {
-                $query->where('status_anak', '!=', 'sudah_dijemput');
-            }
-        }
-
-        $data = $query->get();
-
-        return view('management_korban.penjemputan_anak.index', compact('data'));
+    if ($request->filled('search')) {
+        $query->where('nama_anak', 'like', '%' . $request->search . '%');
     }
+
+    if ($request->filled('status')) {
+        if ($request->status == 'valid') {
+            $query->whereHas('penjemputan', function ($q) {
+                $q->where('status_verifikasi', 'valid');
+            });
+        } elseif ($request->status == 'menunggu') {
+            $query->whereHas('penjemputan', function ($q) {
+                $q->where('status_verifikasi', 'menunggu');
+            });
+        }
+    }
+
+    $data = $query->get();
+
+    return view('management_korban.penjemputan_anak.index', compact('data'));
+}
 
     public function store(Request $request)
     {
@@ -73,7 +105,7 @@ class PenjemputanAnakController extends Controller
                 'penjemput_id' => $penjemput->id,
                 'petugas_id' => $request->petugas_id,
                 'tanggal_penjemputan' => $request->tanggal_penjemputan,
-                'status_verifikasi' => $request->status_verifikasi,
+                'status_verifikasi' => 'valid',
                 'catatan' => $request->catatan,
             ];
 
@@ -87,14 +119,23 @@ class PenjemputanAnakController extends Controller
 
             PenjemputanAnak::create($data);
 
-            if ($request->status_verifikasi === 'valid') {
                 $anak->update(['status_anak' => 'sudah_dijemput']);
-            }
 
             DB::commit();
+            /** @var \App\Models\User $user */
+            $user = Auth::user();
 
-            return redirect()->route('admin.penjemputan.index')
-                ->with('success', 'Penjemputan berhasil disimpan');
+            if ($user->hasRole('petugas')) {
+                $route = 'petugas.penjemputan.index';
+            } elseif ($user->hasRole('relawan')) {
+                $route = 'relawan.penjemputan.index';
+            } else {
+                $route = 'admin.penjemputan.index';
+            }
+
+return redirect()
+    ->route($route)
+    ->with('success', 'Penjemputan berhasil disimpan');
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -104,7 +145,7 @@ class PenjemputanAnakController extends Controller
 
     public function show($id)
     {
-        $penjemputan = PenjemputanAnak::with(['anak', 'penjemput', 'petugas'])
+        $penjemputan = PenjemputanAnak::with(['anak.bencana', 'penjemput', 'petugas'])
             ->findOrFail($id);
 
         return view('management_korban.penjemputan_anak.show', compact('penjemputan'));
@@ -112,15 +153,28 @@ class PenjemputanAnakController extends Controller
 
     public function formJemput($anak_id)
     {
-        $anak = AnakTerpisah::findOrFail($anak_id);
+        $anak = AnakTerpisah::with('bencana')->findOrFail($anak_id);
 
         if ($anak->status_anak == 'sudah_dijemput') {
-            return redirect()->route('admin.penjemputan.index')
-                ->with('error', 'Anak sudah dijemput');
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if ($user->hasRole('petugas')) {
+            $route = 'petugas.penjemputan.index';
+        } elseif ($user->hasRole('relawan')) {
+            $route = 'relawan.penjemputan.index';
+        } else {
+            $route = 'admin.penjemputan.index';
         }
 
-        $petugas = Petugas::all();
+        return redirect()
+    ->route($route)
+    ->with('error', 'Anak sudah dijemput.');
+}
+
+        $petugas = Petugas::where('status', 'aktif')->get();
 
         return view('management_korban.penjemputan_anak.jemput', compact('anak', 'petugas'));
     }
+
 }

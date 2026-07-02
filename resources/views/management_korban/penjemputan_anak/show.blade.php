@@ -1,6 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    if(auth()->user()->hasRole('petugas')){
+        $prefix = 'petugas';
+    }elseif(auth()->user()->hasRole('relawan')){
+        $prefix = 'relawan';
+    }else{
+        $prefix = 'admin';
+    }
+@endphp
+
 <div class="py-6">
     <div class="max-w-7xl mx-auto px-4">
 
@@ -13,7 +23,7 @@
                 </p>
             </div>
 
-            <a href="{{ route('admin.penjemputan.index') }}"
+            <a href="{{ route($prefix.'.penjemputan.index') }}"
                class="bg-indigo-600 text-white px-5 py-2 rounded-lg text-sm">
                 Kembali
             </a>
@@ -50,9 +60,27 @@
 
                 <div class="space-y-2 text-sm">
                     <p><b>Nama:</b> {{ optional($penjemputan->anak)->nama_anak }}</p>
-                    <p><b>Orang Tua/Wali:</b> {{ optional($penjemputan->anak)->nama_ortu_wali ?? '-' }}</p>
-                    <p><b>Alamat Asal:</b> {{ optional($penjemputan->anak)->alamat_asal ?? '-' }}</p>
-                    <p><b>Lokasi Ditemukan:</b> {{ optional($penjemputan->anak)->lokasi_ditemukan }}</p>
+
+                    <p><b>Bencana:</b>
+                        {{ optional(optional($penjemputan->anak)->bencana)->nama_bencana ?? '-' }}
+                    </p>
+
+                    <p><b>Nama Bapak:</b>
+                        {{ optional($penjemputan->anak)->nama_bapak ?? '-' }}
+                    </p>
+
+                    <p><b>Nama Ibu:</b>
+                        {{ optional($penjemputan->anak)->nama_ibu ?? '-' }}
+                    </p>
+
+                    <p><b>Alamat Asal:</b>
+                        {{ optional($penjemputan->anak)->alamat_asal ?? '-' }}
+                    </p>
+
+                    <p><b>Lokasi Ditemukan:</b>
+                        {{ optional($penjemputan->anak)->lokasi_ditemukan }}
+                    </p>
+
                     <p><b>Tanggal Ditemukan:</b>
                         {{ optional($penjemputan->anak)->tanggal_ditemukan ?? '-' }}
                     </p>

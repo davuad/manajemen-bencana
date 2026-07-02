@@ -1,6 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    if(auth()->user()->hasRole('petugas')){
+        $prefix = 'petugas';
+    }elseif(auth()->user()->hasRole('relawan')){
+        $prefix = 'relawan';
+    }else{
+        $prefix = 'admin';
+    }
+@endphp
+
 <div class="py-6">
     <div class="bg-white rounded-xl shadow p-6">
 
@@ -49,7 +59,7 @@
             Cari
         </button>
 
-        <a href="{{ route('admin.penjemputan.index') }}"
+        <a href="{{ route($prefix.'.penjemputan.index') }}"
            class="bg-gray-300 px-4 py-3 rounded-lg">
             Reset
         </a>
@@ -85,6 +95,7 @@
                     <th class="p-3 text-center">No</th>
                     <th>Foto</th>
                     <th>Nama Anak</th>
+                    <th>Bencana</th>
                     <th>Umur</th>
                     <th>Lokasi</th>
                     <th>Penjemput</th>
@@ -116,6 +127,10 @@
                     </td>
 
                     <td class="p-2">
+                        {{ $item->bencana->nama_bencana ?? '-' }}
+                    </td>
+
+                    <td class="p-2">
                         {{ $item->umur ?? '-' }}
                     </td>
 
@@ -128,49 +143,36 @@
                     </td>
 
                     <td class="p-2">
-                        {{ $item->penjemputan->petugas->nama ?? '-' }}
+                        {{ $item->penjemputan->petugas->nama_petugas ?? '-' }}
                     </td>
 
                     <td class="p-2">
-                        @if(optional($item->penjemputan)->status_verifikasi == 'valid')
-                            <span class="px-2 py-1 rounded text-white text-xs bg-green-500">
-                                Sudah Dijemput
-                            </span>
-
-                        @elseif(optional($item->penjemputan))
-
-                            <span class="px-2 py-1 rounded text-white text-xs bg-yellow-500">
-                                Menunggu
-                            </span>
-
-                        @else
-
-                            <span class="px-2 py-1 rounded text-white text-xs bg-red-500">
-                                Belum Dijemput
-                            </span>
-
-                        @endif
-                    </td>
+    {{ $item->penjemputan->status_verifikasi ?? 'NULL' }}
+</td>
 
                     <td class="p-2 text-center">
 
-                        @if(!$item->penjemputan)
+    @if(!$item->penjemputan)
 
-                            <a href="{{ route('admin.penjemputan.jemput', $item->id) }}"
-                            class="text-blue-500">
-                                ✏️
-                            </a>
+    @unless(auth()->user()->hasRole('relawan'))
+        <a href="{{ route($prefix.'.penjemputan.jemput', $item->id) }}"
+           class="text-blue-500">
+            ✏️
+        </a>
+    @endunless
 
-                        @else
+@else
 
-                            <a href="{{ route('admin.penjemputan.show', $item->penjemputan->id) }}"
-                            class="text-gray-700">
-                                👁️
-                            </a>
+    <div class="flex justify-center">
+        <a href="{{ route($prefix.'.penjemputan.show', $item->penjemputan->id) }}"
+           class="text-gray-700">
+            👁️
+        </a>
+    </div>
 
-                        @endif
+@endif
 
-                    </td>
+</td>
 
                 </tr>
 
