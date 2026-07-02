@@ -111,6 +111,12 @@ return new class extends Migration
                 ->on($tableNames['roles'])
                 ->cascadeOnDelete();
 
+            // CRUD flags
+            $table->boolean('create')->default(false);
+            $table->boolean('read')->default(false);
+            $table->boolean('update')->default(false);
+            $table->boolean('delete')->default(false);
+
             $table->primary([$pivotPermission, $pivotRole], 'role_has_permissions_permission_id_role_id_primary');
         });
 

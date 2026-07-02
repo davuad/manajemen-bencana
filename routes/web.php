@@ -77,6 +77,9 @@ Route::middleware(['auth', 'role:admin'])
         Route::model('management_user', User::class);
         Route::resource('management-user', UserController::class)->names('management_user');
 
+        // --- Role Management ---
+        Route::resource('management-role', \App\Http\Controllers\RoleController::class)->names('management_role');
+
         // --- Pengaduan Bencana ---
         Route::get('/pengaduan', [PengaduanBencanaController::class, 'index'])->name('pengaduan_bencana.index');
         Route::get('/pengaduan/create', [PengaduanBencanaController::class, 'create'])->name('pengaduan_bencana.create');

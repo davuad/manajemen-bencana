@@ -24,6 +24,16 @@
             </a>
         @endrole
 
+        {{-- MANAJEMEN ROLE --}}
+        @role('admin')
+            <a href="{{ route('admin.management_role.index') }}"
+                class="flex items-center gap-3 px-3 py-2 rounded transition-all duration-200
+                {{ request()->routeIs('admin.management_role.*') ? 'bg-orange-500' : 'hover:bg-blue-800' }}">
+                <span><x-heroicon-o-shield-check class="w-5 h-5" /></span>
+                <span x-show="sidebarOpen" x-transition>Manajemen Role</span>
+            </a>
+        @endrole
+
         {{-- PENGADUAN BENCANA --}}
         @if (auth()->user()->hasRole('admin'))
             <a href="{{ route('admin.pengaduan_bencana.index') }}"

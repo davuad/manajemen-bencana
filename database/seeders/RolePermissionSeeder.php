@@ -10,12 +10,9 @@ use Spatie\Permission\Models\Role;
 
 class RolePermissionSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        //
+        // Create permissions
         $permissions = [
             'manajemen user',
             'manajemen posko',
@@ -28,17 +25,45 @@ class RolePermissionSeeder extends Seeder
             'buat pengaduan',
         ];
 
-        foreach ($permissions as $permission) {
-            Permission::firstOrCreate(['name' => $permission]);
+        foreach ($permissions as $permName) {
+            Permission::firstOrCreate(['name' => $permName]);
         }
 
-        /**
-         * ROLES
-         */
-
+        // Create roles
         $admin = Role::firstOrCreate(['name' => 'admin']);
+        $relawan = Role::firstOrCreate(['name' => 'relawan']);
+        $kadus = Role::firstOrCreate(['name' => 'kadus']);
+        $kabid = Role::firstOrCreate(['name' => 'kabid']);
+        $desa = Role::firstOrCreate(['name' => 'desa']);
+        $ketua_tim = Role::firstOrCreate(['name' => 'ketua_tim']);
+        $pegawai = Role::firstOrCreate(['name' => 'pegawai']);
+        $petugas = Role::firstOrCreate(['name' => 'petugas']);
+
+        // Assign permissions to admin (all CRUD)
+        $admin->givePermissionTo(Permission::all());
+        foreach (Permission::all() as $perm) {
+            $admin->permissions()->updateExistingPivot($perm->id, [
+                'create' => true,
+                'read' => true,
+                'update' => true,
+                'delete' => true,
+            ]);
+        }
+
+        // Assign permissions to relawan
+        $relawan->syncPermissions(['lihat pengaduan', 'buat pengaduan']);
+        $relawan->permissions()->updateExistingPivot(
+            Permission::where('name', 'lihat pengaduan')->first()->id,
+            ['create' => false, 'read' => true, 'update' => false, 'delete' => false]
+        );
+        $relawan->permissions()->updateExistingPivot(
+            Permission::where('name', 'buat pengaduan')->first()->id,
+            ['create' => true, 'read' => true, 'update' => false, 'delete' => false]
+        );
+
+        // Create admin user
         $user = User::firstOrCreate(
-            ['email' => 'admin@admin.com'], // Kriteria pencarian
+            ['email' => 'admin@admin.com'],
             [
                 'nama' => 'Admin',
                 'foto' => 'users/foto-admin.jpg',
@@ -49,18 +74,6 @@ class RolePermissionSeeder extends Seeder
                 'alamat' => 'Jl. Contoh Alamat No. 123, Kota Contoh',
             ]
         );
-
         $user->assignRole($admin);
-
-        $relawan = Role::firstOrCreate(['name' => 'relawan']);
-        $kadus = Role::firstOrCreate(['name' => 'kadus']); //
-        $kabid = Role::firstOrCreate(['name' => 'kabid']);
-        $desa = Role::firstOrCreate(['name' => 'desa']);
-        $ketua_tim = Role::firstOrCreate(['name' => 'ketua_tim']);
-        $pegawai = Role::firstOrCreate(['name' => 'pegawai']);
-        $petugas = Role::firstOrCreate(['name' => 'petugas']);
-
-        $admin->givePermissionTo(Permission::all());
-        $relawan->syncPermissions(['lihat pengaduan', 'buat pengaduan']);
     }
 }
