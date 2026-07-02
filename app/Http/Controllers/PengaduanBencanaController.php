@@ -234,30 +234,108 @@ class PengaduanBencanaController extends Controller
             'kebutuhan'
         ]);
 
+        // ===========================
+        // PENCARIAN
+        // ===========================
         if ($request->filled('search')) {
+
             $search = $request->search;
 
             $query->where(function ($q) use ($search) {
+
                 $q->where('desa', 'like', "%{$search}%")
                     ->orWhere('deskripsi', 'like', "%{$search}%")
                     ->orWhereHas('user', function ($u) use ($search) {
+
                         $u->where('nama', 'like', "%{$search}%");
                     });
             });
         }
 
+        // ===========================
+        // FILTER STATUS
+        // ===========================
         if ($request->filled('status')) {
-            $query->where('status_pengaduan', $request->status);
+
+            $query->where(
+                'status_pengaduan',
+                $request->status
+            );
+        }
+
+        // ===========================
+        // FILTER BULAN
+        // ===========================
+        if ($request->filled('bulan')) {
+
+            $query->whereMonth(
+                'created_at',
+                $request->bulan
+            );
+        }
+
+        // ===========================
+        // FILTER TAHUN
+        // ===========================
+        if ($request->filled('tahun')) {
+
+            $query->whereYear(
+                'created_at',
+                $request->tahun
+            );
         }
 
         $data = $query->latest()->get();
 
+        /*
+    |--------------------------------------------------------------------------
+    | Statistik
+    |--------------------------------------------------------------------------
+    */
+
+        $statistik = PengaduanBencana::query();
+
+        if ($request->filled('bulan')) {
+
+            $statistik->whereMonth(
+                'created_at',
+                $request->bulan
+            );
+        }
+
+        if ($request->filled('tahun')) {
+
+            $statistik->whereYear(
+                'created_at',
+                $request->tahun
+            );
+        }
+
+        $totalPengaduan = (clone $statistik)->count();
+
+        $totalBelum = (clone $statistik)
+            ->where('status_pengaduan', 'BELUM_DITANGANI')
+            ->count();
+
+        $totalDitangani = (clone $statistik)
+            ->where('status_pengaduan', 'DITANGANI')
+            ->count();
+
+        $totalDitolak = (clone $statistik)
+            ->where('status_pengaduan', 'TIDAK_DIREKOMENDASIKAN')
+            ->count();
+
         return view(
             'pengaduan_bencana.kabid.index',
-            compact('data')
+            compact(
+                'data',
+                'totalPengaduan',
+                'totalBelum',
+                'totalDitangani',
+                'totalDitolak'
+            )
         );
     }
-
     // =====================================
     // DETAIL PENGADUAN
     // =====================================

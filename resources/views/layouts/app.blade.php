@@ -21,8 +21,24 @@
 
         {{-- Sidebar --}}
 
+        @include('layouts.sidebar')
+
+        {{-- Kalau mau gunakan sidebar yang aku buat pakai ini, kalau gk mau gk usah di nyalain  --}}
+
+        {{-- @if (auth()->user()->hasRole('admin'))
             @include('layouts.sidebar')
- 
+        @elseif(auth()->user()->hasRole('kabid'))
+            @include('layouts.sidebar.sidebar_kabid')
+        @elseif(auth()->user()->hasRole('ketua_tim'))
+            @include('layouts.sidebar.sidebar_ketua_tim')
+        @elseif(auth()->user()->hasRole('relawan'))
+            @include('layouts.sidebar.sidebar_relawan')
+        @elseif(auth()->user()->hasRole('desa'))
+            @include('layouts.sidebar.sidebar_desa')
+        @elseif(auth()->user()->hasRole('kadus'))
+            @include('layouts.sidebar.sidebar_kadus')
+        @endif --}}
+
         {{-- Content --}}
         <div class="flex-1 flex flex-col"
             :class="[
