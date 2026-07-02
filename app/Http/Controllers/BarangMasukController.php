@@ -13,22 +13,41 @@ use App\Models\Barang;
 class BarangMasukController extends Controller
 {
     public function index(Request $request)
-{
-    $search = $request->search;
+    {
+        $search = $request->search;
+        $bulan = $request->bulan;
+        $tahun = $request->tahun;
 
-    $data = BarangMasuk::with(['sumber', 'gudang', 'pegawai'])
-        ->when($search, function ($query) use ($search) {
-            $query->where('id_barang_masuk', 'like', "%{$search}%")
-                ->orWhere('no_dokumen', 'like', "%{$search}%")
-                ->orWhere('status', 'like', "%{$search}%")
-                ->orWhereHas('sumber', function ($q) use ($search) {
-                    $q->where('nama_sumber', 'like', "%{$search}%");
-                });
-        })
-        ->get();
+        $query = BarangMasuk::with(['sumber', 'gudang', 'pegawai']);
 
-    return view('barang_masuk.index', compact('data', 'search'));
-}
+        if ($search) {
+            $query->where(function ($q) use ($search) {
+                $q->where('id_barang_masuk', 'like', "%{$search}%")
+                    ->orWhere('no_dokumen', 'like', "%{$search}%")
+                    ->orWhere('status', 'like', "%{$search}%")
+                    ->orWhereHas('sumber', function ($s) use ($search) {
+                        $s->where('nama_sumber', 'like', "%{$search}%");
+                    });
+            });
+        }
+
+        if ($bulan) {
+            $query->whereMonth('tgl_masuk', $bulan);
+        }
+
+        if ($tahun) {
+            $query->whereYear('tgl_masuk', $tahun);
+        }
+
+        $data = $query->get();
+
+        return view('barang_masuk.index', compact(
+            'data',
+            'search',
+            'bulan',
+            'tahun'
+        ));
+    }
 
     public function create()
     {

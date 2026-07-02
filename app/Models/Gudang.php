@@ -8,6 +8,8 @@ class Gudang extends Model
 {
     protected $table = 'gudang';
     protected $primaryKey = 'id_gudang';
+    public $incrementing = true;
+
 
     protected $fillable = [
         'nama_gudang',

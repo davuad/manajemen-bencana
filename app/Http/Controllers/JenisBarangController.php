@@ -15,7 +15,7 @@ class JenisBarangController extends Controller
             $query->where('nama_jenis_barang', 'like', '%' . $search . '%');
         })->get();
 
-        return view('jenis_barang.index', compact('data'));
+        return view('jenis_barang.index', compact('data', 'search'));
     }
 
     public function create()
