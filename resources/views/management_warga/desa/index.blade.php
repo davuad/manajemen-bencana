@@ -3,6 +3,10 @@
 @section('title', 'Data Desa')
 
 @section('content')
+@php 
+    $userRole = auth()->user()->roles->first()->name ?? 'admin'; 
+    $allowedRoles = ['admin', 'desa', 'kadus', 'pegawai'];
+@endphp
 <div class="space-y-6">
 
     <div class="text-sm text-gray-500">
@@ -27,17 +31,20 @@
                 </p>
             </div>
 
-            <div>
-                <a href="{{ route('admin.desa.create') }}"
-                    class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-800">
-                    <span>+</span>
-                    Tambah Data Desa
-                </a>
+                @php $allowedRoles = ['admin', 'desa', 'kadus', 'pegawai']; @endphp
+                @if (in_array($userRole, $allowedRoles))
+                <div>
+                    <a href="{{ route($userRole . '.desa.create') }}"
+                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-800">
+                        <span>+</span>
+                        Tambah Data Desa
+                    </a>
+                </div>
+                @endif
             </div>
-        </div>
 
         <div class="border-b border-gray-100 px-6 py-5">
-            <form action="{{ route('admin.desa.index') }}" method="GET"
+            <form action="{{ route($userRole . '.desa.index') }}" method="GET"
                 class="grid grid-cols-1 gap-3 xl:grid-cols-12">
 
                 <div class="xl:col-span-5">
@@ -78,7 +85,7 @@
                         Filter
                     </button>
 
-                    <a href="{{ route('admin.desa.index') }}"
+                    <a href="{{ route($userRole . '.desa.index') }}"
                         class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50">
                         Reset
                     </a>
@@ -97,7 +104,9 @@
                         <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Kecamatan</th>
                         <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Nama Kepala Desa</th>
                         <th class="px-6 py-4 text-left text-sm font-semibold text-gray-700">Nomor Handphone Kepala Desa</th>
-                        <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700">Aksi</th>
+                        @if (in_array($userRole, $allowedRoles))
+                            <th class="px-6 py-4 text-center text-sm font-semibold text-gray-700">Aksi</th>
+                        @endif
                     </tr>
                 </thead>
 
@@ -105,7 +114,7 @@
                     @forelse ($desa as $item)
 
                         <tr class="cursor-pointer transition hover:bg-gray-50"
-                            data-url="{{ route('admin.desa.show', $item->id) }}">
+                            data-url="{{ route($userRole . '.desa.show', $item->id) }}">
 
                             <td class="px-6 py-4 text-sm text-gray-700">
                                 {{ ($desa->currentPage() - 1) * $desa->perPage() + $loop->iteration }}.
@@ -127,30 +136,28 @@
                                 {{ $item->kontak_kades }}
                             </td>
 
-                            <td class="aksi-cell px-6 py-4 text-center">
-                                <div class="flex items-center justify-center gap-2">
-
-                                    <a href="{{ route('admin.desa.edit', $item->id) }}"
-                                        class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-600 transition hover:bg-blue-50">
-                                        ✏️
-                                    </a>
-
-                                    <button type="button"
-                                        class="delete-btn inline-flex h-9 w-9 items-center justify-center rounded-lg text-red-600 transition hover:bg-red-50"
-                                        data-url="{{ route('admin.desa.destroy', $item->id) }}"
-                                        data-nama="{{ $item->nama_desa }}">
-                                        🗑️
-                                    </button>
-
-                                </div>
-                            </td>
+                            @if (in_array($userRole, $allowedRoles))
+                                <td class="aksi-cell px-6 py-4 text-center">
+                                    <div class="flex items-center justify-center gap-2">
+                                        <a href="{{ route($userRole . '.desa.edit', $item->id) }}"
+                                            class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-600 transition hover:bg-blue-50">
+                                            ✏️
+                                        </a>
+                                        <button type="button"
+                                            class="delete-btn inline-flex h-9 w-9 items-center justify-center rounded-lg text-red-600 transition hover:bg-red-50"
+                                            data-url="{{ route($userRole . '.desa.destroy', $item->id) }}"
+                                            data-nama="{{ $item->nama_desa }}">
+                                            🗑️
+                                        </button>
+                                    </div>
+                                </td>
+                                @endif
 
                         </tr>
 
                     @empty
-
                         <tr>
-                            <td colspan="6" class="px-6 py-10 text-center text-sm text-gray-500">
+                            <td colspan="{{ in_array($userRole, $allowedRoles) ? 6 : 5 }}" class="px-6 py-10 text-center text-sm text-gray-500">
                                 Data desa belum ada.
                             </td>
                         </tr>

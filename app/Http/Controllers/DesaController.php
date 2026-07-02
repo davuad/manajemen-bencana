@@ -8,6 +8,16 @@ use Illuminate\Support\Facades\Auth;
 
 class DesaController extends Controller
 {
+    /**
+     * Helper untuk redirect ke route sesuai role user yang login.
+     * Contoh: redirectRoute('index') -> admin.desa.index / relawan.desa.index
+     */
+    private function redirectRoute($suffix)
+{
+    $role = Auth::user()->roles->first()->name ?? 'admin';
+    return redirect()->route($role . '.desa.' . $suffix);
+}
+
     public function index(Request $request)
     {
         $search = $request->search;
@@ -77,8 +87,7 @@ class DesaController extends Controller
             'kontak_kades'  => $request->kontak_kades,
         ]);
 
-        return redirect()
-            ->route('admin.desa.index')
+        return $this->redirectRoute('index')
             ->with('success', 'Data desa berhasil ditambahkan.');
     }
 
@@ -114,8 +123,7 @@ class DesaController extends Controller
             'kontak_kades'  => $request->kontak_kades,
         ]);
 
-        return redirect()
-            ->route('admin.desa.index')
+        return $this->redirectRoute('index')
             ->with('success', 'Data desa berhasil diupdate.');
     }
 
@@ -127,8 +135,7 @@ class DesaController extends Controller
             $desa->delete();
         }
 
-        return redirect()
-            ->route('admin.desa.index')
+        return $this->redirectRoute('index')
             ->with('success', 'Data desa berhasil dihapus.');
     }
 }
