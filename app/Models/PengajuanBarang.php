@@ -7,6 +7,7 @@ use App\Models\Bencana;
 use App\Models\Pegawai;
 use App\Models\DetailPengajuanBarang;
 use App\Models\BarangKeluar;
+use App\Imports\PengajuanImport;
 
 class PengajuanBarang extends Model
 {
@@ -30,15 +31,15 @@ class PengajuanBarang extends Model
      */
     public function bencana()
     {
-        return $this->belongsTo(Bencana::class);
+        return $this->belongsTo(Bencana::class, 'bencana_id', 'id');
     }
 
-    /**
+/**
      * Relasi ke pegawai (pengaju)
      */
     public function pegawai()
     {
-        return $this->belongsTo(Pegawai::class);
+        return $this->belongsTo(Pegawai::class, 'pegawai_id', 'id_pegawai');
     }
 
     /**
@@ -46,7 +47,7 @@ class PengajuanBarang extends Model
      */
     public function accKetua()
     {
-        return $this->belongsTo(Pegawai::class, 'acc_ketua_id');
+        return $this->belongsTo(Pegawai::class, 'acc_ketua_id', 'id_pegawai');
     }
 
     /**
@@ -77,4 +78,6 @@ class PengajuanBarang extends Model
     {
         return $this->belongsTo(User::class, 'updated_by');
     }
-}
+
+    }
+

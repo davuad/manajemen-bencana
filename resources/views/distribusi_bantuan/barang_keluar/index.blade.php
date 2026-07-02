@@ -19,7 +19,7 @@
                 Cetak Laporan
             </button>
 
-            <a href="{{ route('distribusi_bantuan.barang_keluar.create') }}" 
+            <a href="{{ route('admin.management_distribusi.barang_keluar.create') }}"
                class="bg-indigo-700 hover:bg-indigo-800 text-white px-4 py-2 rounded-lg text-sm font-semibold transition shadow-sm">
                 + Catat Barang Keluar
             </a>
@@ -27,7 +27,7 @@
     </div>
 
     {{-- Form Filter Dinamis --}}
-    <form method="GET" id="filterForm" action="{{ route('distribusi_bantuan.barang_keluar.index') }}" class="mb-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
+    <form method="GET" id="filterForm" action="{{ route('admin.management_distribusi.barang_keluar.index') }}" class="mb-6 bg-gray-50 p-4 rounded-xl border border-gray-100">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             
             {{-- Filter Bencana / Desa --}}
@@ -98,7 +98,7 @@
                     Filter
                 </button>
                 @if(request()->anyFilled(['nama_bencana', 'gudang_id', 'bulan', 'status', 'search']))
-                    <a href="{{ route('distribusi_bantuan.barang_keluar.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-600 px-3 py-2 rounded-lg text-sm transition flex items-center justify-center">
+                    <a href="{{ route('admin.management_distribusi.barang_keluar.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-600 px-3 py-2 rounded-lg text-sm transition flex items-center justify-center">
                         Reset
                     </a>
                 @endif
@@ -166,7 +166,7 @@
                     <td class="p-4">
                         <div class="flex items-center gap-2">
                             {{-- Ikon Aksi (Selaras dengan Manajemen User) --}}
-                            <a href="{{ route('distribusi_bantuan.barang_keluar.show', $item->id) }}" 
+                            <a href="{{ route('admin.management_distribusi.barang_keluar.show', $item->id) }}" 
                                class="text-blue-500 hover:text-blue-700 transition" 
                                title="Verifikasi & Detail">
                                 <x-heroicon-o-eye class="w-6 h-6" />

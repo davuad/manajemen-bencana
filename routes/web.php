@@ -38,6 +38,8 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\WargaTerdampakController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\BarangKeluarController;
+use App\Http\Controllers\PengajuanBarangController;
 
 
 // --- Public Routes ---
@@ -152,6 +154,25 @@ Route::middleware(['auth', 'role:admin'])
 
             Route::patch('distribusi_paket/{id}/selesai', [DistribusiPaketController::class, 'selesai'])->name('distribusi_paket.selesai');
             Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
+
+        
+
+            Route::post('import-pengajuan/preview-import', [PengajuanBarangController::class, 'previewImport'])
+                ->name('pengajuan_barang.preview_import');
+            Route::get('import-pengajuan/preview-import', function() {
+                return redirect()->route('admin.management_distribusi.pengajuan_barang.create')
+                                ->with('error', 'ERROR, Silakan unggah kembali berkas Excel Anda.');
+            });
+            Route::post('import-pengajuan/import', [PengajuanBarangController::class, 'import'])
+                ->name('pengajuan_barang.import');
+            Route::post('import-pengajuan/store-import', [PengajuanBarangController::class, 'storeImport'])
+                ->name('pengajuan_barang.store_import');
+
+            Route::get('barang_keluar/detail-json/{id}', [BarangKeluarController::class, 'getDetailPengajuan'])->name('barang_keluar.detail_json');
+
+            Route::get('pengajuan_barang/detail-json/{id}', [PengajuanBarangController::class, 'getDetailPengajuan'])->name('pengajuan_barang.detail_json');
+            Route::resource('pengajuan_barang', PengajuanBarangController::class);
+            Route::resource('barang_keluar', BarangKeluarController::class);
         });
 
 

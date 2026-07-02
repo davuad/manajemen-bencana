@@ -8,7 +8,7 @@
         <p class="text-sm text-gray-500">Sistem mengelompokkan data berdasarkan Kejadian Bencana & Pegawai Pengaju.</p>
     </div>
     <div class="flex gap-2">
-        <a href="{{ route('distribusi_bantuan.pengajuan.create') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-300 transition">
+        <a href="{{ route('admin.management_distribusi.pengajuan_barang.create') }}" class="px-4 py-2 bg-gray-200 text-gray-700 rounded-xl text-sm font-bold hover:bg-gray-300 transition">
             Batal & Upload Ulang
         </a>
         {{-- Tombol Pemicu Modal --}}
@@ -25,14 +25,20 @@
         <p class="text-gray-400 text-[10px] font-bold uppercase">Total Baris Excel</p>
         <p class="text-2xl font-black text-gray-800">{{ count($data) }} <span class="text-sm font-normal text-gray-400">Item</span></p>
     </div>
-    <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+<div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
         <p class="text-gray-400 text-[10px] font-bold uppercase">Calon Pengajuan Baru</p>
-        @php $docCount = collect($data)->groupBy(fn($i) => $i['desa_nama'].$i['tanggal'].$i['kategori_nama'].$i['pegawai_id'])->count(); @endphp
+        
+        @php 
+            $docCount = collect($data)->groupBy(function ($i) {
+                return $i['desa_nama'] . '|' . $i['kategori_nama'] . '|' . $i['tanggal'] . '|' . ($i['nama_pegawai'] ?? '');
+            })->count(); 
+        @endphp
+        
         <p class="text-2xl font-black text-indigo-600">
             {{ $docCount }} 
             <span class="text-sm font-normal text-gray-400">Dokumen</span>
         </p>
-    </div>
+</div>
     <div class="bg-white p-4 rounded-xl border border-red-100 shadow-sm">
         <p class="text-red-400 text-[10px] font-bold uppercase">Peringatan</p>
         @php $errorCount = collect($data)->where('barang_exists', false)->count(); @endphp
@@ -154,7 +160,7 @@
             Sistem akan membuat <b>{{ $docCount }} dokumen pengajuan</b> baru berdasarkan data Excel ini. Tindakan ini tidak dapat dibatalkan.
         </p>
 
-        <form action="{{ route('distribusi_bantuan.pengajuan.store_import') }}" method="POST" id="importForm">
+        <form action="{{ route('admin.management_distribusi.pengajuan_barang.store_import') }}" method="POST" id="importForm">
             @csrf
             <div class="flex flex-col gap-2 mt-8">
                 <button type="submit" 

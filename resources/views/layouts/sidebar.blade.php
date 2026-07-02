@@ -232,6 +232,17 @@
                         class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.management_distribusi.distribusi_paket.*') ? 'bg-white/10 text-orange-400 font-semibold' : 'hover:bg-blue-700' }}">
                         Distribusi Pasca Bencana
                     </a>
+
+                    <a href="{{ route('admin.management_distribusi.pengajuan_barang.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.management_distribusi.pengajuan_barang.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                        Pengajuan Barang
+                    </a>
+
+                    <a href="{{ route('admin.management_distribusi.barang_keluar.index') }}"
+                        class="block px-3 py-2 text-sm rounded {{ request()->routeIs('admin.management_distribusi.barang_keluar.*') ? 'bg-white/10' : 'hover:bg-blue-700' }}">
+                        Barang Keluar
+                    </a>
+
                 </div>
             </div>
         @elseif(auth()->user()->hasRole('pegawai'))

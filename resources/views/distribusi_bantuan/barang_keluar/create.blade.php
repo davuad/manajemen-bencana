@@ -10,10 +10,10 @@
         <h2 class="text-xl font-bold text-gray-800">Catat Pengeluaran Barang</h2>
         <p class="text-sm text-gray-500">Otorisasi pengeluaran barang logistik berdasarkan data pengajuan riil.</p>
     </div>
-    <a href="{{ route('distribusi_bantuan.barang_keluar.index') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-300 transition">&larr; Kembali</a>
+    <a href="{{ route('admin.management_distribusi.barang_keluar.index') }}" class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-300 transition">&larr; Kembali</a>
 </div>
 
-<form id="mainForm" action="{{ route('distribusi_bantuan.barang_keluar.store') }}" method="POST">
+<form id="mainForm" action="{{ route('admin.management_distribusi.barang_keluar.store') }}" method="POST">
     @csrf
     
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 m-3 pb-20">
@@ -35,12 +35,12 @@
                                 data-desa="{{ $p->bencana->desa->nama_desa ?? 'N/A' }}"
                                 data-kategori="{{ $p->bencana->kategoriBencana->nama_kategori ?? 'Bencana' }}"
                                 data-waktu="{{ \Carbon\Carbon::parse($p->bencana->tanggal)->format('d/M/Y') }}">
-                                [ID: {{ $p->id }}] {{ $p->bencana->desa->nama_desa }} - {{ $p->bencana->kategoriBencana->nama_kategori }}
+                                [ID: {{ $p->id }}] {{ $p->bencana->desa->nama_desa ?? 'N/A' }} - {{ $p->bencana->kategoriBencana->nama_kategori ?? 'Bencana' }}
                             </option>
                         @endforeach
                     </select>
 
-                    {{-- DETAIL KEJADIAN DINAMIS (Style Show/Detail) --}}
+                    {{-- DETAIL KEJADIAN DINAMIS --}}
                     <div id="info-kejadian" class="hidden space-y-4 bg-gray-50 p-5 rounded-2xl border border-dashed border-gray-200">
                         <div>
                             <label class="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">Kategori Bencana</label>
@@ -94,7 +94,8 @@
                         <label class="block text-[10px] font-bold text-gray-400 uppercase mb-1 tracking-widest">Gudang Sumber *</label>
                         <select name="gudang_id" id="select-gudang" class="w-full" required>
                             @foreach($gudang as $g)
-                                <option value="{{ $g->id }}" data-alamat="{{ $g->alamat }}" data-ket="{{ $g->keterangan }}">
+                                {{-- 🟢 SINKRONISASI PRIMARY KEY: Menggunakan id_gudang atau id sesuai skema DB --}}
+                                <option value="{{ $g->id_gudang ?? $g->id }}" data-alamat="{{ $g->alamat }}" data-ket="{{ $g->keterangan }}">
                                     {{ $g->nama_gudang }}
                                 </option>
                             @endforeach
@@ -120,7 +121,8 @@
                         <select name="petugas_gudang_id" id="select-petugas" class="w-full" required>
                             <option value="">Pilih Penanggung Jawab...</option>
                             @foreach($pegawai as $pg)
-                                <option value="{{ $pg->id }}" data-jabatan="{{ $pg->jabatan }}">
+                                {{-- 🟢 SINKRONISASI PRIMARY KEY: Ganti $pg->id menjadi $pg->id_pegawai --}}
+                                <option value="{{ $pg->id_pegawai }}" data-jabatan="{{ $pg->jabatan }}">
                                     {{ $pg->nama_pegawai }}
                                 </option>
                             @endforeach
@@ -196,7 +198,7 @@
 </div>
 
 <script>
-    // 1. Dropdown Searchable Styles
+    // 1. Inisialisasi Dropdown TomSelect
     new TomSelect("#select-pengajuan", {
         create: false,
         render: {
@@ -248,7 +250,7 @@
         }
     });
 
-    // 2. AJAX & Dynamic Data Logic
+// 2. AJAX Fetch Data JSON Detail
     const selectEl = document.getElementById('select-pengajuan');
     const infoPanel = document.getElementById('info-kejadian');
 
@@ -257,20 +259,31 @@
         if (!id) { hideView(); return; }
 
         try {
-            const response = await fetch(`/distribusi_bantuan/pengajuan/detail-json/${id}`);
+            const response = await fetch(`/admin/management-distribusi/barang_keluar/detail-json/${id}`);
             const data = await response.json();
             
-            // ISI SEMUA DETAIL DI PANEL KIRI
-            document.getElementById('det-kategori').innerText = data.bencana.kategori_bencana.nama_kategori;
-            document.getElementById('det-tgl').innerText = formatDate(data.bencana.tanggal);
-            document.getElementById('det-rusak').innerText = data.bencana.tingkat_kerusakan;
-            document.getElementById('det-lokasi-text').innerText = `${data.bencana.desa.nama_desa}, Kec. ${data.bencana.desa.kecamatan}`;
-            document.getElementById('det-pengaju').innerText = data.pegawai.nama_pegawai;
-            document.getElementById('det-korban').innerText = data.bencana.jumlah_korban;
+            // 🟢 PROTEKSI RELASI: Mengantisipasi variasi camelCase dan snake_case dari Eloquent JSON
+            const bencanaObj = data.bencana || {};
+            const desaObj = bencanaObj.desa || {};
+            const pegawaiObj = data.pegawai || {};
+            
+            // Deteksi Kategori Bencana (bisa berbentuk kategori_bencana atau kategori_bencana_model)
+            const katBencana = bencanaObj.kategori_bencana || (bencanaObj.kategori_bencana_model || (bencanaObj.kategori_bencana_id || {}));
+            const namaKategori = katBencana.nama_kategori ?? (data.bencana_kategori_label ?? 'Bencana');
 
-            const details = data.detail_pengajuan || data.detailPengajuan || [];
+            // 🟢 BINDING DATA KE PANEL KIRI
+            document.getElementById('det-kategori').innerText = namaKategori;
+            document.getElementById('det-tgl').innerText = formatDate(bencanaObj.tanggal ?? data.tgl_pengajuan);
+            document.getElementById('det-rusak').innerText = bencanaObj.tingkat_kerusakan ?? 'Sedang';
+            document.getElementById('det-lokasi-text').innerText = `Desa ${desaObj.nama_desa ?? '-'}, Kec. ${desaObj.kecamatan ?? '-'}`;
+            document.getElementById('det-pengaju').innerText = pegawaiObj.nama_pegawai ?? '-';
+            document.getElementById('det-korban').innerText = bencanaObj.jumlah_korban ?? 0;
+
+            // Deteksi Detail Rincian Barang Pengajuan (bisa detail_pengajuan atau detailPengajuan)
+            const details = data.detail_pengajuan || (data.detail_pengajuan_barang || (data.detail_pengajuan_barang_model || []));
             renderTable(details);
             
+            // Munculkan visualisasi area tabel kanan dan detail panel kiri
             infoPanel.classList.remove('hidden');
             document.getElementById('table-area').classList.remove('hidden');
             document.getElementById('empty-state').classList.add('hidden');
@@ -279,11 +292,11 @@
 
         } catch (e) {
             console.error(e);
-            alert('Gagal mengambil detail data.');
+            alert('Gagal mengambil rincian referensi logistik.');
         }
     });
 
-    function renderTable(items) {
+function renderTable(items) {
         const list = document.getElementById('barang-list');
         list.innerHTML = '';
         items.forEach(item => {
@@ -291,24 +304,25 @@
             const row = `
                 <tr class="hover:bg-indigo-50/20 transition">
                     <td class="p-4">
-                        <div class="font-bold text-gray-800">${b.nama_barang || 'Err'}</div>
-                        <div class="text-[9px] text-indigo-500 font-bold uppercase tracking-tighter">Penerima: ${item.kategori_penerima}</div>
-                        <input type="hidden" name="barang_id[]" value="${item.barang_id}">
+                        <div class="font-bold text-gray-800">${b.nama_barang || 'Komoditas Logistik'}</div>
+                        <div class="text-[9px] text-indigo-500 font-bold uppercase tracking-tighter">Penerima: ${item.kategori_penerima ?? 'warga'}</div>
+                        
+                        <input type="hidden" name="barang_id[]" value="${b.id_barang ?? item.barang_id}">
                     </td>
                     <td class="p-4 text-center">
-                        <span class="px-2 py-1 bg-amber-50 text-amber-700 rounded-lg font-bold text-xs border border-amber-100">${b.stok || 0}</span>
-                        <div class="text-[9px] text-gray-400 font-bold uppercase mt-1">${b.satuan || 'Unit'}</div>
+                        <span class="px-2 py-1 bg-amber-50 text-amber-700 rounded-lg font-bold text-xs border border-amber-100">${b.stok ?? 0}</span>
+                        <div class="text-[9px] text-gray-400 font-bold uppercase mt-1">${b.satuan ?? 'Unit'}</div>
                     </td>
                     <td class="p-4 text-center">
                         <span class="font-bold text-gray-700">${item.jumlah}</span>
-                        <div class="text-[9px] text-gray-400 uppercase font-bold mt-1">${b.satuan || 'Unit'}</div>
+                        <div class="text-[9px] text-gray-400 uppercase font-bold mt-1">${b.satuan ?? 'Unit'}</div>
                         <input type="hidden" name="jumlah[]" value="${item.jumlah}">
                     </td>
                     <td class="p-4">
                         <div class="flex flex-col items-center gap-1">
-                            <input type="number" name="jumlah_keluar[]" value="${item.jumlah}" min="0" max="${b.stok}" 
+                            <input type="number" name="jumlah_keluar[]" value="${item.jumlah}" min="0" max="${b.stok ?? 9999}" 
                                 class="w-full border-2 border-indigo-100 rounded-xl p-2 text-center font-black text-indigo-700 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition bg-indigo-50/30">
-                            <span class="text-[9px] text-indigo-400 font-bold uppercase tracking-tighter">${b.satuan || 'Unit'}</span>
+                            <span class="text-[9px] text-indigo-400 font-bold uppercase tracking-tighter">${b.satuan ?? 'Unit'}</span>
                         </div>
                     </td>
                     <td class="p-4">
@@ -328,11 +342,12 @@
     }
 
     function formatDate(dateString) {
+        if(!dateString) return '-';
         const d = new Date(dateString);
         return d.toLocaleDateString('id-ID', { day: '2-digit', month: 'short', year: 'numeric' });
     }
 
-    // 3. Logic Modal Konfirmasi
+    // 3. Logic Modal Konfirmasi Submit
     const mainForm = document.getElementById('mainForm');
     const saveModal = document.getElementById('saveModal');
 

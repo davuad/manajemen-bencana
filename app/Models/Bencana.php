@@ -54,4 +54,27 @@ class Bencana extends Model
     {
         return $this->hasMany(Korban::class, 'bencana_id');
     }       
+
+
+       // Relasi ke kategori
+    public function kategoriBencana()
+    {
+        return $this->belongsTo(KategoriBencana::class, 'kategori_id');
+    }
+
+
+
+
+    // Relasi ke pengajuan barang
+    public function pengajuanBarang()
+    {
+        return $this->hasMany(PengajuanBarang::class, 'bencana_id');
+    }
+
+    // Relasi ke distribusi
+    public function distribusi()
+    {
+        return $this->hasMany(Distribusi::class, 'bencana_id');
+    }
+
 }

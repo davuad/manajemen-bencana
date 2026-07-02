@@ -76,7 +76,7 @@ public function index(Request $request)
     {
         $request->validate([
             'bencana_id' => 'required|exists:bencana,id',
-            'pegawai_id' => 'required|exists:pegawai,id',
+            'pegawai_id' => 'required|exists:pegawai,id_pegawai',
             'tgl_pengajuan' => 'required|date',
             'barang_id' => 'required|array',
             'jumlah' => 'required|array',
@@ -109,7 +109,7 @@ public function index(Request $request)
                 }
             });
 
-            return redirect()->route('distribusi_bantuan.pengajuan.index')->with('success', 'Data pengajuan berhasil disimpan!');
+            return redirect()->route('admin.management_distribusi.pengajuan_barang.index')->with('success', 'Data pengajuan berhasil disimpan!');
         } catch (\Exception $e) {
             return redirect()->back()->withInput()->with('error', 'Gagal Simpan: ' . $e->getMessage());
         }
@@ -132,7 +132,7 @@ public function index(Request $request)
 
         // Kunci: Jika status sudah disetujui atau ditolak, jangan kasih edit
         if ($data->status_pengajuan !== 'pending') {
-            return redirect()->route('distribusi_bantuan.pengajuan.index')
+            return redirect()->route('admin.management_distribusi.pengajuan_barang.index')
                             ->with('error', 'Gagal! Data yang sudah diproses tidak dapat diubah kembali.');
         }
 
@@ -205,7 +205,7 @@ public function index(Request $request)
                 }
             });
 
-            return redirect()->route('distribusi_bantuan.pengajuan.index')->with('success', 'Data diperbarui!');
+            return redirect()->route('admin.management_distribusi.pengajuan_barang.index')->with('success', 'Data diperbarui!');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal Perbarui: ' . $e->getMessage());
         }
@@ -215,7 +215,7 @@ public function index(Request $request)
     {
         try {
             PengajuanBarang::findOrFail($id)->delete();
-            return redirect()->route('distribusi_bantuan.pengajuan.index')->with('success', 'Data berhasil dihapus');
+            return redirect()->route('admin.management_distribusi.pengajuan_barang.index')->with('success', 'Data berhasil dihapus');
         } catch (\Exception $e) {
             return redirect()->back()->with('error', 'Gagal Hapus: ' . $e->getMessage());
         }
@@ -251,79 +251,160 @@ public function previewImport(Request $request)
     $import = new PengajuanImport;
     Excel::import($import, $request->file('file_excel'));
 
-    $data = $import->importData;
+    $rawData = $import->importData;
+    
+    $data = collect($rawData)->map(function ($item) {
+       
+        // 1. Sinkronisasi Pegawai
+        if (!empty($item['nama_pegawai'])) {
+            $pegawai = \App\Models\Pegawai::where('nama_pegawai', 'like', '%' . $item['nama_pegawai'] . '%')->first();
+            if ($pegawai) {
+                $item['pegawai_id']   = $pegawai->id_pegawai; 
+                $item['pegawai_nama'] = $pegawai->nama_pegawai;
+            } else {
+                $item['pegawai_id']   = 1;
+                $item['pegawai_nama'] = $item['nama_pegawai'] . ' (Belum Terdaftar)';
+            }
+        } else {
+            $item['pegawai_id']   = 1;
+            $item['pegawai_nama'] = 'Pegawai Tidak Diisi';
+        }
+        
+
+        if (!empty($item['barang_nama_excel'])) {
+            
+            // 🟢 PENCARIAN DB: Mencari nama barang di DB yang mengandung kata dari Excel (misal mencari yang mirip kata 'Beras')
+            $barang = \App\Models\Barang::where('nama_barang', 'like', '%' . $item['barang_nama_excel'] . '%')->first();
+            
+            if ($barang) {
+                $item['barang_exists'] = true;
+                $item['barang_id']     = $barang->id_barang; 
+                $item['barang_nama']   = $barang->nama_barang . ' (' . $barang->satuan . ')';
+            } else {
+                $item['barang_exists'] = false;
+                $item['barang_id']     = null;
+                $item['barang_nama']   = $item['barang_nama_excel'] . ' (Tidak COCOK di DB)';
+            }
+        } else {
+            $item['barang_exists'] = false;
+            $item['barang_id']     = null;
+            $item['barang_nama']   = 'Kolom Barang di Excel Kosong';
+        }
+
+        $item['status_bencana'] = $item['status_bencana'] ?? 'Baru';
+
+        return $item;
+    })->toArray();
     
     session(['temp_import_data' => $data]);
 
     return view('distribusi_bantuan.pengajuan_barang.import_preview', compact('data'));
 }
 
+
 public function storeImport(Request $request)
 {
     $rawData = session('temp_import_data');
 
+    // 🟢 PROTEKSI SESSION: Jika session kosong, berikan pesan error yang lebih informatif untuk pelacakan
     if (!$rawData || count($rawData) == 0) {
-        return redirect()->route('distribusi_bantuan.pengajuan.create')
-                         ->with('error', 'Gagal! Sesi import kadaluarsa.');
+        return redirect()->route('admin.management_distribusi.pengajuan_barang.create')
+                         ->with('error', 'Gagal! Sesi pratinjau data import kosong atau telah kadaluarsa. Silakan unggah kembali.');
     }
 
     try {
         DB::transaction(function () use ($rawData) {
             $authId = Auth::id() ?? (User::first()->id ?? 1);
 
+            // 1. Kelompokkan data berdasarkan parameter string yang dijamin selalu ada dari Excel
             $groupedData = collect($rawData)->groupBy(function ($item) {
-                return $item['desa_nama'] . '|' . $item['kategori_nama'] . '|' . $item['tanggal'] . '|' . $item['pegawai_id'];
+                $pegawaiKey = $item['pegawai_id'] ?? ($item['nama_pegawai'] ?? 1);
+                $tanggalKey = $item['tanggal'] ?? now()->format('Y-m-d');
+                return trim($item['desa_nama'] ?? 'tanpa-desa') . '|' . 
+                       trim($item['kategori_nama'] ?? 'tanpa-kategori') . '|' . 
+                       $tanggalKey . '|' . 
+                       $pegawaiKey;
             });
 
             foreach ($groupedData as $key => $items) {
-         
                 $firstItem = $items->first();
 
+                // 2. Sinkronisasi Data Desa
                 $desa = \App\Models\Desa::firstOrCreate(
-                    ['nama_desa' => $firstItem['desa_nama']],
-                    ['kecamatan' => $firstItem['kecamatan'], 'nama_kades' => '-', 'kontak_kades' => '-']
+                    ['nama_desa' => trim($firstItem['desa_nama'])],
+                    ['kecamatan' => $firstItem['kecamatan'] ?? 'Cilacap', 'nama_kades' => '-', 'kontak_kades' => '-']
                 );
+                $desaId = $desa->id_desa ?? ($desa->id ?? null);
 
+                // 3. Sinkronisasi Kategori Bencana
                 $kategori = \App\Models\KategoriBencana::firstOrCreate(
-                    ['nama_kategori' => $firstItem['kategori_nama']]
+                    ['nama_kategori' => trim($firstItem['kategori_nama'])]
                 );
+                $kategoriId = $kategori->id_kategori ?? ($kategori->id ?? null);
 
+                // 4. Sinkronisasi Data Induk Kejadian Bencana
                 $bencana = \App\Models\Bencana::firstOrCreate([
-                    'desa_id' => $desa->id,
-                    'kategori_id' => $kategori->id,
-                    'tanggal' => $firstItem['tanggal']
-                ], ['tingkat_kerusakan' => 'Sedang', 
-                    'jumlah_korban'     => $firstItem['jumlah_korban']
-                    ]);
+                    'desa_id'     => $desaId,
+                    'kategori_id' => $kategoriId,
+                    'tanggal'     => $firstItem['tanggal']
+                ], [
+                    'nama_bencana'      => strtoupper($kategori->nama_kategori) . ' di Desa ' . $desa->nama_desa,
+                    'tingkat_kerusakan' => 'Sedang', 
+                    'jumlah_korban'     => $firstItem['jumlah_korban'] ?? 0 
+                ]);
+                
+                $bencanaId = $bencana->id ?? ($bencana->id_bencana ?? null);
 
+                if (empty($bencanaId)) {
+                    $bencanaId = DB::table('bencana')
+                        ->where('desa_id', $desaId)
+                        ->where('kategori_id', $kategoriId)
+                        ->where('tanggal', $firstItem['tanggal'])
+                        ->value('id') ?? DB::table('bencana')
+                                            ->where('desa_id', $desaId)
+                                            ->where('kategori_id', $kategoriId)
+                                            ->where('tanggal', $firstItem['tanggal'])
+                                            ->value('id_bencana');
+                }
+
+                // 🟢 PROTEKSI PEGAWAI ID: Pastikan jika null atau undefined, berikan nilai default ID 1 
+                // agar tidak memicu kegagalan foreign key constraint database
+                $fixedPegawaiId = $firstItem['pegawai_id'] ?? 1;
+
+                // 5. Daftarkan Dokumen Utama Pengajuan Barang Logistik
                 $pengajuan = PengajuanBarang::create([
-                    'bencana_id' => $bencana->id,
-                    'pegawai_id' => $firstItem['pegawai_id'],
-                    'tgl_pengajuan' => now(),
+                    'bencana_id'       => $bencanaId, 
+                    'pegawai_id'       => $fixedPegawaiId,
+                    'tgl_pengajuan'    => \Carbon\Carbon::parse($firstItem['tanggal'])->format('Y-m-d'),
                     'status_pengajuan' => 'pending',
-                    'keterangan' => 'Import Massal (Multiple Items)',
-                    'created_by' => $authId,
+                    'keterangan'       => 'Import Massal (Multiple Items)',
+                    'created_by'       => $authId,
                 ]);
 
+                // 6. Masukkan Rincian Kebutuhan Detail Komoditas
                 foreach ($items as $item) {
-                    if ($item['barang_id']) {
+                    if (!empty($item['barang_id'])) {
                         DetailPengajuanBarang::create([
-                            'pengajuan_barang_id' => $pengajuan->id,
-                            'barang_id' => $item['barang_id'],
-                            'jumlah' => $item['jumlah'],
-                            'kategori_penerima' => $item['kategori_penerima'] ?? 'warga',
+                            'pengajuan_barang_id' => $pengajuan->id, 
+                            'barang_id'           => $item['barang_id'],
+                            'jumlah'              => $item['jumlah'] ?? 1,
+                            'kategori_penerima'   => $item['kategori_penerima'] ?? 'warga',
                         ]);
                     }
                 }
             }
         });
 
+        // Hapus session temporary hanya setelah transaksi DB sukses 100%
         session()->forget('temp_import_data');
-        return redirect()->route('distribusi_bantuan.pengajuan.index')
+
+        return redirect()->route('admin.management_distribusi.pengajuan_barang.index')
                          ->with('success', 'Berhasil! Data telah dikelompokkan dan diimpor secara otomatis.');
                          
     } catch (\Exception $e) {
-        return redirect()->back()->with('error', 'Terjadi kesalahan: ' . $e->getMessage());
+        // 🟢 MENAMPILKAN PESAN ERROR ASLI: Jika ada crash SQL, tampilkan pesan aslinya agar tahu letak baris yang salah
+        return redirect()->route('admin.management_distribusi.pengajuan_barang.create')
+                         ->with('error', 'Terjadi kesalahan sistem database: ' . $e->getMessage());
     }
 }
 
