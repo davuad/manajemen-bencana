@@ -19,21 +19,32 @@
         </a>
     </div>
 
-    <!-- ALERT -->
-    @if(session('success'))
-        <div class="mb-4 p-3 bg-green-100 text-green-700 rounded-lg">
-            {{ session('success') }}
-        </div>
-    @endif
-
     <!-- SEARCH -->
-    <form method="GET" action="{{ route('admin.barang.index') }}" class="mb-4">
-        <input type="text"
-                name="search"
-                value="{{ $search ?? '' }}"
-                placeholder="Cari ID atau nama barang..."
-                class="w-full border rounded-lg p-3">
-    </form>
+<form method="GET" action="{{ route('admin.barang.index') }}" class="mb-6">
+
+    <div class="flex flex-wrap items-center gap-3">
+
+        <input
+            type="text"
+            name="search"
+            value="{{ $search ?? '' }}"
+            placeholder="Cari ID atau nama barang..."
+            class="w-80 border rounded-lg p-3">
+
+        <button
+            type="submit"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-3 rounded-lg">
+            🔍 Search
+        </button>
+
+        <a href="{{ route('admin.barang.index') }}"
+            class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-3 rounded-lg">
+            Reset
+        </a>
+
+    </div>
+
+</form>
 
     <!-- TABLE -->
     <div class="overflow-x-auto">

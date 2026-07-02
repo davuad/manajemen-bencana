@@ -15,7 +15,7 @@ class SumberBarangMasukController extends Controller
             $query->where('nama_sumber', 'like', '%' . $search . '%');
         })->get();
 
-        return view('sumber_barang.index', compact('data'));
+        return view('sumber_barang.index', compact('data', 'search'));
     }
 
     public function create()
