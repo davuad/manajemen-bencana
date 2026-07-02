@@ -48,67 +48,142 @@
 
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
-                <thead class="bg-gray-100">
-                    <tr>
-                        <th class="p-3 text-center">No</th>
-                        <th class="text-center">Nama Posko</th>
-                        <th class="text-left pl-4">Desa</th>
-                        <th class="text-center">Nama Bencana</th>
-                        <th class="text-center">Deskripsi Bencana</th>
-                        <th class="text-left">Lokasi</th>
-                        <th class="text-left">Tanggal</th>
-                        <th class="text-left pl-4">Status</th>
-                        @hasanyrole('admin|pegawai|petugas|relawan')
-                            <th class="text-center">Aksi</th>
-                        @endhasanyrole
-                    </tr>
-                </thead>
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="p-3 text-center w-12">No</th>
+                    <th class="p-3 text-center w-24">Foto</th>
+                    <th class="p-3 text-center">Nama Posko</th>
+                    <th class="p-3 text-left">Desa</th>
+                    <th class="p-3 text-center">Nama Bencana</th>
+                    <th class="p-3 text-center">Deskripsi Bencana</th>
+                    <th class="p-3 text-left">Lokasi</th>
+                    <th class="p-3 text-center">Tanggal</th>
+                    <th class="p-3 text-center">Status</th>
+
+                    @hasanyrole('admin|pegawai|petugas|relawan')
+                        <th class="p-3 text-center">Aksi</th>
+                    @endhasanyrole
+                </tr>
+            </thead>
 
                 <tbody>
-                    @forelse($posko as $key => $p)
-                        <tr class="border-t hover:bg-gray-50">
-                            <td class="p-3 text-center">{{ $posko->firstItem() + $key }}</td>
-                            <td class="p-3 text-center font-medium text-gray-800">{{ $p->nama_posko }}</td>
-                            <td class="p-3 pl-4">{{ $p->desa->nama_desa ?? '-' }}</td>
-                            <td class="p-3 pl-4 text-center">{{ $p->bencana->nama_bencana ?? '-' }}</td>
-                            <td class="p-3 text-center text-gray-500">{{ $p->pengaduan->deskripsi ?? '-' }}</td>
-                            <td class="p-3">{{ $p->lokasi }}</td>
-                            <td class="p-3">{{ $p->tanggal_dibuat }}</td>
-                            <td class="p-3 pl-4">
-                                @if ($p->status == 'aktif')
-                                    <span class="inline-block px-3 py-1 rounded-full bg-green-200 text-green-800 font-semibold text-xs">
-                                        Aktif
-                                    </span>
-                                @else
-                                    <span class="inline-block px-3 py-1 rounded-full bg-red-200 text-red-700 font-semibold text-xs opacity-70">
-                                        Tidak Aktif
-                                    </span>
-                                @endif
-                            </td>
-                            @hasanyrole('admin|pegawai|petugas|relawan')
-                            <td class="p-3">
-                                <div class="flex justify-center gap-3">
-                                    {{-- PERBAIKAN EDIT: Menggunakan parameter 'posko' sesuai Resource standarisasi Laravel --}}
-                                    <a href="{{ route('management_posko.posko.edit', ['role' => $userRole, 'posko' => $p->id]) }}"
-                                        class="text-blue-500 hover:text-blue-700">
-                                        <x-heroicon-o-pencil-square class="w-5 h-5" />
-                                    </a>
+                @forelse($posko as $key => $p)
 
-                                    <button onclick="openModal('{{ $p->id }}', '{{ $p->nama_posko }}')"
-                                        class="text-red-500 hover:text-red-700">
-                                        <x-heroicon-o-trash class="w-5 h-5" />
-                                    </button>
-                                </div>
-                            </td>
-                            @endhasanyrole
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="9" class="text-center p-6 text-gray-500">
-                                Data posko belum tersedia
-                            </td>
-                        </tr>
-                    @endforelse
+                <tr class="border-t hover:bg-gray-50">
+
+                    <td class="text-center">
+                        {{ $posko->firstItem() + $key }}
+                    </td>
+
+                    <td class="py-2">
+                        @if($p->foto)
+                            <img
+                                src="{{ asset('storage/'.$p->foto) }}"
+                                class="w-16 h-16 object-cover rounded-lg border mx-auto"
+                                alt="Foto Posko">
+                        @else
+                            <div class="w-16 h-16 rounded-lg border bg-gray-100 flex items-center justify-center mx-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="w-8 h-8 text-gray-400"
+                                    fill="none"
+                                    viewBox="0 0 24 24"
+                                    stroke="currentColor">
+
+                                    <path stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="1.5"
+                                        d="M4 16l4-4 4 4 6-6 2 2v6H4z"/>
+
+                                    <path stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="1.5"
+                                        d="M14 8h.01"/>
+                                </svg>
+                            </div>
+                        @endif
+                    </td>
+
+                    <td class="text-center font-medium">
+                        {{ $p->nama_posko }}
+                    </td>
+
+                    <td>
+                        {{ $p->desa->nama_desa ?? '-' }}
+                    </td>
+
+                    <td class="text-center">
+                        {{ $p->bencana->nama_bencana ?? '-' }}
+                    </td>
+
+                    <td class="text-center text-gray-500">
+                        {{ $p->pengaduan->deskripsi ?? '-' }}
+                    </td>
+
+                    <td>
+                        {{ $p->lokasi }}
+                    </td>
+
+                    <td class="text-center">
+                        {{ \Carbon\Carbon::parse($p->tanggal_dibuat)->format('d-m-Y') }}
+                    </td>
+
+                    <td class="text-center">
+                        @if($p->status=='aktif')
+
+                            <span class="px-3 py-1 rounded-full bg-green-100 text-green-700 text-xs font-semibold">
+                                Aktif
+                            </span>
+
+                        @else
+
+                            <span class="px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-semibold">
+                                Tidak Aktif
+                            </span>
+
+                        @endif
+                    </td>
+
+                    @hasanyrole('admin|pegawai|petugas|relawan')
+
+                    <td>
+                        <div class="flex justify-center gap-3">
+
+                            <a href="{{ route('management_posko.posko.edit',['role'=>$userRole,'posko'=>$p->id]) }}"
+                                class="text-blue-600 hover:text-blue-800">
+
+                                <x-heroicon-o-pencil-square class="w-5 h-5"/>
+
+                            </a>
+
+                            <button
+                                onclick="openModal('{{ $p->id }}','{{ $p->nama_posko }}')"
+                                class="text-red-600 hover:text-red-800">
+
+                                <x-heroicon-o-trash class="w-5 h-5"/>
+
+                            </button>
+
+                        </div>
+                    </td>
+
+                    @endhasanyrole
+
+                </tr>
+
+                @empty
+
+                <tr>
+
+                    <td colspan="@hasanyrole('admin|pegawai|petugas|relawan')10 @else 9 @endhasanyrole"
+                        class="text-center py-10 text-gray-500">
+
+                        Belum ada data posko.
+
+                    </td>
+
+                </tr>
+
+                @endforelse
                 </tbody>
             </table>
         </div>

@@ -14,8 +14,36 @@
     </div>
 
     <div class="bg-white rounded-xl p-5 m-3 mt-5 shadow-sm">
-        <form action="{{ route('management_posko.posko.store', ['role' => $userRole]) }}" method="POST" class="space-y-6">
+        <form action="{{ route('management_posko.posko.store', ['role' => $userRole]) }}"
+            method="POST"
+            enctype="multipart/form-data"
+            class="space-y-6">
             @csrf
+
+            <div class="md:col-span-2">
+                <label class="block font-medium mb-2">
+                    Foto Posko
+                </label>
+
+                <input
+                    type="file"
+                    name="foto"
+                    id="foto"
+                    accept="image/*"
+                    onchange="previewFoto(event)"
+                    class="w-full border rounded-lg p-3">
+
+                @error('foto')
+                    <small class="text-red-500 block mt-1">{{ $message }}</small>
+                @enderror
+
+                <div class="mt-4">
+                    <img
+                        id="preview"
+                        src=""
+                        class="hidden w-56 h-40 object-cover rounded-lg border shadow">
+                </div>
+            </div>
             
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="md:col-span-2">
@@ -100,4 +128,20 @@
             </div>
         </form>
     </div>
+
+    <script>
+function previewFoto(event) {
+
+    const input = event.target;
+    const preview = document.getElementById('preview');
+
+    if(input.files && input.files[0]){
+
+        preview.src = URL.createObjectURL(input.files[0]);
+
+        preview.classList.remove('hidden');
+
+    }
+}
+</script>
 @endsection
