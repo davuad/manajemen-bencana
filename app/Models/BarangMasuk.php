@@ -28,7 +28,11 @@ class BarangMasuk extends Model
 
     public function gudang()
     {
-        return $this->belongsTo(Gudang::class, 'id_gudang');
+        return $this->belongsTo(
+            Gudang::class,
+            'id_gudang',
+            'id_gudang'
+        );
     }
 
     public function pegawai()
