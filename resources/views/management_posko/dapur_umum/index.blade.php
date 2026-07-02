@@ -17,7 +17,6 @@
             </div>
 
             @hasanyrole('admin|pegawai|petugas')
-
             <!-- PERBAIKAN: Tambahkan parameter ['role' => $userRole] -->
             <a href="{{ route('management_posko.dapur_umum.create', ['role' => $userRole]) }}"
                 class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
@@ -25,7 +24,6 @@
             </a>
             @endhasanyrole
         </div>
-
 
         <!-- PERBAIKAN: Form Action tambahkan parameter ['role' => $userRole] -->
         <form method="GET" action="{{ route('management_posko.dapur_umum.index', ['role' => $userRole]) }}">
@@ -104,7 +102,6 @@
                                     Detail Kebutuhan
                                     </a>
 
-
                                     {{-- EDIT (PERBAIKAN: Tambahkan parameter 'role' dan ganti id menjadi dapur_umum sesuai standarisasi Resource Route Laravel) --}}
                                     <a href="{{ route('management_posko.dapur_umum.edit', ['role' => $userRole, 'dapur_umum' => $item->id]) }}"
                                         class="px-3 py-2 bg-yellow-500 text-white rounded-lg text-sm hover:bg-yellow-600">
@@ -146,10 +143,8 @@
         class="fixed inset-0 backdrop-blur-sm bg-white/10 hidden items-center justify-center z-50">
 
         <div class="bg-white rounded-2xl shadow-lg w-full max-w-md p-6">
-
             <!-- Header -->
             <div class="flex items-start gap-3">
-
                 <div class="bg-red-100 p-2 rounded-full">
                     <x-heroicon-o-exclamation-triangle class="w-6 h-6 text-red-500" />
                 </div>
@@ -157,18 +152,15 @@
                     <h2 class="text-lg font-semibold text-gray-800">
                         Hapus Data Dapur Umum
                     </h2>
-
                     <p class="text-sm text-gray-500 mt-1">
                         Apakah Anda yakin ingin menghapus data dapur umum <span id="namaDapur" class="font-semibold"></span>?
                         Tindakan ini tidak dapat dibatalkan.
                     </p>
                 </div>
-
             </div>
 
             <!-- Action -->
             <div class="flex justify-end gap-3 mt-6">
-
                 <button type="button" onclick="closeModal()"
                     class="px-4 py-2 rounded-lg bg-gray-200 hover:bg-gray-300">
                     Batal
@@ -177,19 +169,16 @@
                 <form id="deleteForm" method="POST">
                     @csrf
                     @method('DELETE')
-
                     <button type="submit" class="px-4 py-2 rounded-lg bg-red-500 text-white hover:bg-red-600">
                         Hapus Data
                     </button>
                 </form>
-
             </div>
         </div>
     </div>
 
     <script>
     function openModal(id, nama) {
-
         const modal = document.getElementById('deleteModal');
         modal.classList.remove('hidden');
         modal.classList.add('flex');
@@ -204,12 +193,10 @@
     }
 
     function closeModal() {
-
         const modal = document.getElementById('deleteModal');
         modal.classList.remove('flex');
         modal.classList.add('hidden');
     }
-
 
     document.getElementById('deleteModal').addEventListener('click', function(e) {
         if (e.target === this) {

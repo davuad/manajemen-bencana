@@ -16,7 +16,7 @@
                 </p>
             </div>
             @hasanyrole('admin|pegawai|petugas|relawan')
-                <a href="{{ route('management_posko.posko.create') }}"
+                <a href="{{ route('management_posko.posko.create', ['role' => $userRole]) }}"
                     class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
                     + Tambah Data Posko
                 </a>
@@ -59,7 +59,6 @@
                         <th class="text-left">Tanggal</th>
                         <th class="text-left pl-4">Status</th>
                         @hasanyrole('admin|pegawai|petugas|relawan')
-
                             <th class="text-center">Aksi</th>
                         @endhasanyrole
                     </tr>
@@ -87,7 +86,6 @@
                                 @endif
                             </td>
                             @hasanyrole('admin|pegawai|petugas|relawan')
-
                             <td class="p-3">
                                 <div class="flex justify-center gap-3">
                                     {{-- PERBAIKAN EDIT: Menggunakan parameter 'posko' sesuai Resource standarisasi Laravel --}}

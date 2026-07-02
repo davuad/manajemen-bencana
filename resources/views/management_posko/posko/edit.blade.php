@@ -13,7 +13,6 @@
         </p>
     </div>
 
-
     <div class="bg-white rounded-xl p-5 m-3 mt-5 shadow-sm">
         <form action="{{ route('management_posko.posko.update', ['role' => $userRole, 'posko' => $posko->id]) }}" method="POST" class="space-y-6">
             @csrf
@@ -124,7 +123,6 @@
             </div>
 
             <div class="flex justify-end gap-3">
-
                 <a href="{{ route('management_posko.posko.index', ['role' => $userRole]) }}" class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg transition duration-200">
                     Batal
                 </a>
