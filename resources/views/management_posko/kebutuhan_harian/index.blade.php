@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @php
-    // Mendefinisikan role user dinamis agar tidak error undefined variable
+    use Illuminate\Support\Str; 
     $userRole = auth()->user()->roles->first()->name ?? 'admin';
 @endphp
 
@@ -74,6 +74,8 @@
                         <th class="p-3 text-center">Jumlah Warga</th>
                         <th class="p-3 text-center">Porsi / Orang</th>
                         <th class="p-3 text-center">Total Porsi</th>
+                        <th class="p-3 text-center">Realisasi Porsi</th>
+                        <th class="p-3 text-center">Catatan</th>
                         <th class="p-3 text-center">Aksi</th>
                     </tr>
                 </thead>
@@ -95,9 +97,19 @@
                             <td class="p-3 text-center font-semibold">
                                 {{ $k->total_porsi }}
                             </td>
+                            <td class="p-3 text-center font-medium">
+                                {{ $k->realisasi_porsi ?? '-' }}
+                            </td>
+
+                            <td class="p-3">
+                                @if($k->catatan)
+                                    {{ Str::limit($k->catatan, 40) }}
+                                @else
+                                    <span class="text-gray-400">-</span>
+                                @endif
+                            </td>
                             <td class="p-3">
                                 <div class="flex justify-center gap-3">
-                                    {{-- PERBAIKAN EDIT: Menyertakan parameter dapur --}}
                                     <a href="{{ route('management_posko.kebutuhan_harian.edit', ['role' => $userRole, 'dapur' => $dapur->id, 'id' => $k->id]) }}"
                                         class="text-blue-500 hover:text-blue-700">
                                         <x-heroicon-o-pencil-square class="w-5 h-5" />
@@ -113,7 +125,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center p-6 text-gray-500">
+                            <td colspan="8" class="text-center p-6 text-gray-500">
                                 Data kebutuhan harian belum tersedia
                             </td>
                         </tr>

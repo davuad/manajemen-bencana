@@ -55,6 +55,8 @@ class KebutuhanHarianController extends Controller
             'tanggal' => 'required|date',
             'jumlah_warga' => 'required|integer|min:1',
             'porsi_per_orang' => 'required|integer|min:1',
+            'realisasi_porsi' => 'nullable|integer|min:0',
+            'catatan' => 'nullable|string|max:1000',
         ]);
 
         // AUTO HITUNG TOTAL
@@ -66,6 +68,8 @@ class KebutuhanHarianController extends Controller
             'jumlah_warga' => $request->jumlah_warga,
             'porsi_per_orang' => $request->porsi_per_orang,
             'total_porsi' => $totalPorsi,
+            'realisasi_porsi' => $request->realisasi_porsi,
+            'catatan' => $request->catatan,
         ]);
 
         return redirect()
@@ -108,6 +112,8 @@ class KebutuhanHarianController extends Controller
             'tanggal' => 'required|date',
             'jumlah_warga' => 'required|integer|min:1',
             'porsi_per_orang' => 'required|integer|min:1',
+            'realisasi_porsi' => 'nullable|integer|min:0',
+            'catatan' => 'nullable|string|max:1000',
         ]);
 
         // AUTO HITUNG TOTAL
@@ -118,6 +124,8 @@ class KebutuhanHarianController extends Controller
             'jumlah_warga' => $request->jumlah_warga,
             'porsi_per_orang' => $request->porsi_per_orang,
             'total_porsi' => $totalPorsi,
+            'realisasi_porsi' => $request->realisasi_porsi,
+            'catatan' => $request->catatan,
         ]);
 
         return redirect()

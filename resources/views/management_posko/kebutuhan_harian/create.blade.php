@@ -89,6 +89,48 @@
                 </div>
             </div>
 
+            {{-- REALISASI PORSI --}}
+            <div>
+                <label class="block font-medium mb-2">
+                    Realisasi Porsi
+                    <span class="text-gray-500 text-sm">(Opsional)</span>
+                </label>
+
+                <input
+                    type="number"
+                    name="realisasi_porsi"
+                    value="{{ old('realisasi_porsi') }}"
+                    min="0"
+                    class="w-full border rounded-lg p-3"
+                    placeholder="Masukkan jumlah porsi yang terealisasi">
+
+                @error('realisasi_porsi')
+                    <small class="text-red-500">
+                        {{ $message }}
+                    </small>
+                @enderror
+            </div>
+
+            {{-- CATATAN --}}
+            <div>
+                <label class="block font-medium mb-2">
+                    Catatan
+                    <span class="text-gray-500 text-sm">(Opsional)</span>
+                </label>
+
+                <textarea
+                    name="catatan"
+                    rows="4"
+                    class="w-full border rounded-lg p-3"
+                    placeholder="Masukkan catatan jika ada, misalnya kekurangan bahan, distribusi terlambat, atau informasi lainnya...">{{ old('catatan') }}</textarea>
+
+                @error('catatan')
+                    <small class="text-red-500">
+                        {{ $message }}
+                    </small>
+                @enderror
+            </div>
+
             {{-- BUTTON --}}
             <div class="flex justify-end gap-3">
                 {{-- PERBAIKAN TOMBOL BATAL: Sesuaikan parameter rute agar tidak melahirkan 404 --}}

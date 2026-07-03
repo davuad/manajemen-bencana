@@ -13,6 +13,8 @@ class KebutuhanHarian extends Model
         'jumlah_warga',
         'porsi_per_orang',
         'total_porsi',
+        'realisasi_porsi',
+        'catatan',
         'dapur_umum_id',
     ];
 
