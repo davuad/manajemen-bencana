@@ -54,7 +54,7 @@ Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.up
 Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
 // --- Main Admin Routes (Semua Menggunakan Prefix /admin dan Name admin.) ---
-Route::middleware(['auth', 'role:admin'])
+Route::middleware(['auth', 'permission:manajemen user'])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {
@@ -217,33 +217,33 @@ Route::middleware(['auth', 'role:admin'])
 // =========================================================================
 
 // 1. ROUTE JADWAL KABID (BISA LIHAT + CETAK)
-Route::prefix('kabid')->name('kabid.')->middleware(['auth', 'role:kabid'])->group(function () {
+Route::prefix('kabid')->name('kabid.')->middleware(['auth', 'permission:manajemen pengaduan'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
     Route::get('/jadwal/cetak-pdf', [JadwalController::class, 'cetak_pdf'])->name('jadwal.cetak');
 });
 
 // 2. ROUTE JADWAL RELAWAN (HANYA LIHAT)
-Route::prefix('relawan')->name('relawan.')->middleware(['auth', 'role:relawan'])->group(function () {
+Route::prefix('relawan')->name('relawan.')->middleware(['auth', 'permission:buat pengaduan'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 });
 
 // 3. ROUTE JADWAL KADUS (HANYA LIHAT)
-Route::prefix('kadus')->name('kadus.')->middleware(['auth', 'role:kadus'])->group(function () {
+Route::prefix('kadus')->name('kadus.')->middleware(['auth', 'permission:buat pengaduan'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 });
 
 // 4. ROUTE JADWAL DESA (HANYA LIHAT)
-Route::prefix('desa')->name('desa.')->middleware(['auth', 'role:desa'])->group(function () {
+Route::prefix('desa')->name('desa.')->middleware(['auth', 'permission:buat pengaduan'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 });
 
 // 5. ROUTE JADWAL KETUA TIM (HANYA LIHAT)
-Route::prefix('ketua_tim')->name('ketua_tim.')->middleware(['auth', 'role:ketua_tim'])->group(function () {
+Route::prefix('ketua_tim')->name('ketua_tim.')->middleware(['auth', 'permission:manajemen pengaduan'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
 });
 
 // 6. ROUTE JADWAL PETUGAS (HANYA LIHAT)
-Route::prefix('petugas')->name('petugas.')->middleware(['auth', 'role:petugas'])->group(function () {
+Route::prefix('petugas')->name('petugas.')->middleware(['auth', 'permission:manajemen distribusi'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
     // Route::prefix('management-posko')->name('management_posko.')->group(function () {
     //     Route::get('/posko', [PoskoController::class, 'index'])
@@ -255,7 +255,7 @@ Route::prefix('petugas')->name('petugas.')->middleware(['auth', 'role:petugas'])
 });
 
 // 7. ROUTE JADWAL PEGAWAI (HANYA LIHAT)
-Route::prefix('pegawai')->name('pegawai.')->middleware(['auth', 'role:pegawai'])->group(function () {
+Route::prefix('pegawai')->name('pegawai.')->middleware(['auth', 'permission:manajemen distribusi'])->group(function () {
     Route::get('/jadwal', [JadwalController::class, 'index'])->name('jadwal.index');
     // Route::prefix('management-posko')->name('management_posko.')->group(function () {
     //     Route::get('/posko', [PoskoController::class, 'index'])
@@ -266,7 +266,7 @@ Route::prefix('pegawai')->name('pegawai.')->middleware(['auth', 'role:pegawai'])
     // });
 });
 // --- Role Placeholders (Kosong) ---
-Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')->group(function () {
+Route::middleware(['auth', 'permission:buat pengaduan'])->prefix('relawan')->name('relawan.')->group(function () {
     Route::prefix('management-posko')->name('management_posko.')->group(function () {
         Route::get('/posko', [PoskoController::class, 'index'])
             ->name('posko.index');
@@ -282,7 +282,7 @@ Route::middleware(['auth', 'role:relawan'])->prefix('relawan')->name('relawan.')
 });
 
 
-Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->group(function () {
+Route::middleware(['auth', 'permission:buat pengaduan'])->prefix('kadus')->name('kadus.')->group(function () {
     Route::prefix('management-posko')->name('management_posko.')->group(function () {
         Route::get('/posko', [PoskoController::class, 'index'])
             ->name('posko.index');
@@ -295,7 +295,7 @@ Route::middleware(['auth', 'role:kadus'])->prefix('kadus')->name('kadus.')->grou
     Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
     Route::post('warga/{id}/ubah-status', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 });
-Route::middleware(['auth', 'role:kabid'])
+Route::middleware(['auth', 'permission:manajemen pengaduan'])
     ->prefix('kabid')
     ->name('kabid.')
     ->group(function () {
@@ -373,7 +373,7 @@ Route::middleware(['auth', 'role:kabid'])
         Route::post('warga/{id}/ubah-status', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
     });
 
-Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(function () {
+Route::middleware(['auth', 'permission:buat pengaduan'])->prefix('desa')->name('desa.')->group(function () {
     Route::prefix('management-posko')->name('management_posko.')->group(function () {
         Route::get('/posko', [PoskoController::class, 'index'])
             ->name('posko.index');
@@ -386,7 +386,7 @@ Route::middleware(['auth', 'role:desa'])->prefix('desa')->name('desa.')->group(f
     Route::resource('warga-terdampak', WargaTerdampakController::class)->names('warga');
     Route::post('warga/{id}/ubah-status', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 });
-Route::middleware(['auth', 'role:ketua_tim'])
+Route::middleware(['auth', 'permission:manajemen pengaduan'])
     ->prefix('ketua_tim')
     ->name('ketua_tim.')
     ->group(function () {
@@ -410,7 +410,7 @@ Route::middleware(['auth', 'role:ketua_tim'])
         Route::post('warga/{id}/ubah-status', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
     });
 
-Route::middleware(['auth', 'role:relawan|kadus|desa'])
+Route::middleware(['auth', 'permission:buat pengaduan'])
     ->prefix('user')
     ->name('user.')
     ->group(function () {
@@ -440,7 +440,7 @@ Route::middleware(['auth', 'role:relawan|kadus|desa'])
     });
 
 // --- Pegawai ---
-Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')->group(function () {
+Route::middleware(['auth', 'permission:manajemen distribusi'])->prefix('pegawai')->name('pegawai.')->group(function () {
     Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
         Route::resource('distribusi', DistribusiController::class);
         Route::get('distribusi/{id}/ba', [DistribusiController::class, 'generateBA'])->name('distribusi.ba');
@@ -457,7 +457,7 @@ Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')
     Route::post('warga/{id}/ubah-status', [WargaTerdampakController::class, 'ubahStatus'])->name('warga.ubahStatus');
 });
 // --- Petugas ---
-Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')->group(function () {
+Route::middleware(['auth', 'permission:manajemen distribusi'])->prefix('petugas')->name('petugas.')->group(function () {
     Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
         Route::get('distribusi_paket', [DistribusiPaketController::class, 'index'])->name('distribusi_paket.index');
         Route::get('distribusi-paket/{id}', [DistribusiPaketController::class, 'show'])->name('distribusi_paket.show');
@@ -470,7 +470,7 @@ Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')
 });
 
 // --- Pegawai ---
-Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')->group(function () {
+Route::middleware(['auth', 'permission:manajemen distribusi'])->prefix('pegawai')->name('pegawai.')->group(function () {
     Route::prefix('management-distribusi')->name('management_distribusi.')->group(function () {
         Route::resource('distribusi', DistribusiController::class);
         Route::get('distribusi/{id}/ba', [DistribusiController::class, 'generateBA'])->name('distribusi.ba');
@@ -483,7 +483,7 @@ Route::middleware(['auth', 'role:pegawai'])->prefix('pegawai')->name('pegawai.')
     });
 });
 // --- Petugas ---
-Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')->group(function () {
+Route::middleware(['auth', 'permission:manajemen distribusi'])->prefix('petugas')->name('petugas.')->group(function () {
     Route::resource('anak_terpisah', AnakTerpisahController::class);
 
     Route::get('penjemputan', [PenjemputanAnakController::class, 'index'])
@@ -517,7 +517,7 @@ Route::middleware(['auth', 'role:petugas'])->prefix('petugas')->name('petugas.')
 
 Route::middleware([
     'auth',
-    'role:admin|petugas|pegawai'
+    'permission:manajemen posko'
 ])->prefix('{role}/management-posko')
     ->name('management_posko.')
     ->group(function () {
@@ -537,7 +537,7 @@ Route::middleware([
     })->where(['role' => 'admin|petugas|pegawai']);
 
 // Relawan
-Route::middleware(['auth', 'role:relawan'])
+Route::middleware(['auth', 'permission:buat pengaduan'])
     ->prefix('relawan')
     ->name('relawan.')
     ->group(function () {
@@ -568,7 +568,7 @@ Route::middleware(['auth', 'role:relawan'])
     });
 
 // Kadus
-Route::middleware(['auth', 'role:kadus'])
+Route::middleware(['auth', 'permission:buat pengaduan'])
     ->prefix('kadus')
     ->name('kadus.')
     ->group(function () {
@@ -579,7 +579,7 @@ Route::middleware(['auth', 'role:kadus'])
     });
 
 // Desa
-Route::middleware(['auth', 'role:desa'])
+Route::middleware(['auth', 'permission:buat pengaduan'])
     ->prefix('desa')
     ->name('desa.')
     ->group(function () {

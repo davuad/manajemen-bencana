@@ -9,11 +9,23 @@
                         <h2 class="text-xl font-bold text-gray-800">Manajemen Role</h2>
                         <p class="text-gray-500 text-sm">Kelola role dan permission pengguna</p>
                     </div>
-                    <a href="#"
+                    <a href="{{ route('admin.management_role.create') }}"
                        class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block hover:bg-indigo-800 transition">
                         + Tambah Role
                     </a>
                 </div>
+
+                {{-- Success/Error Messages --}}
+                @if(session('success'))
+                    <div class="mb-4 px-4 py-3 rounded-lg bg-green-100 border border-green-400 text-green-700">
+                        {{ session('success') }}
+                    </div>
+                @endif
+                @if(session('error'))
+                    <div class="mb-4 px-4 py-3 rounded-lg bg-red-100 border border-red-400 text-red-700">
+                        {{ session('error') }}
+                    </div>
+                @endif
 
                 {{-- TABLE --}}
                 <div class="overflow-x-auto">
@@ -53,10 +65,17 @@
                                                 <x-heroicon-o-pencil class="w-5 h-5" />
                                             </a>
                                             @if($role->name !== 'admin')
-                                                <button class="text-red-500 hover:text-red-700 transition"
-                                                        title="Hapus Role">
-                                                    <x-heroicon-o-trash class="w-5 h-5" />
-                                                </button>
+                                                <form method="POST"
+                                                      action="{{ route('admin.management_role.destroy', $role->name) }}"
+                                                      onsubmit="return confirm('Yakin ingin menghapus role {{ $role->name }}?')">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit"
+                                                            class="text-red-500 hover:text-red-700 transition"
+                                                            title="Hapus Role">
+                                                        <x-heroicon-o-trash class="w-5 h-5" />
+                                                    </button>
+                                                </form>
                                             @endif
                                         </div>
                                     </td>
