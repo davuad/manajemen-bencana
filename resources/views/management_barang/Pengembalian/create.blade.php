@@ -312,7 +312,7 @@ document.getElementById('pengambilan').addEventListener('change', function () {
         return;
     }
 
-    // TAMPILKAN LOADING SEMENTARA
+    // TAMPILKAN LOADING
     document.getElementById('gridBarang').innerHTML = `
         <tr>
             <td colspan="5" class="text-center p-4 text-blue-500">
@@ -321,73 +321,73 @@ document.getElementById('pengambilan').addEventListener('change', function () {
         </tr>
     `;
 
-    // 2. FETCH KE ENDPOINT YANG BENAR (Menyesuaikan dengan nama method getPengambilan di Controller)
-   fetch("{{ url('admin/management-barang/pengembalian/get-pengambilan') }}/" + id)
-.then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        let html = '';
+    // 2. FETCH DATA (Menggunakan url dasar yang bersih)
+    let baseUrl = "{{ url('admin/management-barang/pengembalian/get-pengambilan') }}";
+    
+    fetch(`${baseUrl}/${id}`)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response status: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(data => {
+            let html = '';
 
-        if (!data || data.length === 0) {
-            html = `
+            if (!data || data.length === 0) {
+                html = `
+                    <tr>
+                        <td colspan="5" class="text-center p-4 text-red-500">
+                            Data barang tidak ditemukan
+                        </td>
+                    </tr>
+                `;
+                document.getElementById('gridBarang').innerHTML = html;
+                return;
+            }
+
+            // LOOP DATA GRUP BARANG
+            data.forEach((item, index) => {
+                html += `
+                    <tr class="border-t">
+                        <td class="p-3 text-center">${index + 1}</td>
+                        <td class="p-3">
+                            ${item.barang?.nama_barang ?? '-'}
+                            <input type="hidden" name="pengambilan_id[]" value="${item.id}">
+                        </td>
+                        <td class="p-3 text-center">
+                            ${item.barang?.satuan ?? '-'}
+                        </td>
+                        <td class="p-3 text-center">
+                            <span class="px-3 py-1 rounded-lg bg-blue-100 text-blue-700 font-semibold">
+                                ${item.jumlah_ambil}
+                            </span>
+                        </td>
+                        <td class="p-3 text-center">
+                            <input type="number" 
+                                   name="jumlah_kembali[]" 
+                                   min="0" 
+                                   max="${item.jumlah_ambil}" 
+                                   value="${item.jumlah_ambil}" 
+                                   class="border rounded-lg p-2 w-24 text-center"
+                                   required>
+                        </td>
+                    </tr>
+                `;
+            });
+
+            document.getElementById('gridBarang').innerHTML = html;
+        })
+        .catch(error => {
+            console.error("Error Detail:", error);
+            document.getElementById('gridBarang').innerHTML = `
                 <tr>
                     <td colspan="5" class="text-center p-4 text-red-500">
-                        Data barang tidak ditemukan
-                    </td>
-                </tr>
-            `;
-            document.getElementById('gridBarang').innerHTML = html;
-            return;
-        }
-
-        // LOOP DATA GRUP BARANG
-        data.forEach((item, index) => {
-            html += `
-                <tr class="border-t">
-                    <td class="p-3 text-center">
-                        ${index + 1}
-                    </td>
-                    <td class="p-3">
-                        ${item.barang?.nama_barang ?? '-'}
-                        <input type="hidden" name="pengambilan_id[]" value="${item.id}">
-                    </td>
-                    <td class="p-3 text-center">
-                        ${item.barang?.satuan ?? '-'}
-                    </td>
-                    <td class="p-3 text-center">
-                        <span class="px-3 py-1 rounded-lg bg-blue-100 text-blue-700 font-semibold">
-                            ${item.jumlah_ambil}
-                        </span>
-                    </td>
-                    <td class="p-3 text-center">
-                        <input type="number" 
-                               name="jumlah_kembali[]" 
-                               min="0" 
-                               max="${item.jumlah_ambil}" 
-                               value="${item.jumlah_ambil}" 
-                               class="border rounded-lg p-2 w-24 text-center"
-                               required>
+                        Terjadi kesalahan mengambil data (Gagal memuat API)
                     </td>
                 </tr>
             `;
         });
-
-        document.getElementById('gridBarang').innerHTML = html;
-    })
-    .catch(error => {
-        console.error("Error Detail:", error);
-        document.getElementById('gridBarang').innerHTML = `
-            <tr>
-                <td colspan="5" class="text-center p-4 text-red-500">
-                    Terjadi kesalahan mengambil data (Gagal memuat API)
-                </td>
-            </tr>
-        `;
-    });
 });
 </script>
 @endsection

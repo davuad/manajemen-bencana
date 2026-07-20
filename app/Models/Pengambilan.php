@@ -16,6 +16,7 @@ class Pengambilan extends Model
         'tanggal_pengambilan',
         'jumlah_ambil',
         'tujuan',
+        'gambar',
         'status'
     ];
 

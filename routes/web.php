@@ -215,9 +215,13 @@ Route::middleware(['auth', 'role:admin'])
             Route::resource('petugas', PetugasController::class);
             Route::resource('pengambilan', PengambilanController::class);
 
-            Route::get('pengembalian/get-pengambilan/{id}', [PengembalianController::class, 'getPengambilan'])
-                ->name('pengembalian.get_pengambilan');
+            Route::get('/pengambilan/{id}/cetak', [PengambilanController::class, 'cetak'])
+                ->name('admin.management_barang.pengambilan.cetak');
+            Route::get('/pengambilan/{id}/cetak', [PengambilanController::class, 'cetak'])
+                ->name('pengambilan.cetak');
 
+            Route::get('/pengembalian/get-pengambilan/{id}', [PengembalianController::class, 'getPengambilan'])
+                ->name('pengembalian.get_pengambilan');
             Route::resource('pengembalian', PengembalianController::class);
         });
 

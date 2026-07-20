@@ -204,10 +204,12 @@ public function store(Request $request)
 
 public function getPengambilan($id)
 {
-    // ambil data utama
-    $pengambilan = Pengambilan::findOrFail($id);
+    $pengambilan = Pengambilan::find($id);
 
-    // ambil semua group yang sama
+    if (!$pengambilan) {
+        return response()->json([]);
+    }
+
     $data = Pengambilan::with([
             'barang',
             'petugas',
