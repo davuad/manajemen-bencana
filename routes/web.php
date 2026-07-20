@@ -47,6 +47,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/demo-accounts', function () {
+    return view('auth.demo');
+})->name('demo-accounts');
+
 require __DIR__ . '/auth.php';
 
 Route::get('/dashboard', [DashboardController::class, 'index'])->middleware('verified')->name('dashboard');
