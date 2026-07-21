@@ -2,242 +2,349 @@
 
 @section('content')
 
-<div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
+    <div class="max-w-6xl mx-auto">
 
-```
-{{-- Header --}}
-<div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
-
-    <div>
-        <h2 class="text-2xl font-bold text-gray-800">
-            Form Pengaduan Bencana
-        </h2>
-
-        <p class="text-sm text-gray-500 mt-1">
-            Silakan lengkapi data pengaduan sesuai kondisi yang terjadi.
-        </p>
-    </div>
-
-    <a href="{{ route('user.pengaduan.index') }}"
-        class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2.5 rounded-xl text-sm font-medium transition">
-
-        Kembali
-
-    </a>
-
-</div>
-
-{{-- Error --}}
-@if ($errors->any())
-
-    <div class="mb-6 rounded-xl border border-red-300 bg-red-50 p-4">
-
-        <h5 class="font-semibold text-red-700 mb-2">
-            Terjadi Kesalahan
-        </h5>
-
-        <ul class="list-disc list-inside text-sm text-red-600">
-
-            @foreach ($errors->all() as $error)
-
-                <li>{{ $error }}</li>
-
-            @endforeach
-
-        </ul>
-
-    </div>
-
-@endif
-
-<form action="{{ route('user.pengaduan.store') }}"
-      method="POST"
-      enctype="multipart/form-data">
-
-    @csrf
-
-    {{-- DATA PELAPOR --}}
-    <div class="border rounded-xl p-6 mb-6">
-
-        <h3 class="text-lg font-semibold text-green-700 mb-5">
-            Data Pelapor
-        </h3>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {{-- Header --}}
+        <div class="flex flex-col md:flex-row justify-between items-center mb-6">
 
             <div>
 
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Nama Pelapor
-                </label>
+                <h2 class="text-2xl font-bold text-gray-800">
+                    Form Pengaduan Bencana
+                </h2>
 
-                <input
-                    type="text"
-                    value="{{ Auth::user()->nama }}"
-                    readonly
-                    class="w-full rounded-xl border-gray-300 bg-gray-100">
+                <p class="text-gray-500 mt-1">
+                    Lengkapi data pengaduan sesuai kondisi di lapangan.
+                </p>
 
             </div>
 
+            <a href="{{ route('user.pengaduan.index') }}"
+                class="mt-3 md:mt-0 bg-gray-600 hover:bg-gray-700 text-white px-5 py-2 rounded-lg">
+
+                Kembali
+
+            </a>
+
         </div>
 
-    </div>
+        {{-- Error --}}
+        @if ($errors->any())
 
-    {{-- DATA PENGADUAN --}}
-    <div class="border rounded-xl p-6 mb-6">
+            <div class="mb-6 bg-red-50 border border-red-300 rounded-lg p-4">
 
-        <h3 class="text-lg font-semibold text-indigo-700 mb-5">
-            Data Pengaduan
-        </h3>
+                <h5 class="font-semibold text-red-700 mb-2">
+                    Terjadi Kesalahan
+                </h5>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <ul class="list-disc list-inside text-red-600 text-sm">
 
-            <div>
+                    @foreach($errors->all() as $error)
 
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Kategori Bencana
-                </label>
-
-                <select
-                    name="kategori_id"
-                    required
-                    class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
-
-                    <option value="">
-                        Pilih Kategori
-                    </option>
-
-                    @foreach($kategori as $item)
-
-                        <option value="{{ $item->id }}"
-                            {{ old('kategori_id') == $item->id ? 'selected' : '' }}>
-
-                            {{ $item->nama_kategori }}
-
-                        </option>
+                        <li>{{ $error }}</li>
 
                     @endforeach
 
-                </select>
+                </ul>
 
             </div>
 
-            <div>
+        @endif
 
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Desa
-                </label>
+        <form action="{{ route('user.pengaduan.store') }}" method="POST" enctype="multipart/form-data">
 
-                <input
-                    type="text"
-                    name="desa"
-                    value="{{ old('desa') }}"
-                    required
-                    class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+            @csrf
+
+            {{-- DATA PELAPOR --}}
+            <div class="bg-white rounded-xl shadow border mb-6">
+
+                <div class="border-b px-6 py-4">
+
+                    <h4 class="font-semibold text-green-700">
+                        Data Pelapor
+                    </h4>
+
+                </div>
+
+                <div class="p-6">
+
+                    <div class="grid md:grid-cols-2 gap-5">
+
+                        <div>
+
+                            <label class="block mb-2 text-sm font-medium">
+                                Nama Pelapor
+                            </label>
+
+                            <input type="text" readonly value="{{ Auth::user()->nama }}"
+                                class="w-full rounded-lg bg-gray-100 border-gray-300">
+
+                        </div>
+
+                    </div>
+
+                </div>
 
             </div>
 
-        </div>
+            {{-- DATA PENGADUAN --}}
+            <div class="bg-white rounded-xl shadow border mb-6">
 
-        <div class="mt-6">
+                <div class="border-b px-6 py-4">
 
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-                Deskripsi Kejadian
-            </label>
+                    <h4 class="font-semibold text-indigo-700">
+                        Data Pengaduan
+                    </h4>
 
-            <textarea
-                name="deskripsi"
-                rows="6"
-                required
-                class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500"
-                placeholder="Jelaskan kondisi bencana yang terjadi...">{{ old('deskripsi') }}</textarea>
+                </div>
 
-        </div>
+                <div class="p-6">
 
-    </div>
+                    <div class="grid md:grid-cols-2 gap-5">
 
-    {{-- DOKUMENTASI --}}
-    <div class="border rounded-xl p-6 mb-6">
+                        <div>
 
-        <h3 class="text-lg font-semibold text-sky-700 mb-5">
-            Dokumentasi Bencana
-        </h3>
+                            <label class="block mb-2 text-sm font-medium">
+                                Kategori Bencana
+                            </label>
 
-        <div class="mb-5">
+                            <select name="kategori_id" class="w-full rounded-lg border-gray-300">
 
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-                Upload Foto
-            </label>
+                                <option value="">
+                                    -- Pilih Kategori --
+                                </option>
 
-            <input
-                type="file"
-                name="foto[]"
-                multiple
-                class="block w-full rounded-xl border border-gray-300 file:mr-4 file:rounded-lg file:border-0 file:bg-indigo-600 file:px-4 file:py-2 file:text-white hover:file:bg-indigo-700">
+                                @foreach($kategori as $item)
 
-            <p class="text-sm text-gray-500 mt-2">
-                Anda dapat mengunggah lebih dari satu foto.
-            </p>
+                                    <option value="{{ $item->id }}" {{ old('kategori_id') == $item->id ? 'selected' : '' }}>
 
-        </div>
+                                        {{ $item->nama_kategori }}
 
-        <div>
+                                    </option>
 
-            <label class="block text-sm font-medium text-gray-700 mb-2">
-                Keterangan Foto
-            </label>
+                                @endforeach
 
-            <input
-                type="text"
-                name="keterangan"
-                value="{{ old('keterangan') }}"
-                placeholder="Contoh: Kondisi rumah terdampak banjir"
-                class="w-full rounded-xl border-gray-300 focus:border-indigo-500 focus:ring-indigo-500">
+                            </select>
 
-        </div>
+                        </div>
 
-    </div>
+                        <div>
 
-    {{-- Informasi --}}
-    <div class="mb-6 rounded-xl border border-yellow-300 bg-yellow-50 p-4">
+                            <label class="block mb-2 text-sm font-medium">
+                                Desa
+                            </label>
 
-        <h5 class="font-semibold text-yellow-700 mb-2">
-            Perhatian
-        </h5>
+                            <select name="desa" class="w-full rounded-lg border-gray-300">
 
-        <ul class="list-disc list-inside text-sm text-yellow-700 space-y-1">
+                                <option value="">
+                                    -- Pilih Desa --
+                                </option>
 
-            <li>Pastikan data yang dilaporkan sesuai kondisi sebenarnya.</li>
+                                @foreach($desa as $item)
 
-            <li>Pengaduan akan diverifikasi oleh Kabid.</li>
+                                    <option value="{{ $item->nama_desa }}" {{ old('desa') == $item->nama_desa ? 'selected' : '' }}>
 
-            <li>Status pengaduan dapat dipantau melalui menu <strong>Pengaduan Saya</strong>.</li>
+                                        {{ $item->nama_desa }}
 
-        </ul>
+                                    </option>
 
-    </div>
+                                @endforeach
 
-    {{-- Tombol --}}
-    <div class="flex justify-end gap-3">
+                            </select>
 
-        <a href="{{ route('user.pengaduan.index') }}"
-            class="px-5 py-2.5 rounded-xl bg-gray-500 hover:bg-gray-600 text-white transition">
+                        </div>
 
-            Batal
+                    </div>
 
-        </a>
+                    <div class="mt-5">
+
+                        <label class="block mb-2 text-sm font-medium">
+                            Deskripsi Kejadian
+                        </label>
+
+                        <textarea rows="6" name="deskripsi" class="w-full rounded-lg border-gray-300"
+                            placeholder="Jelaskan kronologi bencana...">{{ old('deskripsi') }}</textarea>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+{{-- DOKUMENTASI --}}
+<div class="bg-white rounded-xl shadow border mb-6">
+
+    <div class="border-b px-6 py-4 flex justify-between items-center">
+
+        <h4 class="font-semibold text-blue-700">
+            Dokumentasi
+        </h4>
 
         <button
-            type="submit"
-            class="px-5 py-2.5 rounded-xl bg-indigo-700 hover:bg-indigo-800 text-white transition">
+            type="button"
+            id="tambahFile"
+            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg">
 
-            Kirim Pengaduan
+            + Tambah File
 
         </button>
 
     </div>
 
-</form>
+    <div class="p-6">
+
+        <div id="file-wrapper">
+
+            <div class="file-item flex items-center gap-3 mb-3">
+
+                <input
+                    type="file"
+                    name="foto[]"
+                    accept=".jpg,.jpeg,.png,.pdf"
+                    class="flex-1 rounded-lg border border-gray-300">
+
+                <button
+                    type="button"
+                    class="hapus bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg">
+
+                    Hapus
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <div class="mt-5">
+
+            <label class="block mb-2 text-sm font-medium">
+                Keterangan Dokumentasi
+            </label>
+
+            <textarea
+                name="keterangan"
+                rows="3"
+                class="w-full rounded-lg border-gray-300"
+                placeholder="Contoh: Dokumentasi kondisi rumah warga yang terdampak banjir.">{{ old('keterangan') }}</textarea>
+
+        </div>
+
+        <p class="text-sm text-gray-500 mt-3">
+            Format: JPG, JPEG, PNG, PDF (Maksimal 5 MB setiap file).
+        </p>
+
+    </div>
+
 </div>
+            {{-- INFORMASI --}}
+            <div class="bg-yellow-50 border border-yellow-300 rounded-lg p-5 mb-6">
+
+                <h4 class="font-semibold text-yellow-700 mb-3">
+                    Informasi
+                </h4>
+
+                <ul class="list-disc list-inside text-sm text-yellow-700 space-y-2">
+
+                    <li>
+                        Pastikan data yang dikirim sesuai kondisi sebenarnya.
+                    </li>
+
+                    <li>
+                        Pengaduan akan diverifikasi oleh Kabid.
+                    </li>
+
+                    <li>
+                        Status pengaduan dapat dipantau pada menu
+                        <strong>Pengaduan Saya</strong>.
+                    </li>
+
+                    <li>
+                        Anda dapat mengunggah beberapa foto maupun file PDF sekaligus sebagai dokumentasi pendukung.
+                    </li>
+
+                    <li>
+                        Notifikasi WhatsApp hanya akan dikirim apabila Administrator telah mengaktifkan dan mengatur nomor
+                        tujuan pada menu
+                        <strong>Pengaturan Notifikasi</strong>.
+                    </li>
+
+                </ul>
+
+            </div>
+
+            {{-- BUTTON --}}
+            <div class="flex justify-end gap-3">
+
+                <a href="{{ route('user.pengaduan.index') }}"
+                    class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded-lg transition">
+
+                    Batal
+
+                </a>
+
+                <button type="submit" class="bg-indigo-700 hover:bg-indigo-800 text-white px-6 py-2 rounded-lg transition">
+
+                    Kirim Pengaduan
+
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
 
 @endsection
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    document.getElementById('tambahFile').addEventListener('click', function () {
+
+        let html = `
+            <div class="file-item flex items-center gap-3 mb-3">
+
+                <input
+                    type="file"
+                    name="foto[]"
+                    accept=".jpg,.jpeg,.png,.pdf"
+                    class="flex-1 rounded-lg border border-gray-300">
+
+                <button
+                    type="button"
+                    class="hapus bg-red-600 hover:bg-red-700 text-white px-3 py-2 rounded-lg">
+
+                    Hapus
+
+                </button>
+
+            </div>
+        `;
+
+        document.getElementById('file-wrapper')
+            .insertAdjacentHTML('beforeend', html);
+
+    });
+
+    document.addEventListener('click', function(e){
+
+        if(e.target.classList.contains('hapus')){
+
+            const items = document.querySelectorAll('.file-item');
+
+            if(items.length > 1){
+
+                e.target.closest('.file-item').remove();
+
+            }else{
+
+                alert('Minimal harus ada satu file.');
+
+            }
+
+        }
+
+    });
+
+});
+</script>

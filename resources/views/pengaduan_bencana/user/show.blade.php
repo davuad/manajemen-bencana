@@ -124,10 +124,11 @@
 </div>
 
 {{-- Dokumentasi --}}
+{{-- Dokumentasi --}}
 <div class="border rounded-xl p-6">
 
     <h3 class="text-lg font-semibold text-sky-700 mb-5">
-        Dokumentasi Foto
+        Dokumentasi
     </h3>
 
     @if($data->foto->count())
@@ -136,21 +137,60 @@
 
             @foreach($data->foto as $foto)
 
+                @php
+                    $ext = strtolower(pathinfo($foto->file_foto, PATHINFO_EXTENSION));
+                @endphp
+
                 <div class="rounded-xl overflow-hidden border border-gray-200 shadow-sm">
 
-                    <img
-                        src="{{ asset('foto/' . $foto->file_foto) }}"
-                        class="w-full h-60 object-cover">
+                    @if(in_array($ext, ['jpg','jpeg','png']))
 
-                    <div class="p-4">
+                        <img
+                            src="{{ asset('foto/' . $foto->file_foto) }}"
+                            class="w-full h-60 object-cover">
 
-                        <p class="text-sm text-gray-600">
+                    @elseif($ext == 'pdf')
 
-                            {{ $foto->keterangan ?: '-' }}
+                        <div class="h-60 flex flex-col items-center justify-center bg-red-50">
 
-                        </p>
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                class="w-16 h-16 text-red-600"
+                                fill="currentColor"
+                                viewBox="0 0 24 24">
 
-                    </div>
+                                <path d="M6 2h8l4 4v16H6z"/>
+
+                            </svg>
+
+                            <p class="mt-3 text-sm font-medium text-gray-700">
+
+                                {{ $foto->file_foto }}
+
+                            </p>
+
+                            <div class="mt-4 flex gap-2">
+
+                                <a href="{{ asset('foto/'.$foto->file_foto) }}"
+                                    target="_blank"
+                                    class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-2 rounded-lg text-sm">
+
+                                    Lihat
+
+                                </a>
+
+                                <a href="{{ asset('foto/'.$foto->file_foto) }}"
+                                    download
+                                    class="bg-green-600 hover:bg-green-700 text-white px-3 py-2 rounded-lg text-sm">
+
+                                    Download
+
+                                </a>
+
+                            </div>
+
+                        </div>
+
+                    @endif
 
                 </div>
 
@@ -158,11 +198,26 @@
 
         </div>
 
+        {{-- Keterangan hanya sekali --}}
+        <div class="mt-6">
+
+            <p class="text-sm text-gray-500 mb-2">
+                Keterangan Dokumentasi
+            </p>
+
+            <div class="bg-gray-50 border rounded-xl p-4">
+
+                {{ $data->foto->first()->keterangan ?? '-' }}
+
+            </div>
+
+        </div>
+
     @else
 
         <div class="rounded-xl bg-yellow-50 border border-yellow-300 p-4 text-yellow-700">
 
-            Belum ada dokumentasi foto.
+            Belum ada dokumentasi.
 
         </div>
 

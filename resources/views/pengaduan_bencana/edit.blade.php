@@ -100,18 +100,32 @@
             </div>
 
             {{-- DESA --}}
-            <div class="mt-5">
+<div>
+    <label class="block text-sm font-medium text-gray-700 mb-2">
+        Desa
+    </label>
 
-                <label class="block text-sm font-medium text-gray-700 mb-2">
-                    Lokasi / Desa
-                </label>
+    <select name="desa_id"
+            class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-300 focus:outline-none"
+            required>
 
-                <input type="text"
-                       name="desa"
-                       value="{{ $data->desa }}"
-                       class="w-full border border-gray-300 rounded-xl px-4 py-2.5 focus:ring-2 focus:ring-indigo-300 focus:outline-none">
+        @foreach($desa as $d)
 
-            </div>
+            <option value="{{ $d->id }}"
+                {{ $data->desa == $d->nama_desa ? 'selected' : '' }}>
+
+                {{ $d->nama_desa }}
+
+            </option>
+
+        @endforeach
+
+    </select>
+
+    @error('desa_id')
+        <p class="text-red-500 text-sm mt-1">{{ $message }}</p>
+    @enderror
+</div>
 
             {{-- DESKRIPSI --}}
             <div class="mt-5">
@@ -199,55 +213,146 @@
 
         </div>
 
-        {{-- FOTO --}}
-        <div class="bg-gray-50 rounded-2xl border border-gray-100 p-5 mb-6">
+{{-- LAMPIRAN --}}
+<div class="bg-gray-50 rounded-2xl border border-gray-100 p-5 mb-6">
 
-            <h4 class="text-lg font-semibold text-gray-800 mb-5">
-                Foto Pengaduan
-            </h4>
+    <h4 class="text-lg font-semibold text-gray-800 mb-5">
+        Lampiran Pengaduan
+    </h4>
 
-            @if($data->foto && $data->foto->count() > 0)
+    @if($data->foto->count())
 
-                <div class="mb-5">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
 
-                    <img src="{{ asset('foto/'.$data->foto[0]->file_foto) }}"
-                         class="w-40 h-40 object-cover rounded-xl border shadow-sm">
+            @foreach($data->foto as $file)
+
+                @php
+                    $ext = strtolower(pathinfo($file->file_foto, PATHINFO_EXTENSION));
+                @endphp
+
+                <div class="bg-white border rounded-xl overflow-hidden shadow-sm">
+
+                    {{-- FOTO --}}
+                    @if(in_array($ext, ['jpg','jpeg','png','webp']))
+
+                        <img src="{{ asset('lampiran_pengaduan/'.$file->file_foto) }}"
+                             class="w-full h-36 object-cover">
+
+                    {{-- PDF --}}
+                    @elseif($ext == 'pdf')
+
+                        <div class="h-36 flex flex-col items-center justify-center bg-gray-100">
+
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 class="w-12 h-12 text-red-600"
+                                 fill="currentColor"
+                                 viewBox="0 0 24 24">
+
+                                <path d="M6 2h8l4 4v16H6z"/>
+
+                            </svg>
+
+                            <span class="text-sm mt-2 font-medium">
+                                PDF
+                            </span>
+
+                        </div>
+
+                    @endif
+
+                    <div class="p-3">
+
+                        <p class="text-xs text-gray-600 break-all mb-3">
+
+                            {{ $file->file_foto }}
+
+                        </p>
+
+                        @if($file->keterangan)
+
+                            <p class="text-xs text-gray-500 mb-3">
+
+                                {{ $file->keterangan }}
+
+                            </p>
+
+                        @endif
+
+                        <div class="flex gap-2">
+
+                            <a href="{{ asset('lampiran_pengaduan/'.$file->file_foto) }}"
+                               target="_blank"
+                               class="flex-1 bg-green-600 hover:bg-green-700 text-white text-center py-2 rounded-lg text-xs">
+
+                                Lihat
+
+                            </a>
+
+                            <a href="{{ asset('lampiran_pengaduan/'.$file->file_foto) }}"
+                               download
+                               class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white text-center py-2 rounded-lg text-xs">
+
+                                Download
+
+                            </a>
+
+                        </div>
+
+                    </div>
 
                 </div>
 
-            @endif
-
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-
-                <div>
-
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Upload Foto Baru
-                    </label>
-
-                    <input type="file"
-                           name="foto"
-                           id="file_foto"
-                           class="w-full border border-gray-300 rounded-xl px-4 py-2.5">
-
-                </div>
-
-                <div>
-
-                    <label class="block text-sm font-medium text-gray-700 mb-2">
-                        Keterangan Foto
-                    </label>
-
-                    <input type="text"
-                           name="keterangan_foto"
-                           value="{{ $data->foto[0]->keterangan ?? '' }}"
-                           class="w-full border border-gray-300 rounded-xl px-4 py-2.5">
-
-                </div>
-
-            </div>
+            @endforeach
 
         </div>
+
+    @else
+
+        <div class="bg-white border rounded-xl p-6 text-center text-gray-500">
+
+            Belum ada lampiran.
+
+        </div>
+
+    @endif
+
+    {{-- Upload Lampiran Baru --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+
+        <div>
+
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Tambah Lampiran
+            </label>
+
+            <input type="file"
+                   name="lampiran[]"
+                   multiple
+                   accept=".jpg,.jpeg,.png,.pdf"
+                   class="w-full border border-gray-300 rounded-xl px-4 py-2.5">
+
+            <p class="text-xs text-gray-500 mt-2">
+                Bisa memilih beberapa file sekaligus (JPG, PNG, PDF).
+            </p>
+
+        </div>
+
+        <div>
+
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+                Keterangan Lampiran
+            </label>
+
+            <input type="text"
+                   name="keterangan_foto"
+                   class="w-full border border-gray-300 rounded-xl px-4 py-2.5"
+                   placeholder="Opsional">
+
+        </div>
+
+    </div>
+
+</div>
 
         {{-- KEBUTUHAN --}}
         <div class="bg-gray-50 rounded-2xl border border-gray-100 p-5 mb-6">
