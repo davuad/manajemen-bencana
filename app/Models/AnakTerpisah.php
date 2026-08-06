@@ -10,21 +10,27 @@ class AnakTerpisah extends Model
 
     protected $fillable = [
         'nama_anak',
+        'bencana_id',
+        'nama_bapak',
+        'nama_ibu',
         'jenis_kelamin',
         'umur',
         'tanggal_lahir',
         'alamat_asal',
         'lokasi_ditemukan',
         'tanggal_ditemukan',
-        'nama_ortu_wali',
         'kontak_keluarga',
         'status_anak',
         'foto_anak',
-        'bencana_id',
     ];
 
     public function penjemputan()
     {
         return $this->hasOne(PenjemputanAnak::class, 'anak_id');
     }   
+
+    public function bencana()
+    {
+        return $this->belongsTo(Bencana::class, 'bencana_id');
+    }
 }

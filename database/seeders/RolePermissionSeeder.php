@@ -37,16 +37,19 @@ class RolePermissionSeeder extends Seeder
          */
 
         $admin = Role::firstOrCreate(['name' => 'admin']);
-        $user = User::create([
-            'nama' => 'Admin',
-            'foto' => 'users/foto-admin.jpg',
-            'deskripsi' => 'Administrator Sistem',
-            'email' => 'admin@admin.com',
-            'password' => bcrypt('admin123'),
-            'nik' => '1234567890123456',
-            'no_wa' => '081234567890',
-            'alamat' => 'Jl. Contoh Alamat No. 123, Kota Contoh',
-        ]);
+        $user = User::firstOrCreate(
+            ['email' => 'admin@admin.com'], // Kriteria pencarian
+            [
+                'nama' => 'Admin',
+                'foto' => 'users/foto-admin.jpg',
+                'deskripsi' => 'Administrator Sistem',
+                'password' => bcrypt('admin123'),
+                'nik' => '1234567890123456',
+                'no_wa' => '081234567890',
+                'alamat' => 'Jl. Contoh Alamat No. 123, Kota Contoh',
+            ]
+        );
+
         $user->assignRole($admin);
 
         $relawan = Role::firstOrCreate(['name' => 'relawan']);
@@ -54,6 +57,8 @@ class RolePermissionSeeder extends Seeder
         $kabid = Role::firstOrCreate(['name' => 'kabid']);
         $desa = Role::firstOrCreate(['name' => 'desa']);
         $ketua_tim = Role::firstOrCreate(['name' => 'ketua_tim']);
+        $pegawai = Role::firstOrCreate(['name' => 'pegawai']);
+        $petugas = Role::firstOrCreate(['name' => 'petugas']);
 
         $admin->givePermissionTo(Permission::all());
         $relawan->syncPermissions(['lihat pengaduan', 'buat pengaduan']);

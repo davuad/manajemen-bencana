@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Relawan;
 
 use App\Models\Desa;
 use Illuminate\Http\Request;

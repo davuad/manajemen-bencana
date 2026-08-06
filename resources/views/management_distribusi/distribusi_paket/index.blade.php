@@ -1,6 +1,9 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+        $routePrefix = request()->segment(1);
+    @endphp
     <div class="space-y-8">
 
         {{-- Header --}}
@@ -13,7 +16,7 @@
         <div class="bg-white rounded-xl shadow p-6">
 
 
-            <form method="GET" action="{{ route('admin.management_distribusi.distribusi_paket.index') }}">
+            <form method="GET" action="{{ route($routePrefix . '.management_distribusi.distribusi_paket.index') }}">
                 <div class="flex flex-wrap gap-4">
                     <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari No. KK / Nama..."
                         class="flex-1 min-w-[250px] border border-gray-300 rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
@@ -32,7 +35,7 @@
                         Filter
                     </button>
 
-                    <a href="{{ route('admin.management_distribusi.distribusi_paket.index') }}"
+                    <a href="{{ route($routePrefix . '.management_distribusi.distribusi_paket.index') }}"
                         class="bg-gray-200 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-300">
                         Reset
                     </a>
@@ -89,7 +92,9 @@
                             <th class="text-center">Bencana</th>
                             <th class="text-center">Jumlah Anggota</th>
                             <th class="text-center">Status Distribusi</th>
-                            <th class="text-center">Aksi</th>
+                            @hasanyrole('admin|pegawai')
+                                <th class="text-center">Aksi</th>
+                            @endhasanyrole
                         </tr>
                     </thead>
 
@@ -129,21 +134,25 @@
                                     @endif
                                 </td>
 
-                                <td class="p-3 text-center">
-                                    @if ($item->status_penyaluran == 'Belum diproses')
-                                        <a href="{{ route('admin.management_distribusi.distribusi_paket.create', ['warga_id' => $item->id]) }}"
-                                            class="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg text-xs hover:bg-slate-700">
-                                            <x-heroicon-o-truck class="w-4 h-4" />
-                                            <span>Distribusi Bantuan</span>
-                                        </a>
-                                    @elseif ($item->status_penyaluran == 'Proses Penyaluran')
-                                        <button type="button"
-                                            class="bg-gray-300 text-gray-600 px-4 py-2 rounded-lg text-xs cursor-not-allowed"
-                                            disabled>
-                                            Tidak Tersedia
-                                        </button>
-                                    @endif
-                                </td>
+                                @hasanyrole('admin|pegawai')
+                                    <td class="p-3 text-center">
+
+                                        @if ($item->status_penyaluran == 'Belum diproses')
+                                            <a href="{{ route($routePrefix . '.management_distribusi.distribusi_paket.create', ['warga_id' => $item->id]) }}"
+                                                class="inline-flex items-center gap-2 bg-slate-900 text-white px-4 py-2 rounded-lg text-xs hover:bg-slate-700">
+                                                <x-heroicon-o-truck class="w-4 h-4" />
+                                                <span>Distribusi Bantuan</span>
+                                            </a>
+                                        @elseif ($item->status_penyaluran == 'Proses Penyaluran')
+                                            <button type="button"
+                                                class="bg-gray-300 text-gray-600 px-4 py-2 rounded-lg text-xs cursor-not-allowed"
+                                                disabled>
+                                                Tidak Tersedia
+                                            </button>
+                                        @endif
+
+                                    </td>
+                                @endhasanyrole
                             </tr>
                         @empty
                             <tr>
@@ -178,6 +187,38 @@
                 </p>
             </div>
 
+            <div class="flex justify mb-4">
+                <form method="GET" action="{{ route($routePrefix . '.management_distribusi.distribusi_paket.index') }}"
+                    class="flex flex-wrap items-end gap-4 mb-4">
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Tanggal Awal
+                        </label>
+                        <input type="date" name="tanggal_awal" value="{{ request('tanggal_awal') }}"
+                            class="border border-gray-300 rounded-lg px-4 py-2">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">
+                            Tanggal Akhir
+                        </label>
+                        <input type="date" name="tanggal_akhir" value="{{ request('tanggal_akhir') }}"
+                            class="border border-gray-300 rounded-lg px-4 py-2">
+                    </div>
+
+                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+                        Filter
+                    </button>
+
+                    <a href="{{ route($routePrefix . '.management_distribusi.distribusi_paket.index') }}"
+                        class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-400">
+                        Reset
+                    </a>
+
+                </form>
+            </div>
+
             <div class="overflow-x-auto">
                 <table class="w-full text-sm min-w-[1300px]">
                     <thead class="bg-gray-100">
@@ -209,7 +250,7 @@
                                 <td class="p-3 text-center">
                                     {{ $item->tanggal_distribusi ? \Carbon\Carbon::parse($item->tanggal_distribusi)->format('d-m-Y') : '-' }}
                                 </td>
-                                <td class="p-3 pl-4">{{ $item->pegawai->nama_pegawai ?? '-' }}</td>
+                                <td class="p-3 pl-4">{{ $item->petugas->nama_petugas ?? '-' }}</td>
 
                                 <td class="p-3 text-center">
                                     @if ($item->status_distribusi == 'Proses Penyaluran')
@@ -233,7 +274,7 @@
                                     <div class="flex justify-center items-center gap-2">
 
                                         {{-- DETAIL --}}
-                                        <a href="{{ route('admin.management_distribusi.distribusi_paket.show', $item->id) }}"
+                                        <a href="{{ route($routePrefix . '.management_distribusi.distribusi_paket.show', $item->id) }}"
                                             class="inline-flex items-center gap-1 bg-blue-500 hover:bg-blue-600 text-white px-3 py-1.5 rounded-md text-xs">
                                             <x-heroicon-o-eye class="w-4 h-4" />
                                             Detail
@@ -241,17 +282,24 @@
 
                                         {{-- SELESAI --}}
                                         @if ($item->status_distribusi == 'Proses Penyaluran')
-                                            <form
-                                                action="{{ route('admin.management_distribusi.distribusi_paket.selesai', $item->id) }}"
-                                                method="POST">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit"
-                                                    class="inline-flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs">
-                                                    <x-heroicon-o-check class="w-4 h-4" />
-                                                    Selesai
-                                                </button>
-                                            </form>
+                                            @hasanyrole('admin|petugas')
+                                                <form
+                                                    action="{{ route($routePrefix . '.management_distribusi.distribusi_paket.selesai', $item->id) }}"
+                                                    method="POST">
+
+                                                    @csrf
+                                                    @method('PATCH')
+
+                                                    <button type="submit"
+                                                        class="inline-flex items-center gap-1 bg-green-600 hover:bg-green-700 text-white px-3 py-1.5 rounded-md text-xs">
+
+                                                        <x-heroicon-o-check class="w-4 h-4" />
+                                                        Selesai
+
+                                                    </button>
+
+                                                </form>
+                                            @endhasanyrole
                                         @endif
 
                                     </div>

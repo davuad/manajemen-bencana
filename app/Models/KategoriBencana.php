@@ -21,6 +21,11 @@ class KategoriBencana extends Model
     {
         return $this->hasMany(WargaTerdampak::class, 'kategori_id', 'id');
     }
+
+        public function bencana()
+    {
+        return $this->hasMany(Bencana::class, 'kategori_id');
+    }
 }
     // Relasi ke tabel bencana (1 kategori punya banyak bencana)
     // public function bencana()

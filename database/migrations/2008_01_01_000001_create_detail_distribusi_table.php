@@ -9,21 +9,24 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('detail_distribusi', function (Blueprint $table) {
-    $table->id();
 
-    $table->foreignId('distribusi_id')
-        ->constrained('distribusi')
-        ->onDelete('cascade');
+            $table->id();
 
-    $table->foreignId('barang_keluar_id')
-        ->constrained('barang_keluar')
-        ->onDelete('cascade');
+            $table->foreignId('distribusi_id')
+                ->constrained('distribusi')
+                ->onDelete('cascade');
 
-    $table->integer('jumlah_kirim');
-    $table->string('satuan');
+            // DIUBAH
+            $table->foreignId('detail_barang_keluar_id')
+                ->constrained('detail_barang_keluar')
+                ->onDelete('cascade');
 
-    $table->timestamps();
-});
+            $table->integer('jumlah_kirim');
+
+            $table->string('satuan');
+
+            $table->timestamps();
+        });
     }
 
     public function down(): void

@@ -24,4 +24,9 @@ class Desa extends Model
     {
         return $this->hasMany(Posko::class, 'id_desa');
     }
+
+    public function pengaduan()
+    {
+        return $this->hasMany(PengaduanBencana::class);
+    }
 }

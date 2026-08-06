@@ -1,6 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
+@php $routePrefix = auth()->user()->hasRole('admin') ? 'admin' : 'pegawai'; @endphp
 <div class="mx-3">
     <h2 class="text-xl font-bold">Detail Data Distribusi</h2>
     <p class="text-gray-500 text-sm">
@@ -16,14 +17,14 @@
         <div>
             <label>Bencana</label>
             <input type="text"
-                value="{{ $distribusi->bencana->nama_bencana ?? '-' }}"
+                value="{{ optional($distribusi->bencana)->nama_bencana ?? '-' }}"
                 class="w-full border rounded-lg p-3 bg-gray-100" readonly>
         </div>
 
         <div>
             <label>Posko</label>
             <input type="text"
-                value="{{ $distribusi->posko->nama_posko ?? '-' }}"
+                value="{{ optional($distribusi->posko)->nama_posko ?? '-' }}"
                 class="w-full border rounded-lg p-3 bg-gray-100" readonly>
         </div>
 
@@ -41,7 +42,6 @@
                 class="w-full border rounded-lg p-3 bg-gray-100" readonly>
         </div>
 
-        <!-- ✅ DESA (SAMA SEPERTI EDIT - SAFE RELATION) -->
         <div>
             <label>Desa Posko</label>
             <input type="text"
@@ -78,7 +78,6 @@
                 class="w-full border rounded-lg p-3 bg-gray-100" readonly>
         </div>
 
-        <!-- ✅ STATUS (DISAMAKAN DENGAN EDIT - SELECT STYLE) -->
         <div>
             <label>Status</label>
             <select class="w-full border rounded-lg p-3 bg-gray-100" disabled>
@@ -95,7 +94,8 @@
         <label>Keterangan</label>
         <textarea
             class="w-full border rounded-lg p-3 bg-gray-100"
-            rows="3" readonly>{{ $distribusi->keterangan }}</textarea>
+            rows="3"
+            readonly>{{ $distribusi->keterangan }}</textarea>
     </div>
 
     <!-- ================= DETAIL BARANG ================= -->
@@ -114,41 +114,48 @@
             </thead>
 
             <tbody>
-                @forelse($distribusi->detailDistribusis as $detail)
-                    <tr class="hover:bg-gray-50">
 
-                        <td class="border p-3">
-                            {{ $detail->barangKeluar?->barang?->nama_barang ?? '-' }}
-                        </td>
+            @forelse($distribusi->detailDistribusis as $detail)
 
-                        <td class="border p-3 text-center">
-                            {{ $detail->barangKeluar->jumlah ?? 0 }}
-                        </td>
+                <tr>
 
-                        <td class="border p-3 text-center">
-                            {{ $detail->jumlah_kirim }}
-                        </td>
+                    <td class="border p-3">
+                        {{ optional(optional($detail->detailBarangKeluar)->barang)->nama_barang ?? '-' }}
+                    </td>
 
-                        <td class="border p-3 text-center">
-                            {{ $detail->barangKeluar?->barang?->satuan ?? '-' }}
-                        </td>
+                    <td class="border p-3 text-center">
+                        {{ optional($detail->detailBarangKeluar)->jumlah_keluar ?? 0 }}
+                    </td>
 
-                    </tr>
-                @empty
-                    <tr>
-                        <td colspan="4" class="border p-3 text-center text-gray-500">
-                            Tidak ada data
-                        </td>
-                    </tr>
-                @endforelse
+                    <td class="border p-3 text-center">
+                        {{ $detail->jumlah_kirim }}
+                    </td>
+
+                    <td class="border p-3 text-center">
+                        {{ optional(optional($detail->detailBarangKeluar)->barang)->satuan ?? $detail->satuan }}
+                    </td>
+
+                </tr>
+
+            @empty
+
+                <tr>
+                    <td colspan="4" class="border p-4 text-center text-gray-500">
+                        Tidak ada data
+                    </td>
+                </tr>
+
+            @endforelse
+
             </tbody>
+
         </table>
 
     </div>
 
     <!-- BUTTON -->
     <div class="flex justify-end gap-3 mt-6">
-        <a href="{{ route('admin.management_distribusi.distribusi.index') }}"
+        <a href="{{ route($routePrefix . '.management_distribusi.distribusi.index') }}"
            class="px-4 py-2 bg-gray-300 rounded-lg">
             Kembali
         </a>

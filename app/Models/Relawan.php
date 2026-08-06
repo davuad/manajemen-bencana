@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Relawan extends Model
 {
     protected $table = 'relawan';
+
     protected $primaryKey = 'id_relawan';
 
     protected $fillable = [
@@ -14,6 +15,7 @@ class Relawan extends Model
         'jenis_psks',
         'kecamatan',
         'no_hp',
-        'alamat'
+        'alamat',
+        'foto',
     ];
 }

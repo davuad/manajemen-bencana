@@ -3,6 +3,7 @@
 @section('title', 'Data Warga Terdampak')
 
 @section('content')
+@php $userRole = auth()->user()->roles->first()->name ?? 'admin'; @endphp
     <div class="space-y-6">
         {{-- Breadcrumb --}}
         <div class="text-sm text-gray-500">
@@ -29,19 +30,21 @@
                         Data Warga Terdampak Wilayah Kabupaten Cilacap
                     </p>
                 </div>
-
-                <div>
-                    <a href="{{ route('admin.warga.create') }}"
-                        class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-800">
-                        <span>+</span>
-                        Tambah Data Warga Terdampak
-                    </a>
-                </div>
+                @if ($userRole !== 'kabid')
+                    <div>
+                        <a href="{{ route($userRole . '.warga.create') }}"
+                            class="inline-flex items-center justify-center gap-2 rounded-xl bg-indigo-700 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-800">
+                            <span>+</span>
+                            Tambah Data Warga Terdampak
+                        </a>
+                    </div>
+                    @endif
+                
             </div>
 
             {{-- Filter --}}
             <div class="border-b border-gray-100 px-6 py-5">
-                <form action="{{ route('admin.warga.index') }}" method="GET"
+                <form action="{{ route($userRole . '.warga.index') }}" method="GET"
                     class="grid grid-cols-1 gap-3 xl:grid-cols-12">
                     {{-- Search --}}
                     <div class="xl:col-span-4">
@@ -99,7 +102,7 @@
                             Filter
                         </button>
 
-                        <a href="{{ route('admin.warga.index') }}"
+                        <a href="{{ route($userRole . '.warga.index') }}"
                             class="inline-flex items-center justify-center rounded-xl border border-gray-200 bg-white px-4 py-2.5 text-sm font-medium text-gray-700 transition hover:bg-gray-50 w-full">
                             Reset
                         </a>
@@ -127,7 +130,7 @@
                     <tbody class="divide-y divide-gray-100 bg-white">
                         @forelse ($warga as $item)
                             <tr class="cursor-pointer transition hover:bg-gray-50"
-                                data-url="{{ route('admin.warga.detail', $item->id) }}">
+                                data-url="{{ route($userRole . '.warga.show', $item->id) }}">
                                 <td class="px-4 py-4 text-sm text-gray-700">
                                     {{ ($warga->currentPage() - 1) * $warga->perPage() + $loop->iteration }}.
                                 </td>
@@ -151,55 +154,76 @@
                                     {{ $item->jenis_bantuan }}
                                 </td>
                                 <td class="px-4 py-4 text-sm text-gray-700" onclick="event.stopPropagation()">
-                                    @if ($item->status_penyaluran == 'Belum diproses')
-                                        <button type="button"
-                                            class="status-btn inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-600 transition hover:bg-red-200"
-                                            data-url="{{ route('admin.warga.ubahStatus', $item->id) }}"
-                                            data-nama="{{ $item->nama_kepala_keluarga }}" data-next="Proses Penyaluran">
-                                            Belum Diproses
-                                        </button>
-                                    @elseif ($item->status_penyaluran == 'Proses Penyaluran')
-                                        <button type="button"
-                                            class="status-btn inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-600 transition hover:bg-blue-200"
-                                            data-url="{{ route('admin.warga.ubahStatus', $item->id) }}"
-                                            data-nama="{{ $item->nama_kepala_keluarga }}" data-next="Sudah Disalurkan">
-                                            Proses Penyaluran
-                                        </button>
-                                    @elseif ($item->status_penyaluran == 'Sudah disalurkan')
-                                        <span
-                                            class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-600">
-                                            Sudah Disalurkan
-                                        </span>
+                                    @if ($userRole === 'kabid')
+                                        {{-- Kabid: read-only badge --}}
+                                        @if ($item->status_penyaluran == 'Belum diproses')
+                                            <span class="inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-600">
+                                                Belum Diproses
+                                            </span>
+                                        @elseif ($item->status_penyaluran == 'Proses Penyaluran')
+                                            <span class="inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-600">
+                                                Proses Penyaluran
+                                            </span>
+                                        @elseif ($item->status_penyaluran == 'Sudah disalurkan')
+                                            <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-600">
+                                                Sudah Disalurkan
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
+                                                {{ $item->status_penyaluran }}
+                                            </span>
+                                        @endif
                                     @else
-                                        <span
-                                            class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
-                                            {{ $item->status_penyaluran }}
-                                        </span>
+                                        {{-- Role lain: bisa diklik untuk ubah status --}}
+                                        @if ($item->status_penyaluran == 'Belum diproses')
+                                            <button type="button"
+                                                class="status-btn inline-flex items-center rounded-full bg-red-100 px-3 py-1 text-xs font-semibold text-red-600 transition hover:bg-red-200"
+                                                data-url="{{ route($userRole . '.warga.ubahStatus', $item->id) }}"
+                                                data-nama="{{ $item->nama_kepala_keluarga }}" data-next="Proses Penyaluran">
+                                                Belum Diproses
+                                            </button>
+                                        @elseif ($item->status_penyaluran == 'Proses Penyaluran')
+                                            <button type="button"
+                                                class="status-btn inline-flex items-center rounded-full bg-blue-100 px-3 py-1 text-xs font-semibold text-blue-600 transition hover:bg-blue-200"
+                                                data-url="{{ route($userRole . '.warga.ubahStatus', $item->id) }}"
+                                                data-nama="{{ $item->nama_kepala_keluarga }}" data-next="Sudah Disalurkan">
+                                                Proses Penyaluran
+                                            </button>
+                                        @elseif ($item->status_penyaluran == 'Sudah disalurkan')
+                                            <span class="inline-flex items-center rounded-full bg-green-100 px-3 py-1 text-xs font-semibold text-green-600">
+                                                Sudah Disalurkan
+                                            </span>
+                                        @else
+                                            <span class="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold text-gray-600">
+                                                {{ $item->status_penyaluran }}
+                                            </span>
+                                        @endif
                                     @endif
                                 </td>
-                                <td class="aksi-cell px-4 py-4 text-center" onclick="event.stopPropagation()">
-                                    <div class="flex items-center justify-center gap-2">
-                                        <a href="{{ route('admin.warga.edit', $item->id) }}"
-                                            class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-600 transition hover:bg-blue-50"
-                                            title="Edit">
-                                            ✏️
-                                        </a>
-
-                                        <button type="button"
-                                            class="delete-btn inline-flex h-9 w-9 items-center justify-center rounded-lg text-red-600 transition hover:bg-red-50"
-                                            title="Hapus" data-url="{{ route('admin.warga.delete', $item->id) }}"
-                                            data-nama="{{ $item->nama_kepala_keluarga }}">
-                                            🗑️
-                                        </button>
-                                    </div>
-                                </td>
+                                    @if ($userRole !== 'kabid')
+                                    <td class="aksi-cell px-4 py-4 text-center" onclick="event.stopPropagation()">
+                                        <div class="flex items-center justify-center gap-2">
+                                            <a href="{{ route($userRole . '.warga.edit', $item->id) }}"
+                                                class="inline-flex h-9 w-9 items-center justify-center rounded-lg text-blue-600 transition hover:bg-blue-50"
+                                                title="Edit">
+                                                ✏️
+                                            </a>
+                                            <button type="button"
+                                                class="delete-btn inline-flex h-9 w-9 items-center justify-center rounded-lg text-red-600 transition hover:bg-red-50"
+                                                title="Hapus" data-url="{{ route($userRole . '.warga.destroy', $item->id) }}"
+                                                data-nama="{{ $item->nama_kepala_keluarga }}">
+                                                🗑️
+                                            </button>
+                                        </div>
+                                    </td>
+                                    @endif
                             </tr>
-                        @empty
-                            <tr>
-                                <td colspan="9" class="px-4 py-10 text-center text-sm text-gray-500">
-                                    Data warga terdampak belum ada.
-                                </td>
-                            </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="{{ $userRole === 'kabid' ? 8 : 9 }}" class="px-4 py-10 text-center text-sm text-gray-500">
+                                        Data warga terdampak belum ada.
+                                    </td>
+                                </tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -246,7 +270,9 @@
                     Batal
                 </button>
 
-                <form id="deleteForm" method="GET">
+                <form id="deleteForm" method="POST">
+                    @csrf
+                    @method('DELETE')
                     <button type="submit"
                         class="rounded-xl bg-red-600 px-4 py-2 text-sm font-medium text-white hover:bg-red-700">
                         Hapus

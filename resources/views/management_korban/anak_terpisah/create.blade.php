@@ -1,13 +1,16 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $prefix = auth()->user()->hasRole('petugas') ? 'petugas' : 'admin';
+@endphp
 <div class="bg-slate-200 min-h-screen p-4 md:p-6">
 
     {{-- Header --}}
     <div class="bg-white px-6 py-4 flex items-center justify-between mb-6">
         <h1 class="text-2xl font-bold text-black">Form Anak Terpisah</h1>
 
-        <a href="{{ route('admin.anak_terpisah.index') }}"
+        <a href="{{ route($prefix.'.anak_terpisah.index') }}"
            class="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-3 rounded-lg shadow">
             Kembali
         </a>
@@ -24,137 +27,204 @@
         </div>
     @endif
 
-    <form action="{{ route('admin.anak_terpisah.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route($prefix.'.anak_terpisah.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
 
-        <div class="bg-white p-6 md:p-10">
+      <div class="bg-white p-6 md:p-10">
+    {{-- BAGIAN ATAS --}}
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
 
-            {{-- Atas --}}
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-8">
+        {{-- FOTO --}}
+        <div class="md:col-span-3 flex flex-col items-center">
 
-                {{-- Foto --}}
-                <div class="md:col-span-3 flex flex-col items-center">
+            <div class="w-48 h-48 border-4 border-black flex items-center justify-center overflow-hidden">
+                <img id="preview-foto"
+                    class="hidden w-full h-full object-cover">
 
-                    <div class="w-44 h-44 border-[6px] border-black flex items-center justify-center overflow-hidden bg-white">
-                        <img id="preview-foto"
-                             class="hidden w-full h-full object-cover">
-
-                        <div id="placeholder-foto" class="text-center">
-                            📷
-                        </div>
-                    </div>
-
-                    <label class="mt-4 cursor-pointer bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg">
-                        Upload Foto
-                        <input type="file" name="foto_anak" id="foto_anak"
-                               class="hidden" accept=".jpg,.jpeg,.png" required>
-                    </label>
-                </div>
-
-                {{-- Nama --}}
-                <div class="md:col-span-9 space-y-4 max-w-xl">
-
-                    <div>
-                        <label class="block font-semibold mb-2">Nama Anak</label>
-                        <input type="text" name="nama_anak"
-                               value="{{ old('nama_anak') }}"
-                               class="w-full border rounded-xl px-4 py-3"
-                               required>
-                    </div>
-
-                    <div>
-                        <label class="block font-semibold mb-2">Nama Orangtua / Wali</label>
-                        <input type="text" name="nama_ortu_wali"
-                               value="{{ old('nama_ortu_wali') }}"
-                               class="w-full border rounded-xl px-4 py-3">
-                    </div>
-
+                <div id="placeholder-foto" class="text-6xl">
+                    👤
                 </div>
             </div>
 
-            <div class="border-t my-8"></div>
+            <label class="mt-3 cursor-pointer bg-indigo-600 text-white px-4 py-2 rounded-lg">
+                Upload Foto
+                <input type="file"
+                    name="foto_anak"
+                    id="foto_anak"
+                    class="opacity-0 absolute w-0 h-0"
+                    accept=".jpg,.jpeg,.png"
+                    required>
+            </label>
 
-            {{-- Bawah --}}
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+        </div>
 
-                {{-- Kiri --}}
-                <div class="space-y-5">
+        {{-- FORM KANAN --}}
+        <div class="md:col-span-9 space-y-4">
 
-                    <div>
-                        <label class="font-semibold">Jenis Kelamin</label>
-                        <div class="flex gap-6 mt-2">
-                            <label><input type="radio" name="jenis_kelamin" value="L"> Laki-laki</label>
-                            <label><input type="radio" name="jenis_kelamin" value="P"> Perempuan</label>
-                        </div>
-                    </div>
+            <div>
+                <label class="block font-medium">Bencana *</label>
 
-                    <div>
-                        <label class="font-semibold">Umur</label>
-                        <input type="number" name="umur"
-                               value="{{ old('umur') }}"
-                               class="w-full border rounded-xl px-4 py-3">
-                    </div>
+                <select name="bencana_id"
+                        class="w-full border rounded-lg p-3"
+                        required>
 
-                    <div>
-                        <label class="font-semibold">Tanggal Lahir</label>
-                        <input type="date" name="tanggal_lahir"
-                               class="w-full border rounded-xl px-4 py-3">
-                    </div>
+                    <option value="">Pilih Bencana</option>
 
-                    <div>
-                        <label class="font-semibold">Tanggal Ditemukan</label>
-                        <input type="date" name="tanggal_ditemukan"
-                               class="w-full border rounded-xl px-4 py-3"
-                               required>
-                    </div>
+                    @foreach($bencana as $b)
+                        <option value="{{ $b->id }}"
+                            {{ old('bencana_id') == $b->id ? 'selected' : '' }}>
+                            {{ $b->nama_bencana }}
+                        </option>
+                    @endforeach
 
-                </div>
-
-                {{-- Kanan --}}
-                <div class="space-y-5">
-
-                    <div>
-                        <label class="font-semibold">Lokasi Ditemukan</label>
-                        <textarea name="lokasi_ditemukan"
-                                  class="w-full border rounded-xl px-4 py-3"
-                                  required></textarea>
-                    </div>
-
-                    <div>
-                        <label class="font-semibold">Alamat Asal</label>
-                        <textarea name="alamat_asal"
-                                  class="w-full border rounded-xl px-4 py-3"></textarea>
-                    </div>
-
-                    <div>
-                        <label class="font-semibold">Kontak Keluarga</label>
-                        <input type="text" name="kontak_keluarga"
-                               class="w-full border rounded-xl px-4 py-3">
-                    </div>
-
-                    <div>
-                        <label class="font-semibold">Status Anak</label>
-                        <select name="status_anak"
-                                class="w-full border rounded-xl px-4 py-3">
-                            <option value="belum_dijemput">Belum Dijemput</option>
-                            <option value="dalam_proses">Dalam Proses</option>
-                            <option value="sudah_dijemput">Sudah Dijemput</option>
-                        </select>
-                    </div>
-
-                </div>
+                </select>
             </div>
 
-            {{-- Submit --}}
-            <div class="flex justify-end mt-10">
-                <button class="bg-green-500 hover:bg-green-600 text-white px-10 py-3 rounded-lg">
-                    Simpan
-                </button>
+            <div>
+                <label class="block font-medium">Nama Anak *</label>
+                <input type="text"
+                    name="nama_anak"
+                    value="{{ old('nama_anak') }}"
+                    class="w-full border rounded-lg p-3"
+                    required>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+
+                <div>
+                    <label class="block font-medium">Nama Bapak</label>
+                    <input type="text"
+                        name="nama_bapak"
+                        value="{{ old('nama_bapak') }}"
+                        class="w-full border rounded-lg p-3">
+                </div>
+
+                <div>
+                    <label class="block font-medium">Nama Ibu</label>
+                    <input type="text"
+                        name="nama_ibu"
+                        value="{{ old('nama_ibu') }}"
+                        class="w-full border rounded-lg p-3">
+                </div>
+
             </div>
 
         </div>
-    </form>
-</div>
+
+    </div>
+
+    <hr class="my-8">
+
+    {{-- BAGIAN BAWAH --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+
+        {{-- KOLOM KIRI --}}
+        <div class="space-y-4 md:border-r md:pr-8">
+
+            <div>
+                <label class="block font-medium mb-2">Jenis Kelamin</label>
+
+                <div class="flex gap-6">
+                    <label>
+                        <input type="radio" name="jenis_kelamin" value="L">
+                        Laki-Laki
+                    </label>
+
+                    <label>
+                        <input type="radio" name="jenis_kelamin" value="P">
+                        Perempuan
+                    </label>
+                </div>
+            </div>
+
+            <div>
+                <label class="block font-medium">Umur</label>
+                <input type="number"
+                    name="umur"
+                    value="{{ old('umur') }}"
+                    class="w-full border rounded-lg p-3">
+            </div>
+
+            <div>
+                <label class="block font-medium">Tanggal Lahir</label>
+                <input type="date"
+                    name="tanggal_lahir"
+                    class="w-full border rounded-lg p-3">
+            </div>
+
+            <div>
+                <label class="block font-medium">Tanggal Ditemukan</label>
+                <input type="date"
+                    name="tanggal_ditemukan"
+                    class="w-full border rounded-lg p-3"
+                    required>
+            </div>
+
+        </div>
+
+        {{-- KOLOM KANAN --}}
+        <div class="space-y-4">
+
+            <div>
+                <label class="block font-medium">Lokasi Ditemukan</label>
+                <textarea
+                    name="lokasi_ditemukan"
+                    rows="3"
+                    class="w-full border rounded-lg p-3"
+                    required></textarea>
+            </div>
+
+            <div>
+                <label class="block font-medium">Alamat Asal</label>
+                <textarea
+                    name="alamat_asal"
+                    rows="3"
+                    class="w-full border rounded-lg p-3"></textarea>
+            </div>
+
+            <div>
+                <label class="block font-medium">Kontak Keluarga</label>
+                <input type="text"
+                    name="kontak_keluarga"
+                    class="w-full border rounded-lg p-3">
+            </div>
+
+            <div>
+                <label class="block font-medium">Status Anak</label>
+                <select name="status_anak"
+                    class="w-full border rounded-lg p-3">
+
+                    <option value="belum_dijemput">Belum Dijemput</option>
+                    <option value="dalam_proses">Dalam Proses</option>
+                    <option value="sudah_dijemput">Sudah Dijemput</option>
+
+                </select>
+            </div>
+
+        </div>
+
+    </div>
+
+        {{-- BUTTON --}}
+    <div class="flex justify-end gap-3 mt-8">
+
+        <a href="{{ route($prefix.'.anak_terpisah.index') }}"
+            class="px-4 py-2 bg-gray-300 rounded-lg">
+            Batal
+        </a>
+
+        <button type="submit"
+            class="px-6 py-2 bg-indigo-700 text-white rounded-lg">
+            Simpan Data
+        </button>
+
+    </div>
+
+</div> {{-- tutup bg-white --}}
+
+</form>
+
+</div> {{-- tutup bg-slate-200 --}}
 
 {{-- Preview Foto --}}
 <script>

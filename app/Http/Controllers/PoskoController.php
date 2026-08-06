@@ -7,6 +7,7 @@ use App\Models\Desa;
 use App\Models\PengaduanBencana;
 use App\Models\Posko;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PoskoController extends Controller
 {
@@ -33,7 +34,7 @@ class PoskoController extends Controller
         return view('management_posko.posko.index', compact('posko', 'desa', 'bencana'));
     }
 
-    public function create()
+    public function create($role)
     {
         $desa = Desa::all();
         $bencana = Bencana::all();
@@ -42,7 +43,7 @@ class PoskoController extends Controller
         return view('management_posko.posko.create', compact('desa', 'pengaduan', 'bencana'));
     }
 
-    public function store(Request $request)
+    public function store(Request $request, $role)
     {
         $request->validate([
             'nama_posko' => 'required|max:100',
@@ -51,7 +52,14 @@ class PoskoController extends Controller
             'bencana_id' => 'required|exists:bencana,id',
             'pengaduan_bencana_id' => 'required|exists:pengaduan_bencana,id',
             'lokasi' => 'required',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
+
+        $foto = null;
+
+        if ($request->hasFile('foto')) {
+            $foto = $request->file('foto')->store('posko', 'public');
+        }
 
         Posko::create([
             'nama_posko' => $request->nama_posko,
@@ -60,15 +68,15 @@ class PoskoController extends Controller
             'bencana_id' => $request->bencana_id,
             'pengaduan_bencana_id' => $request->pengaduan_bencana_id,
             'lokasi' => $request->lokasi,
-            'status' => 'aktif'
+            'status' => 'aktif',
+            'foto' => $foto,
         ]);
 
-
-        return redirect()->route('admin.management_posko.posko.index')
+        return redirect()->route('management_posko.posko.index', ['role' => $role])
             ->with('success', 'Data posko berhasil ditambahkan');
     }
 
-    public function edit($id)
+    public function edit($role, $id)
     {
         $posko = Posko::findOrFail($id);
         $desa = Desa::all();
@@ -78,7 +86,7 @@ class PoskoController extends Controller
         return view('management_posko.posko.edit', compact('posko', 'desa', 'pengaduan', 'bencana'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $role, $id)
     {
         $request->validate([
             'nama_posko' => 'required|max:100',
@@ -87,10 +95,21 @@ class PoskoController extends Controller
             'bencana_id' => 'required|exists:bencana,id',
             'pengaduan_bencana_id' => 'required|exists:pengaduan_bencana,id',
             'lokasi' => 'required',
-            'status' => 'required|in:aktif,tidak aktif'
+            'status' => 'required|in:aktif,tidak aktif',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $posko = Posko::findOrFail($id);
+
+        $foto = $posko->foto;
+
+        if ($request->hasFile('foto')) {
+            if ($posko->foto && Storage::disk('public')->exists($posko->foto)) {
+                Storage::disk('public')->delete($posko->foto);
+            }
+
+            $foto = $request->file('foto')->store('posko', 'public');
+        }
 
         $posko->update([
             'nama_posko' => $request->nama_posko,
@@ -99,19 +118,25 @@ class PoskoController extends Controller
             'bencana_id' => $request->bencana_id,
             'pengaduan_bencana_id' => $request->pengaduan_bencana_id,
             'lokasi' => $request->lokasi,
-            'status' => $request->status
+            'status' => $request->status,
+            'foto' => $foto,
         ]);
 
-        return redirect()->route('admin.management_posko.posko.index')
+        return redirect()->route('management_posko.posko.index', ['role' => $role])
             ->with('success', 'Data posko berhasil diperbarui');
     }
 
-    public function destroy($id)
+    public function destroy($role, $id)
     {
         $posko = Posko::findOrFail($id);
+
+        if ($posko->foto && Storage::disk('public')->exists($posko->foto)) {
+            Storage::disk('public')->delete($posko->foto);
+        }
+
         $posko->delete();
 
-        return redirect()->route('admin.management_posko.posko.index')
+        return redirect()->route('management_posko.posko.index', ['role' => $role])
             ->with('success', 'Data posko berhasil dihapus');
     }
 }

@@ -24,7 +24,7 @@ class PengaduanBencana extends Model
     // RELASI
     public function poskos()
     {
-        return $this->hasMany(Posko::class, 'pengaduan_id');
+        return $this->hasMany(Posko::class, 'pengaduan_bencana_id');
     }
         // relasi ke user
     public function user()
@@ -41,12 +41,20 @@ class PengaduanBencana extends Model
     // relasi ke foto
     public function foto()
     {
-        return $this->hasMany(FotoPengaduan::class);
+        return $this->hasMany(
+            FotoPengaduan::class,
+            'pengaduan_bencana_id',
+            'id'
+        );
     }
 
     // relasi ke kebutuhan
     public function kebutuhan()
     {
         return $this->hasOne(KebutuhanPengaduan::class);
+    }
+    public function desa()
+    {
+        return $this->belongsTo(Desa::class);
     }
 }

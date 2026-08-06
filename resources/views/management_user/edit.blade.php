@@ -138,17 +138,14 @@
                             class="block mt-1 w-full border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 rounded-md shadow-sm"
                             required>
                             <option value="">-- Pilih Role --</option>
-                            <option value="relawan"
-                                {{ old('role', $userRole->name ?? '') === 'relawan' ? 'selected' : '' }}>Relawan</option>
-                            <option value="kadus" {{ old('role', $userRole->name ?? '') === 'kadus' ? 'selected' : '' }}>
-                                Kadus</option>
-                            <option value="kabid" {{ old('role', $userRole->name ?? '') === 'kabid' ? 'selected' : '' }}>
-                                Kabid</option>
-                            <option value="desa" {{ old('role', $userRole->name ?? '') === 'desa' ? 'selected' : '' }}>
-                                Desa</option>
-                            <option value="ketua_tim"
-                                {{ old('role', $userRole->name ?? '') === 'ketua_tim' ? 'selected' : '' }}>Ketua Tim
-                            </option>
+                            @foreach ($roles as $role)
+                                @if ($role->name !== 'admin')
+                                    <option value="{{ $role->name }}"
+                                        {{ old('role', $userRole->name ?? '') === $role->name ? 'selected' : '' }}>
+                                        {{ ucfirst(str_replace('_', ' ', $role->name)) }}
+                                    </option>
+                                @endif
+                            @endforeach
                         </select>
                     @endif
 

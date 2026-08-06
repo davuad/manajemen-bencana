@@ -1,20 +1,41 @@
+@php
+    $user = auth()->user();
+
+    $canManageKorban = $user->hasRole('admin')
+        || $user->hasRole('petugas')
+        || $user->hasRole('relawan');
+
+    $routePrefix = $user->hasRole('admin')
+        ? 'admin.korban'
+        : ($user->hasRole('petugas')
+            ? 'petugas.korban'
+            : 'relawan.korban');
+@endphp
+
 @extends('layouts.app')
 
 @section('content')
     <div class="bg-white rounded-xl shadow p-6">
 
-        <div class="flex justify-between items-center mb-6">
+        <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-6">
+
             <div>
-                <h2 class="text-xl font-bold">Olah Data Korban</h2>
-                <p class="text-gray-500 text-sm">
-                    Kelola data korban bencana yang tercatat pada sistem
+                <h2 class="text-2xl font-bold text-gray-800">
+                    Olah Data Korban
+                </h2>
+
+                <p class="text-gray-500 text-sm mt-1">
+                    Kelola data korban meninggal akibat bencana
                 </p>
             </div>
 
-            <a href="{{ route('admin.management_korban.korban.create') }}"
-                class="bg-indigo-700 text-white px-4 py-2 rounded-lg inline-block">
-                + Tambah Data Korban
-            </a>
+            @if($canManageKorban)
+                <a href="{{ route($routePrefix . '.create') }}"
+                    class="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-lg shadow-sm transition">
+                    + Tambah Data Korban
+                </a>
+            @endif
+
         </div>
 
         <!-- Success Message -->
@@ -35,50 +56,108 @@
             </script>
         @endif
 
-        <form method="GET" action="{{ route('admin.management_korban.korban.index') }}">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
+        {{-- FILTER --}}
+        <div class="mb-6">
 
-                <input type="text" name="search" value="{{ request('search') }}" placeholder="Cari nama atau NIK korban"
-                    class="border rounded-lg px-4 py-2 focus:ring-2 focus:ring-indigo-500">
+            <form id="filterForm"
+                method="GET"
+                action="{{ route($routePrefix . '.index') }}">
 
-                <select name="bencana_id" class="border rounded-lg py-2 px-3">
-                    <option value="">Semua Bencana</option>
-                    @foreach ($bencana as $item)
-                        <option value="{{ $item->id }}" {{ request('bencana_id') == $item->id ? 'selected' : '' }}>
-                            {{ $item->kategori->nama_kategori ?? '-' }} - {{ $item->desa->nama_desa ?? '-' }} -
-                            {{ $item->tanggal }}
-                        </option>
-                    @endforeach
-                </select>
+                <div class="flex flex-col lg:flex-row gap-3">
 
-                <select name="posko_id" class="border rounded-lg py-2 px-3">
-                    <option value="">Semua Posko</option>
-                    @foreach ($posko as $item)
-                        <option value="{{ $item->id }}" {{ request('posko_id') == $item->id ? 'selected' : '' }}>
-                            {{ $item->nama_posko }}
-                        </option>
-                    @endforeach
-                </select>
+                    {{-- Tahun --}}
+                    <div class="lg:w-28">
+                        <select
+                            name="tahun"
+                            class="auto-submit w-full border border-gray-300 rounded-lg py-2.5 px-3">
 
-                <div class="flex flex-wrap gap-2">
-                    <button type="submit" class="bg-indigo-600 text-white px-4 py-2 rounded-lg">
-                        Filter
-                    </button>
+                            @foreach($tahunList as $item)
+                                <option value="{{ $item }}"
+                                    {{ ($tahun ?? now()->year) == $item ? 'selected' : '' }}>
+                                    {{ $item }}
+                                </option>
+                            @endforeach
 
-                    <a href="{{ route('admin.management_korban.korban.index') }}"
-                        class="bg-gray-300 text-gray-800 px-4 py-2 rounded-lg">
-                        Reset
+                        </select>
+                    </div>
+
+                    {{-- Bencana --}}
+                    <div class="lg:flex-[3]">
+                        <select
+                            name="bencana_id"
+                            class="auto-submit w-full border border-gray-300 rounded-lg py-2.5 px-3">
+
+                            <option value="">Semua Bencana</option>
+
+                            @foreach ($bencana as $item)
+                                <option value="{{ $item->id }}"
+                                    {{ request('bencana_id') == $item->id ? 'selected' : '' }}>
+
+                                    {{ $item->kategori->nama_kategori ?? '-' }}
+                                    -
+                                    {{ $item->desa->nama_desa ?? '-' }}
+                                    -
+                                    {{ \Carbon\Carbon::parse($item->tanggal)->format('d-m-Y') }}
+
+                                </option>
+                            @endforeach
+
+                        </select>
+                    </div>
+
+                    {{-- Posko --}}
+                    <div class="lg:flex-[2]">
+                        <select
+                            name="posko_id"
+                            class="auto-submit w-full border border-gray-300 rounded-lg py-2.5 px-3">
+
+                            <option value="">Semua Posko</option>
+
+                            @foreach ($posko as $item)
+                                <option value="{{ $item->id }}"
+                                    {{ request('posko_id') == $item->id ? 'selected' : '' }}>
+                                    {{ $item->nama_posko }}
+                                </option>
+                            @endforeach
+
+                        </select>
+                    </div>
+
+                    {{-- Search --}}
+                    <div class="lg:flex-[2]">
+                        <input
+                            id="searchInput"
+                            type="text"
+                            name="search"
+                            value="{{ request('search') }}"
+                            placeholder="Cari nama atau NIK..."
+                            class="w-full border border-gray-300 rounded-lg px-4 py-2.5">
+                    </div>
+
+                    {{-- Reset --}}
+                    <a href="{{ route($routePrefix . '.index') }}"
+                        class="w-11 h-[42px] flex items-center justify-center rounded-lg border border-gray-300 text-gray-600"
+                        title="Reset Filter">
+
+                        <x-heroicon-o-x-mark class="w-5 h-5" />
+
                     </a>
-                </div>
-            </div>
 
-            <div class="flex flex-wrap gap-3 mb-6">
-                <a href="{{ route('admin.management_korban.korban.reviewPdf', request()->query()) }}" target="_blank"
-                    class="bg-yellow-500 hover:bg-yellow-600 text-white px-4 py-2 rounded-lg">
-                    PDF
-                </a>
-            </div>
-        </form>
+                    {{-- PDF --}}
+                    <a href="{{ route($routePrefix . '.reviewPdf', request()->query()) }}"
+                        target="_blank"
+                        class="w-11 h-[42px] flex items-center justify-center rounded-lg bg-red-600 text-white"
+                        title="Export PDF">
+
+                        <x-heroicon-o-document-arrow-down class="w-5 h-5" />
+
+                    </a>
+
+                </div>
+
+            </form>
+
+        </div>
 
         <div class="overflow-x-auto">
             <table class="w-full text-sm">
@@ -91,7 +170,9 @@
                         <th class="text-left">Bencana</th>
                         <th class="text-left">Posko</th>
                         <th class="text-left">Tanggal Kejadian</th>
-                        <th class="text-left">Aksi</th>
+                        @if($canManageKorban)
+                            <th class="text-left">Aksi</th>
+                        @endif
                     </tr>
                 </thead>
 
@@ -105,7 +186,9 @@
                             <td class="p-3 pl-4">{{ $item->nama }}</td>
                             <td class="p-3">{{ $item->nik ?? '-' }}</td>
                             <td class="p-3 text-center">{{ $item->umur }}</td>
-                            <td class="p-3">{{ $item->bencana->kategori->nama_kategori ?? '-' }}</td>
+                            <td class="p-3">
+                                {{ $item->bencana->kategori->nama_kategori ?? '-' }} - {{ $item->bencana->desa->nama_desa ?? '-' }} - {{ \Carbon\Carbon::parse($item->bencana->tanggal)->format('d-m-Y') }}
+                            </td>
                             <td class="p-3">{{ $item->posko->nama_posko ?? '-' }}</td>
                             <td class="p-3">
                                 {{ \Carbon\Carbon::parse($item->tanggal_kejadian)->format('d-m-Y') }}
@@ -113,21 +196,25 @@
 
                             <td class="py-3">
                                 <div class="flex gap-2 items-center">
-                                    <a href="{{ route('admin.management_korban.korban.show', $item->id) }}"
-                                        class="text-green-600 hover:text-green-800" title="Detail">
+
+                                    <a href="{{ route($routePrefix . '.show', $item->id) }}"
+                                        class="text-green-600 hover:text-green-800">
                                         <x-heroicon-o-eye class="w-5 h-5" />
                                     </a>
 
-                                    <a href="{{ route('admin.management_korban.korban.edit', $item->id) }}"
-                                        class="text-blue-500 hover:text-blue-700" title="Edit">
-                                        <x-heroicon-o-pencil-square class="w-5 h-5" />
-                                    </a>
+                                    @if($canManageKorban)
+                                        <a href="{{ route($routePrefix . '.edit', $item->id) }}"
+                                            class="text-blue-500 hover:text-blue-700">
+                                            <x-heroicon-o-pencil-square class="w-5 h-5" />
+                                        </a>
 
-                                    <button type="button"
-                                        onclick="openModal('{{ $item->id }}', '{{ addslashes($item->nama) }}')"
-                                        class="text-red-500 hover:text-red-700" title="Hapus">
-                                        <x-heroicon-o-trash class="w-5 h-5" />
-                                    </button>
+                                        <button type="button"
+                                            onclick="openModal('{{ $item->id }}', '{{ addslashes($item->nama) }}')"
+                                            class="text-red-500 hover:text-red-700">
+                                            <x-heroicon-o-trash class="w-5 h-5" />
+                                        </button>
+                                    @endif
+
                                 </div>
                             </td>
                         </tr>
@@ -191,23 +278,30 @@
     </div>
 
     <script>
-        function openModal(id, nama) {
-            const modal = document.getElementById('deleteModal');
-            modal.classList.remove('hidden');
-            modal.classList.add('flex');
 
-            document.getElementById('namaKorban').innerText = `"${nama}"`;
+        const filterForm = document.getElementById('filterForm');
 
-            let url = "{{ route('admin.management_korban.korban.destroy', ':id') }}";
-            url = url.replace(':id', id);
+        document.querySelectorAll('.auto-submit')
+            .forEach(element => {
 
-            document.getElementById('deleteForm').action = url;
-        }
+                element.addEventListener('change', () => {
+                    filterForm.submit();
+                });
 
-        function closeModal() {
-            const modal = document.getElementById('deleteModal');
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }
+            });
+
+        let debounce;
+
+        document.getElementById('searchInput')
+            .addEventListener('input', function () {
+
+                clearTimeout(debounce);
+
+                debounce = setTimeout(() => {
+                    filterForm.submit();
+                }, 700);
+
+            });
+
     </script>
 @endsection

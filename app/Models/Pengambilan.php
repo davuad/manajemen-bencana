@@ -16,6 +16,7 @@ class Pengambilan extends Model
         'tanggal_pengambilan',
         'jumlah_ambil',
         'tujuan',
+        'gambar',
         'status'
     ];
 
@@ -39,9 +40,10 @@ class Pengambilan extends Model
      * Relasi ke tabel petugas
      */
     public function petugas()
-    {
-        return $this->belongsTo(Petugas::class, 'petugas_id');
-    }
+{
+    return $this->belongsTo(Petugas::class, 'petugas_id')
+                ->withTrashed();
+}
 
     /**
      * Relasi ke tabel posko

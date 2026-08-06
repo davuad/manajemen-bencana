@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\DapurUmum;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Posko extends Model
 {
@@ -15,7 +17,8 @@ class Posko extends Model
         'bencana_id',
         'pengaduan_bencana_id',
         'lokasi',
-        'status'
+        'status',
+        'foto',
     ];
 
     // RELASI
@@ -43,5 +46,17 @@ class Posko extends Model
     public function korban()
     {
         return $this->hasMany(Korban::class);
-    }    
+    }
+
+    public function dapurUmum(): HasMany
+    {
+        return $this->hasMany(DapurUmum::class, 'posko_id');
+    }
+
+    public function getFotoUrlAttribute()
+    {
+        return $this->foto
+            ? asset('storage/' . $this->foto)
+            : asset('images/no-image.png');
+    }
 }

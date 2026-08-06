@@ -1,6 +1,14 @@
 @extends('layouts.app')
 
 @section('content')
+@php
+    $routePrefix = auth()->user()->hasRole('admin') ? 'admin' : (auth()->user()->hasRole('pegawai') ? 'pegawai' : 'admin');
+    $bulanList = [
+        1 => 'Januari', 2 => 'Februari', 3 => 'Maret', 4 => 'April',
+        5 => 'Mei', 6 => 'Juni', 7 => 'Juli', 8 => 'Agustus',
+        9 => 'September', 10 => 'Oktober', 11 => 'November', 12 => 'Desember'
+    ];
+@endphp
 <div class="p-6 w-full">
 
     <!-- HEADER -->
@@ -10,25 +18,68 @@
             <p class="text-sm text-gray-500">Kelola data distribusi bantuan</p>
         </div>
 
-        <a href="{{ route('admin.management_distribusi.distribusi.create') }}"
+        <a href="{{ route($routePrefix . '.management_distribusi.distribusi.create') }}"
            class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg shadow">
             + Tambah
         </a>
     </div>
 
-    <!-- SEARCH -->
-    <form method="GET" action="{{ route('admin.management_distribusi.distribusi.index') }}">
-        <div class="flex gap-4 mb-6">
-            <input 
+    <!-- SEARCH & FILTER -->
+<form method="GET"
+      action="{{ route($routePrefix . '.management_distribusi.distribusi.index') }}">
+
+    <div class="flex flex-wrap gap-4 mb-6 items-end">
+
+        <div class="flex-1 min-w-[200px]">
+            <label class="block text-xs font-medium text-gray-600 mb-1">Cari</label>
+            <input
                 type="text"
-                id="search"
                 name="search"
-                value="{{ request('search') }}" 
-                placeholder="Cari distribusi..."
-                class="flex-1 border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500"
-            >
+                value="{{ request('search') }}"
+                placeholder="Cari bencana, posko, desa, kategori..."
+                class="w-full border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500">
         </div>
-    </form>
+
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Bulan</label>
+            <select name="bulan"
+                    class="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500">
+                <option value="">Semua Bulan</option>
+                @foreach($bulanList as $key => $nama)
+                    <option value="{{ $key }}" {{ request('bulan') == $key ? 'selected' : '' }}>
+                        {{ $nama }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <div>
+            <label class="block text-xs font-medium text-gray-600 mb-1">Tahun</label>
+            <select name="tahun"
+                    class="border border-gray-300 rounded-lg px-4 py-2 text-sm focus:ring-2 focus:ring-blue-500">
+                <option value="">Semua Tahun</option>
+                @foreach($tahunList as $thn)
+                    <option value="{{ $thn }}" {{ request('tahun') == $thn ? 'selected' : '' }}>
+                        {{ $thn }}
+                    </option>
+                @endforeach
+            </select>
+        </div>
+
+        <button type="submit"
+            class="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg">
+            Cari
+        </button>
+
+        @if(request('search') || request('bulan') || request('tahun'))
+            <a href="{{ route($routePrefix . '.management_distribusi.distribusi.index') }}"
+               class="bg-gray-500 hover:bg-gray-600 text-white px-5 py-2 rounded-lg">
+                Reset
+            </a>
+        @endif
+
+    </div>
+</form>
 
     <!-- TABLE -->
     <div class="bg-white shadow-md rounded-xl p-4">
@@ -134,12 +185,12 @@
                         <td class="p-3">
                             <div class="flex gap-2 justify-center">
 
-                                <a href="{{ route('admin.management_distribusi.distribusi.show', $item->id) }}"
+                                <a href="{{ route($routePrefix . '.management_distribusi.distribusi.show', $item->id) }}"
                                    class="p-2 bg-blue-100 text-blue-700 rounded">
                                     👁
                                 </a>
 
-                                <a href="{{ route('admin.management_distribusi.distribusi.edit', $item->id) }}"
+                                <a href="{{ route($routePrefix . '.management_distribusi.distribusi.edit', $item->id) }}"
                                    class="p-2 bg-yellow-100 text-yellow-700 rounded">
                                     ✏
                                 </a>
@@ -148,6 +199,13 @@
                                     class="p-2 bg-red-100 text-red-600 rounded">
                                     🗑
                                 </button>
+
+                                <a href="{{ route($routePrefix . '.management_distribusi.berita_acara.cetak', $item->id) }}"
+                                target="_blank"
+                                class="p-2 bg-green-100 text-green-700 rounded"
+                                title="Cetak Berita Acara">
+                                    📄
+                                </a>
 
                             </div>
                         </td>
@@ -163,6 +221,11 @@
                 </tbody>
 
             </table>
+
+            <!-- TOTAL DATA -->
+            <div class="mt-4 text-sm text-gray-600">
+                Total data: <strong>{{ $totalData }}</strong>
+            </div>
 
         </div>
     </div>
@@ -200,8 +263,9 @@
 <!-- SCRIPT -->
 <script>
 function openModal(id) {
+    let prefix = '{{ $routePrefix }}';
     document.getElementById('deleteForm').action =
-        "/admin/management-distribusi/distribusi/" + id;
+        "/" + prefix + "/management-distribusi/distribusi/" + id;
 
     document.getElementById('deleteModal').classList.remove('hidden');
     document.getElementById('deleteModal').classList.add('flex');
